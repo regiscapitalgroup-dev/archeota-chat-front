@@ -64,7 +64,7 @@ export function Login() {
     >
       {/* begin::Heading */}
       <div className='text-center mb-10'>
-        <h1 className='text-dark mb-3'>Sign In to Metronic</h1>
+        <h1 className='text-dark mb-3'>Sign In to Archeota</h1>
         <div className='text-gray-400 fw-bold fs-4'>
           New Here?{' '}
           <Link to='/auth/registration' className='link-primary fw-bolder'>
@@ -79,12 +79,7 @@ export function Login() {
           <div className='alert-text font-weight-bold'>{formik.status}</div>
         </div>
       ) : (
-        <div className='mb-10 bg-light-info p-8 rounded'>
-          <div className='text-info'>
-            Use account <strong>admin@demo.com</strong> and password <strong>demo</strong> to
-            continue.
-          </div>
-        </div>
+        null
       )}
 
       {/* begin::Form group */}
@@ -186,26 +181,17 @@ export function Login() {
         </a>
         {/* end::Google link */}
 
-        {/* begin::Google link */}
-        <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>
-          <img
-            alt='Logo'
-            src={toAbsoluteUrl('/media/svg/brand-logos/facebook-4.svg')}
-            className='h-20px me-3'
-          />
-          Continue with Facebook
-        </a>
-        {/* end::Google link */}
+        
 
         {/* begin::Google link */}
-        <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100'>
+        {/* <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100'>
           <img
             alt='Logo'
             src={toAbsoluteUrl('/media/svg/brand-logos/apple-black.svg')}
             className='h-20px me-3'
           />
           Continue with Apple
-        </a>
+        </a> */}
         {/* end::Google link */}
       </div>
       {/* end::Action */}
