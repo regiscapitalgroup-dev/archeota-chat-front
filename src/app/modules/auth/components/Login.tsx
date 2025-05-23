@@ -6,8 +6,9 @@ import clsx from 'clsx'
 import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
 import * as auth from '../redux/AuthRedux'
-import {login} from '../redux/AuthCRUD'
-import {toAbsoluteUrl} from '../../../../_metronic/helpers'
+import {login, registerGoogle} from '../redux/AuthCRUD'
+import {GoogleLogin, GoogleOAuthProvider} from '@react-oauth/google'
+import LoginGoogleBtn from './LoginGoogleBtn'
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -22,15 +23,9 @@ const loginSchema = Yup.object().shape({
 })
 
 const initialValues = {
-  email: 'admin@demo.com',
-  password: 'demo',
+  email: '',
+  password: '',
 }
-
-/*
-  Formik+YUP+Typescript:
-  https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
-  https://medium.com/@maurice.de.beijer/yup-validation-and-typescript-and-formik-6c342578a20e
-*/
 
 export function Login() {
   const [loading, setLoading] = useState(false)
@@ -42,11 +37,14 @@ export function Login() {
       setLoading(true)
       setTimeout(() => {
         login(values.email, values.password)
-          .then(({data: {accessToken}}) => {
+          .then((data) => {
+            const {access, user} = data
             setLoading(false)
-            dispatch(auth.actions.login(accessToken))
+             dispatch(auth.actions.login(access))
+            dispatch(auth.actions.setUser(user))
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log('error', error)
             setLoading(false)
             setSubmitting(false)
             setStatus('The login detail is incorrect')
@@ -54,6 +52,34 @@ export function Login() {
       }, 1000)
     },
   })
+
+  const handleError = () => {
+    console.error('Google login failed')
+  }
+
+  const handleSuccess = (credentialResponse: any) => {
+    console.log('Google login success:', credentialResponse)
+
+    setTimeout(() => {
+      registerGoogle({
+        id_token: credentialResponse?.credential,
+        access_token: credentialResponse?.credential,
+        code: credentialResponse?.credential /* ,
+        credential: credentialResponse?.credential,
+        clientId: credentialResponse?.clientId,
+        select_by: "btn" */,
+      })
+        .then((response) => {
+          /* .then(({data: {accessToken}}) => { */
+          setLoading(false)
+          console.log('response', response)
+          /* dispatch(auth.actions.login(accessToken)) */
+        })
+        .catch(() => {
+          setLoading(false)
+        })
+    }, 1000)
+  }
 
   return (
     <form
@@ -67,7 +93,7 @@ export function Login() {
         <h1 className='text-dark mb-3'>Sign In to Archeota</h1>
         <div className='text-gray-400 fw-bold fs-4'>
           New Here?{' '}
-          <Link to='/auth/registration' className='link-primary fw-bolder'>
+          <Link to='/auth/registration' className='link-dark fw-bolder'>
             Create an Account
           </Link>
         </div>
@@ -78,9 +104,7 @@ export function Login() {
         <div className='mb-lg-15 alert alert-danger'>
           <div className='alert-text font-weight-bold'>{formik.status}</div>
         </div>
-      ) : (
-        null
-      )}
+      ) : null}
 
       {/* begin::Form group */}
       <div className='fv-row mb-10'>
@@ -115,18 +139,19 @@ export function Login() {
             <label className='form-label fw-bolder text-dark fs-6 mb-0'>Password</label>
             {/* end::Label */}
             {/* begin::Link */}
-            <Link
+            {/* <Link
               to='/auth/forgot-password'
               className='link-primary fs-6 fw-bolder'
               style={{marginLeft: '5px'}}
             >
               Forgot Password ?
-            </Link>
+            </Link> */}
             {/* end::Link */}
           </div>
         </div>
         <input
           type='password'
+          placeholder='Password'
           autoComplete='off'
           {...formik.getFieldProps('password')}
           className={clsx(
@@ -154,7 +179,7 @@ export function Login() {
         <button
           type='submit'
           id='kt_sign_in_submit'
-          className='btn btn-lg btn-primary w-100 mb-5'
+          className='btn btn-lg btn-dark w-100 mb-5'
           disabled={formik.isSubmitting || !formik.isValid}
         >
           {!loading && <span className='indicator-label'>Continue</span>}
@@ -171,20 +196,34 @@ export function Login() {
         {/* end::Separator */}
 
         {/* begin::Google link */}
-        <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>
+        {/* <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>
           <img
             alt='Logo'
             src={toAbsoluteUrl('/media/svg/brand-logos/google-icon.svg')}
             className='h-20px me-3'
           />
           Continue with Google
-        </a>
+        </a> */}
+
+       {/*  <LoginGoogleBtn></LoginGoogleBtn> */}
+
+       {/*  <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
+          <GoogleLogin
+            locale='en'
+            onSuccess={handleSuccess}
+            onError={handleError}
+            useOneTap
+            type='standard'
+            logo_alignment='center'
+            text='continue_with'
+            shape='rectangular'
+            width='400'
+          />
+        </GoogleOAuthProvider> */}
         {/* end::Google link */}
 
-        
-
         {/* begin::Google link */}
-        {/* <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100'>
+        {/*  <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100'>
           <img
             alt='Logo'
             src={toAbsoluteUrl('/media/svg/brand-logos/apple-black.svg')}

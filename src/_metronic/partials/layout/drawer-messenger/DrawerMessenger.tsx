@@ -49,7 +49,7 @@ const DrawerMessenger: FC = () => (
         </div>
       </div>
 
-      <ChatInner isDrawer={true} />
+      {/* <ChatInner isDrawer={true} /> */}
     </div>
   </div>
 )

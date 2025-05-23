@@ -9,12 +9,12 @@ import {AsideMenu} from './AsideMenu'
 
 const AsideDefault: FC = () => {
   const {config, classes} = useLayout()
-  const {aside} = config
-
+  const {aside} = config;
+ 
   return (
     <div
       id='kt_aside'
-      className={clsx('aside', classes.aside.join(' '))}
+      className={clsx('aside dark', classes.aside.join(' '))}
       data-kt-drawer='true'
       data-kt-drawer-name='aside'
       data-kt-drawer-activate='{default: true, lg: false}'
@@ -31,7 +31,7 @@ const AsideDefault: FC = () => {
             <img
               alt='Logo'
               className='h-25px logo'
-              src={toAbsoluteUrl('/media/logos/logo-1-dark.svg')}
+              src={toAbsoluteUrl('/media/logos/archeota-white.svg')}
             />
           </Link>
         )}
@@ -40,7 +40,7 @@ const AsideDefault: FC = () => {
             <img
               alt='Logo'
               className='h-25px logo'
-              src={toAbsoluteUrl('/media/logos/logo-1.svg')}
+              src={toAbsoluteUrl('/media/logos/archeota-white.svg')}
             />
           </Link>
         )}
@@ -73,7 +73,7 @@ const AsideDefault: FC = () => {
       {/* end::Aside menu */}
 
       {/* begin::Footer */}
-      <div className='aside-footer flex-column-auto pt-5 pb-7 px-5' id='kt_aside_footer'>
+      {/* <div className='aside-footer flex-column-auto pt-5 pb-7 px-5' id='kt_aside_footer'>
         <a
           target='_blank'
           className='btn btn-custom btn-primary w-100'
@@ -88,7 +88,7 @@ const AsideDefault: FC = () => {
             <KTSVG path='/media/icons/duotune/general/gen005.svg' />
           </span>
         </a>
-      </div>
+      </div> */}
       {/* end::Footer */}
     </div>
   )

@@ -7,31 +7,35 @@ import clsx from 'clsx'
 import * as auth from '../redux/AuthRedux'
 import {register} from '../redux/AuthCRUD'
 import {Link} from 'react-router-dom'
+import {RegisterModel} from '../models/RegisterModel'
 
-const initialValues = {
-  firstname: '',
-  lastname: '',
+const initialValues: RegisterModel = {
+  name: '',
+  password: '',
   email: '',
-  phone_number: '',
-  acceptTerms: false,
+  confirmPassword: '',
 }
 
 const registrationSchema = Yup.object().shape({
-  firstname: Yup.string()
+  name: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
-    .required('First name is required'),
+    .required('Name is required'),
   email: Yup.string()
     .email('Wrong email format')
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Email is required'),
-  lastname: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Last name is required'),
-  phone_number: Yup.string().required('Phone number is required'),
-  acceptTerms: Yup.bool().required('You must accept the terms and conditions'),
+  password: Yup.string()
+    .min(8, 'The password must be at least 8 characters long.')
+    .matches(/[A-Z]/, 'The password must contain at least one capital letter.')
+    .matches(/[a-z]/, 'The password must contain at least one lowercase letter.')
+    .matches(/[0-9]/, 'The password must contain at least one number.')
+    .matches(/[^A-Za-z0-9]/, 'The password must contain at least one special character.')
+    .required('Password is required'),
+  confirmPassword: Yup.string()
+    .required('Password is required')
+    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 })
 
 export function Registration() {
@@ -42,11 +46,12 @@ export function Registration() {
     validationSchema: registrationSchema,
     onSubmit: (values, {setStatus, setSubmitting}) => {
       setLoading(true)
-      setTimeout(() => {
-        register(values.email, values.firstname, values.lastname, values.phone_number)
-          .then(({data: {accessToken}}) => {
+      setTimeout(async () => {
+        await register(values)
+          .then(({data: {access, user}}) => {
             setLoading(false)
-            dispatch(auth.actions.login(accessToken))
+            dispatch(auth.actions.login(access))
+            dispatch(auth.actions.setUser(user));
           })
           .catch(() => {
             setLoading(false)
@@ -67,12 +72,12 @@ export function Registration() {
       {/* begin::Heading */}
       <div className='mb-10 text-center'>
         {/* begin::Title */}
-        <h1 className='text-dark mb-3'>Request Membership</h1>
+        <h1 className='text-dark mb-3'>Create your account.</h1>
         {/* end::Title */}
 
         {/* begin::Link */}
         <div className='text-gray-400 fw-bold fs-4'>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Enter the following information.
           {/* <Link to='/auth/login' className='link-primary fw-bolder' style={{marginLeft: '5px'}}>
             Forgot Password ?
           </Link> */}
@@ -106,52 +111,27 @@ export function Registration() {
 
       {/* begin::Form group Firstname */}
       <div className='row fv-row mb-7'>
-        <div className='col-xl-6'>
-          <label className='class="form-label fw-bolder text-dark fs-6'>First name</label>
+        <div className='col-xl-12'>
+          <label className='class="form-label fw-bolder text-dark fs-6'>Name</label>
           <input
-            placeholder='First name'
+            placeholder='Name'
             type='text'
             autoComplete='off'
-            {...formik.getFieldProps('firstname')}
+            {...formik.getFieldProps('name')}
             className={clsx(
               'form-control form-control-lg form-control-solid',
               {
-                'is-invalid': formik.touched.firstname && formik.errors.firstname,
+                'is-invalid': formik.touched.name && formik.errors.name,
               },
               {
-                'is-valid': formik.touched.firstname && !formik.errors.firstname,
+                'is-valid': formik.touched.name && !formik.errors.name,
               }
             )}
           />
-          {formik.touched.firstname && formik.errors.firstname && (
+          {formik.touched.name && formik.errors.name && (
             <div className='fv-plugins-message-container'>
               <div className='fv-help-block'>
-                <span role='alert'>{formik.errors.firstname}</span>
-              </div>
-            </div>
-          )}
-        </div>
-        <div className='col-xl-6'>
-          <label className='class="form-label fw-bolder text-dark fs-6'>Last name</label>
-          <input
-            placeholder='Last name'
-            type='text'
-            autoComplete='off'
-            {...formik.getFieldProps('lastname')}
-            className={clsx(
-              'form-control form-control-lg form-control-solid',
-              {
-                'is-invalid': formik.touched.lastname && formik.errors.lastname,
-              },
-              {
-                'is-valid': formik.touched.lastname && !formik.errors.lastname,
-              }
-            )}
-          />
-          {formik.touched.lastname && formik.errors.lastname && (
-            <div className='fv-plugins-message-container'>
-              <div className='fv-help-block'>
-                <span role='alert'>{formik.errors.lastname}</span>
+                <span role='alert'>{formik.errors.name}</span>
               </div>
             </div>
           )}
@@ -186,77 +166,63 @@ export function Registration() {
       {/* end::Form group */}
 
       {/* begin::Form group Password */}
-      <div className='mb-10 fv-row'>
+      <div className='mb-7 fv-row'>
         <div className='mb-1'>
-          <label className='form-label fw-bolder text-dark fs-6'>Phone number</label>
+          <label className='form-label fw-bolder text-dark fs-6'>Password</label>
           <div className='position-relative mb-3'>
             <input
-              type='text'
-              placeholder='Phone number'
+              type='password'
+              placeholder='Password'
               autoComplete='off'
-              {...formik.getFieldProps('phone_number')}
+              {...formik.getFieldProps('password')}
               className={clsx(
                 'form-control form-control-lg form-control-solid',
                 {
-                  'is-invalid': formik.touched.phone_number && formik.errors.phone_number,
+                  'is-invalid': formik.touched.password && formik.errors.password,
                 },
                 {
-                  'is-valid': formik.touched.phone_number && !formik.errors.phone_number,
+                  'is-valid': formik.touched.password && !formik.errors.password,
                 }
               )}
             />
-            {formik.touched.phone_number && formik.errors.phone_number && (
+            {formik.touched.password && formik.errors.password && (
               <div className='fv-plugins-message-container'>
                 <div className='fv-help-block'>
-                  <span role='alert'>{formik.errors.phone_number}</span>
+                  <span role='alert'>{formik.errors.password}</span>
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
-      {/* end::Form group */}
 
-      <div className='fv-row mb-10'>
-        <label className='form-label fw-bolder text-dark fs-6 mb-4'>Which best describes you</label>
-        <span className='form-check form-check-custom form-check-solid mb-4'>
-          <input className='form-check-input' type='radio' name='category' value='1' />
-          <div className='ms-2'>First choice</div>
-        </span>
-        <span className='form-check form-check-custom form-check-solid '>
-          <input className='form-check-input' type='radio' name='category' value='1' />
-          <div className='ms-2'>Second choice</div>
-        </span>
-      </div>
-
-    
-
-      {/* begin::Form group */}
-      <div className='fv-row mb-10'>
-        <div className='form-check form-check-custom form-check-solid'>
-          <input
-            className='form-check-input'
-            type='checkbox'
-            id='kt_login_toc_agree'
-            {...formik.getFieldProps('acceptTerms')}
-          />
-          <label
-            className='form-check-label fw-bold text-gray-700 fs-6'
-            htmlFor='kt_login_toc_agree'
-          >
-            I Agree the{' '}
-            <Link to='/auth/terms' className='ms-1 link-primary'>
-              terms and conditions
-            </Link>
-            .
-          </label>
-          {formik.touched.acceptTerms && formik.errors.acceptTerms && (
-            <div className='fv-plugins-message-container'>
-              <div className='fv-help-block'>
-                <span role='alert'>{formik.errors.acceptTerms}</span>
+      <div className='mb-7 fv-row'>
+        <div className='mb-1'>
+          <label className='form-label fw-bolder text-dark fs-6'>Confirm Password</label>
+          <div className='position-relative mb-3'>
+            <input
+              type='password'
+              placeholder='Password'
+              autoComplete='off'
+              {...formik.getFieldProps('confirmPassword')}
+              className={clsx(
+                'form-control form-control-lg form-control-solid',
+                {
+                  'is-invalid': formik.touched.confirmPassword && formik.errors.confirmPassword,
+                },
+                {
+                  'is-valid': formik.touched.confirmPassword && !formik.errors.confirmPassword,
+                }
+              )}
+            />
+            {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+              <div className='fv-plugins-message-container'>
+                <div className='fv-help-block'>
+                  <span role='alert'>{formik.errors.confirmPassword}</span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
       {/* end::Form group */}
@@ -266,8 +232,8 @@ export function Registration() {
         <button
           type='submit'
           id='kt_sign_up_submit'
-          className='btn btn-lg btn-primary w-100 mb-5'
-          disabled={formik.isSubmitting || !formik.isValid || !formik.values.acceptTerms}
+          className='btn btn-lg btn-dark w-100 mb-5'
+          disabled={formik.isSubmitting || !formik.isValid}
         >
           {!loading && <span className='indicator-label'>Submit</span>}
           {loading && (
@@ -281,7 +247,7 @@ export function Registration() {
           <button
             type='button'
             id='kt_login_signup_form_cancel_button'
-            className='btn btn-lg btn-light-primary w-100 mb-5'
+            className='btn btn-lg btn-light-dark w-100 mb-5'
           >
             Cancel
           </button>

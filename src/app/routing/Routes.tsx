@@ -13,6 +13,7 @@ import {PrivateRoutes} from './PrivateRoutes'
 import {Logout, AuthPage} from '../modules/auth'
 import {ErrorsPage} from '../modules/errors/ErrorsPage'
 import {RootState} from '../../setup'
+import {ChatHistoryProvider} from '../context/ChatHistoryContext'
 
 const Routes: FC = () => {
   const isAuthorized = useSelector<RootState>(({auth}) => auth.user, shallowEqual)
@@ -36,9 +37,11 @@ const Routes: FC = () => {
         /*Redirect to `/auth` when user is not authorized*/
         <Redirect to='/auth/login' />
       ) : (
-        <MasterLayout>
-          <PrivateRoutes />
-        </MasterLayout>
+        <ChatHistoryProvider>
+          <MasterLayout>
+            <PrivateRoutes />
+          </MasterLayout>
+        </ChatHistoryProvider>
       )}
     </Switch>
   )

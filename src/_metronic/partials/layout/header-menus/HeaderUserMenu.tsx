@@ -4,7 +4,7 @@ import {shallowEqual, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {UserModel} from '../../../../app/modules/auth/models/UserModel'
 import {RootState} from '../../../../setup'
-import {Languages} from './Languages'
+import { toAbsoluteUrl } from '../../../helpers'
 
 const HeaderUserMenu: FC = () => {
   const user: UserModel = useSelector<RootState>(({auth}) => auth.user, shallowEqual) as UserModel
@@ -16,13 +16,13 @@ const HeaderUserMenu: FC = () => {
       <div className='menu-item px-3'>
         <div className='menu-content d-flex align-items-center px-3'>
           <div className='symbol symbol-50px me-5'>
-            <img alt='Logo' src={user.pic} />
+            <img alt='Logo' src={toAbsoluteUrl(`/media/avatars/150-2.jpg`)} />
           </div>
 
           <div className='d-flex flex-column'>
             <div className='fw-bolder d-flex align-items-center fs-5'>
-              {user.firstname} {user.lastname}
-              <span className='badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2'>Pro</span>
+              {user.first_name} {user.first_name}
+              {/* <span className='badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2'>Pro</span> */}
             </div>
             <a href='#' className='fw-bold text-muted text-hover-primary fs-7'>
               {user.email}
@@ -33,22 +33,22 @@ const HeaderUserMenu: FC = () => {
 
       <div className='separator my-2'></div>
 
-      <div className='menu-item px-5'>
+      {/* <div className='menu-item px-5'>
         <Link to={'/crafted/pages/profile'} className='menu-link px-5'>
           My Profile
         </Link>
-      </div>
+      </div> */}
 
-      <div className='menu-item px-5'>
+      {/* <div className='menu-item px-5'>
         <a href='#' className='menu-link px-5'>
           <span className='menu-text'>My Projects</span>
           <span className='menu-badge'>
             <span className='badge badge-light-danger badge-circle fw-bolder fs-7'>3</span>
           </span>
         </a>
-      </div>
+      </div> */}
 
-      <div
+      {/* <div
         className='menu-item px-5'
         data-kt-menu-trigger='hover'
         data-kt-menu-placement='left-start'
@@ -106,23 +106,23 @@ const HeaderUserMenu: FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className='menu-item px-5'>
+      {/* <div className='menu-item px-5'>
         <a href='#' className='menu-link px-5'>
           My Statements
         </a>
-      </div>
+      </div> */}
 
       <div className='separator my-2'></div>
 
-      <Languages />
+      {/* <Languages /> */}
 
-      <div className='menu-item px-5 my-1'>
+      {/* <div className='menu-item px-5 my-1'>
         <Link to='/crafted/account/settings' className='menu-link px-5'>
           Account Settings
         </Link>
-      </div>
+      </div> */}
 
       <div className='menu-item px-5'>
         <Link to='/logout' className='menu-link px-5'>

@@ -1,36 +1,67 @@
-import axios from 'axios'
-import {AuthModel} from '../models/AuthModel'
-import {UserModel} from '../models/UserModel'
+import axios, { AxiosError } from 'axios'
+import { AuthModel } from '../models/AuthModel'
+import { UserModel } from '../models/UserModel'
+import apiClient from '../../../helpers/apiClient'
+import { RegisterModel } from '../models/RegisterModel'
 
 const API_URL = process.env.REACT_APP_API_URL || 'api'
 
-export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/auth/get-user`
-export const LOGIN_URL = `${API_URL}/auth/login`
-export const REGISTER_URL = `${API_URL}/auth/register`
-export const REQUEST_PASSWORD_URL = `${API_URL}/auth/forgot-password`
 
 // Server should return AuthModel
-export function login(email: string, password: string) {
-  return axios.post(LOGIN_URL, {email, password})
+export async function login(email: string, password: string) {
+
+  const response = await apiClient.post('auth/login/', { email, password })
+  return response.data;
 }
 
 // Server should return AuthModel
-export function register(email: string, firstname: string, lastname: string, password: string) {
-  return axios.post<AuthModel>(REGISTER_URL, {
+export async function register(body: RegisterModel) {
+
+  const { email, name, password, confirmPassword } = body;
+
+  const response = await apiClient.post('auth/registration/', {
+    username: email,
     email,
-    firstname,
-    lastname,
-    password,
-  })
+    name,
+    password1: password,
+    password2: confirmPassword
+  });
+  return response;
+}
+
+export async function registerGoogle(data: any) {
+  const res = await apiClient.post('auth/google/', data);
+  return res;
 }
 
 // Server should return object => { result: boolean } (Is Email in DB)
 export function requestPassword(email: string) {
-  return axios.post<{result: boolean}>(REQUEST_PASSWORD_URL, {email})
+  return axios.post<{ result: boolean }>('REQUEST_PASSWORD_URL', { email })
 }
 
-export function getUserByToken() {
-  // Authorization head should be fulfilled in interceptor.
-  // Check common redux folder => setupAxios
-  return axios.get<UserModel>(GET_USER_BY_ACCESSTOKEN_URL)
+/* export async function getUserByToken(): Promise<UserModel> {
+
+  try {
+    const response = await apiClient.get<any>(`${API_URL}auth/user/`);
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error('Error al obtener el usuario:', axiosError.message);
+    throw axiosError;
+  }
+} */
+
+export async function getUserByToken(): Promise<{ user: UserModel }> {
+
+  return axios
+    .get<any>(`${API_URL}auth/user/`)
+    .then((res) => {
+      return {
+        user: res.data.user
+      };
+    })
+    .catch((error) => {
+      console.error("Error al obtener el usuario:", error);
+      throw error;
+    });
 }

@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import clsx from 'clsx'
 import React, {useEffect} from 'react'
-import {Link, useLocation} from 'react-router-dom'
+import {useLocation} from 'react-router-dom'
 import {MenuComponent} from '../../../assets/ts/components'
-import {KTSVG, toAbsoluteUrl} from '../../../helpers'
+import {KTSVG} from '../../../helpers'
 import {useLayout} from '../../core'
 import {Header} from './Header'
 import {DefaultTitle} from './page-title/DefaultTitle'
@@ -43,22 +43,22 @@ export function HeaderWrapper() {
         )}
         {/* end::Aside mobile toggle */}
         {/* begin::Logo */}
-        {!aside.display && (
+        {/* {!aside.display && (
           <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0'>
             <Link to='/dashboard' className='d-lg-none'>
               <img alt='Logo' src={toAbsoluteUrl('/media/logos/logo-2.svg')} className='h-30px' />
             </Link>
           </div>
-        )}
+        )} */}
         {/* end::Logo */}
 
-        {aside.display && (
+        {/* {aside.display && (
           <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0'>
             <Link to='/' className='d-lg-none'>
               <img alt='Logo' src={toAbsoluteUrl('/media/logos/logo-2.svg')} className='h-30px' />
             </Link>
           </div>
-        )}
+        )} */}
 
         {/* begin::Wrapper */}
         <div className='d-flex align-items-stretch justify-content-between flex-lg-grow-1'>

@@ -1,28 +1,39 @@
 /* eslint-disable react/jsx-no-target-blank */
-import React from 'react'
-import {useIntl} from 'react-intl'
-import {KTSVG} from '../../../helpers'
+/* import React from 'react' */
+/* import {useIntl} from 'react-intl' */
+/* import {KTSVG} from '../../../helpers'
 import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
+import {AsideMenuItem} from './AsideMenuItem' */
+
+import { useChatHistory } from '../../../../app/context/ChatHistoryContext';
 import {AsideMenuItem} from './AsideMenuItem'
 
 export function AsideMenuMain() {
-  const intl = useIntl()
+  /*  const intl = useIntl() */
+
+  const { triggerNewChat } = useChatHistory()
+
+  const handleNewChat = () => {
+    triggerNewChat(); 
+  }
+
 
   return (
     <>
-      <AsideMenuItem
+      {/* <AsideMenuItem
         to='/dashboard'
         icon='/media/icons/duotune/art/art002.svg'
         title={intl.formatMessage({id: 'MENU.DASHBOARD'})}
         fontIcon='bi-app-indicator'
-      />
+      /> */}
       <AsideMenuItem
         to='/builder'
-        icon='/media/icons/duotune/general/gen019.svg'
-        title='Layout Builder'
+        icon='/media/icons/duotune/communication/com012.svg'
+        title='Nuevo chat'
         fontIcon='bi-layers'
+        onClick={handleNewChat}
       />
-      <div className='menu-item'>
+      {/* <div className='menu-item'>
         <div className='menu-content pt-8 pb-2'>
           <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Crafted</span>
         </div>
@@ -116,7 +127,7 @@ export function AsideMenuMain() {
           </span>
           <span className='menu-title'>Changelog {process.env.REACT_APP_VERSION}</span>
         </a>
-      </div>
+      </div> */}
     </>
   )
 }
