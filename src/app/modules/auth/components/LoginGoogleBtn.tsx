@@ -1,4 +1,3 @@
-import queryString from 'query-string'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 
 const LoginGoogleBtn = () => {

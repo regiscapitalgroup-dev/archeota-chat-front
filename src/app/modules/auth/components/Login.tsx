@@ -7,7 +7,6 @@ import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
 import * as auth from '../redux/AuthRedux'
 import {login, registerGoogle} from '../redux/AuthCRUD'
-import {GoogleLogin, GoogleOAuthProvider} from '@react-oauth/google'
 import LoginGoogleBtn from './LoginGoogleBtn'
 
 const loginSchema = Yup.object().shape({
