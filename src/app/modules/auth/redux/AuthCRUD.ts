@@ -20,7 +20,7 @@ export async function register(body: RegisterModel) {
   const { email, name, password, confirmPassword } = body;
 
   const response = await apiClient.post('auth/registration/', {
-    username: email,
+    username: "",
     email,
     name,
     password1: password,
