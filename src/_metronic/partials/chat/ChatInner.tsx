@@ -34,7 +34,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
   }, [setOnNewChatRequested, handleNewChatRequest])
 
   useEffect(() => {
-    if (user) setUserLogger(user?.username)
+    if (user) setUserLogger(user?.firstName)
   }, [user])
 
   useEffect(() => {

@@ -5,29 +5,36 @@
 import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
 import {AsideMenuItem} from './AsideMenuItem' */
 
-import { useChatHistory } from '../../../../app/context/ChatHistoryContext';
+import {useChatHistory} from '../../../../app/context/ChatHistoryContext'
 import {AsideMenuItem} from './AsideMenuItem'
+
+import {useLocation, useHistory} from 'react-router-dom'
 
 export function AsideMenuMain() {
   /*  const intl = useIntl() */
 
-  const { triggerNewChat } = useChatHistory()
+  const {triggerNewChat} = useChatHistory()
+  const location = useLocation()
+  const navigate = useHistory()
 
   const handleNewChat = () => {
-    triggerNewChat(); 
+    if (location.pathname === '/dashboard') {
+      triggerNewChat()
+    } else {
+      navigate.push('/dashboard')
+    }
   }
-
 
   return (
     <>
-      {/* <AsideMenuItem
-        to='/dashboard'
-        icon='/media/icons/duotune/art/art002.svg'
-        title={intl.formatMessage({id: 'MENU.DASHBOARD'})}
-        fontIcon='bi-app-indicator'
-      /> */}
       <AsideMenuItem
-        to='/builder'
+        to='/assets'
+        icon='/media/icons/duotune/art/art002.svg'
+        title='Assets'
+        fontIcon='bi-app-indicator'
+      />
+      <AsideMenuItem
+        to='/dashboard'
         icon='/media/icons/duotune/communication/com012.svg'
         title='Nuevo chat'
         fontIcon='bi-layers'

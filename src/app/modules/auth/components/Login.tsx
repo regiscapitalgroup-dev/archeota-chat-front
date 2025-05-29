@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
 import * as auth from '../redux/AuthRedux'
 import {login, registerGoogle} from '../redux/AuthCRUD'
-import LoginGoogleBtn from './LoginGoogleBtn'
+import GoogleLoginButton from './GoogleLoginButton'
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -37,10 +37,9 @@ export function Login() {
       setTimeout(() => {
         login(values.email, values.password)
           .then((data) => {
-            const {access, user} = data
+            const {access} = data
+            dispatch(auth.actions.login(access))
             setLoading(false)
-             dispatch(auth.actions.login(access))
-            dispatch(auth.actions.setUser(user))
           })
           .catch((error) => {
             console.log('error', error)
@@ -231,6 +230,7 @@ export function Login() {
           Continue with Apple
         </a> */}
         {/* end::Google link */}
+        <GoogleLoginButton></GoogleLoginButton>
       </div>
       {/* end::Action */}
     </form>

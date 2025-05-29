@@ -8,8 +8,8 @@ export class UsersTableMock {
       username: 'admin',
       email: 'admin@demo.com',
       pic: toAbsoluteUrl('/media/avatars/150-2.jpg'),
-      first_name: 'Sean',
-      last_name: 'Stark',
+      firstName: 'Sean',
+      lastName: 'Stark',
       
       }
     

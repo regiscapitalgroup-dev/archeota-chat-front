@@ -1,11 +1,7 @@
-import axios, { AxiosError } from 'axios'
-import { AuthModel } from '../models/AuthModel'
+import axios from 'axios'
 import { UserModel } from '../models/UserModel'
 import apiClient from '../../../helpers/apiClient'
 import { RegisterModel } from '../models/RegisterModel'
-
-const API_URL = process.env.REACT_APP_API_URL || 'api'
-
 
 // Server should return AuthModel
 export async function login(email: string, password: string) {
@@ -17,14 +13,13 @@ export async function login(email: string, password: string) {
 // Server should return AuthModel
 export async function register(body: RegisterModel) {
 
-  const { email, name, password, confirmPassword } = body;
+  const { email, firstName, lastName, password } = body;
 
-  const response = await apiClient.post('auth/registration/', {
-    username: "",
+  const response = await apiClient.post('auth/register/', {
+    firstName,
+    lastName,
     email,
-    name,
-    password1: password,
-    password2: confirmPassword
+    password,
   });
   return response;
 }
@@ -39,29 +34,16 @@ export function requestPassword(email: string) {
   return axios.post<{ result: boolean }>('REQUEST_PASSWORD_URL', { email })
 }
 
-/* export async function getUserByToken(): Promise<UserModel> {
+export async function getUserByToken() {
+  const res = apiClient.get<UserModel>('auth/user/')
+  return (await res).data
+}
 
-  try {
-    const response = await apiClient.get<any>(`${API_URL}auth/user/`);
-    return response.data;
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    console.error('Error al obtener el usuario:', axiosError.message);
-    throw axiosError;
-  }
-} */
 
-export async function getUserByToken(): Promise<{ user: UserModel }> {
-
-  return axios
-    .get<any>(`${API_URL}auth/user/`)
-    .then((res) => {
-      return {
-        user: res.data.user
-      };
-    })
-    .catch((error) => {
-      console.error("Error al obtener el usuario:", error);
-      throw error;
-    });
+// Envías directamente el id_token a tu backend
+export async function registerGoogleV2(idToken: string) {
+  const response = await apiClient.post('auth/google-login/', {
+    id_token: idToken,
+  });
+  return response.data;
 }

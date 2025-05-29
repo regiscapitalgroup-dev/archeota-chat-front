@@ -10,17 +10,22 @@ import {Link} from 'react-router-dom'
 import {RegisterModel} from '../models/RegisterModel'
 
 const initialValues: RegisterModel = {
-  name: '',
+  firstName: '',
+  lastName: '',
   password: '',
   email: '',
   confirmPassword: '',
 }
 
 const registrationSchema = Yup.object().shape({
-  name: Yup.string()
+  firstName: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
-    .required('Name is required'),
+    .required('First Name is required'),
+    lastName: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .max(50, 'Maximum 50 symbols')
+    .required('Last Name is required'),
   email: Yup.string()
     .email('Wrong email format')
     .min(3, 'Minimum 3 symbols')
@@ -51,7 +56,7 @@ export function Registration() {
           .then(({data: {access, user}}) => {
             setLoading(false)
             dispatch(auth.actions.login(access))
-            dispatch(auth.actions.setUser(user));
+            /* dispatch(auth.actions.setUser(user)); */
           })
           .catch(() => {
             setLoading(false)
@@ -112,26 +117,53 @@ export function Registration() {
       {/* begin::Form group Firstname */}
       <div className='row fv-row mb-7'>
         <div className='col-xl-12'>
-          <label className='class="form-label fw-bolder text-dark fs-6'>Name</label>
+          <label className='class="form-label fw-bolder text-dark fs-6'>First Name</label>
           <input
-            placeholder='Name'
+            placeholder='First Name'
             type='text'
             autoComplete='off'
-            {...formik.getFieldProps('name')}
+            {...formik.getFieldProps('firstName')}
             className={clsx(
               'form-control form-control-lg form-control-solid',
               {
-                'is-invalid': formik.touched.name && formik.errors.name,
+                'is-invalid': formik.touched.firstName && formik.errors.firstName,
               },
               {
-                'is-valid': formik.touched.name && !formik.errors.name,
+                'is-valid': formik.touched.firstName && !formik.errors.firstName,
               }
             )}
           />
-          {formik.touched.name && formik.errors.name && (
+          {formik.touched.firstName && formik.errors.firstName && (
             <div className='fv-plugins-message-container'>
               <div className='fv-help-block'>
-                <span role='alert'>{formik.errors.name}</span>
+                <span role='alert'>{formik.errors.firstName}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className='row fv-row mb-7'>
+        <div className='col-xl-12'>
+          <label className='class="form-label fw-bolder text-dark fs-6'>Last Name</label>
+          <input
+            placeholder='Last Name'
+            type='text'
+            autoComplete='off'
+            {...formik.getFieldProps('lastName')}
+            className={clsx(
+              'form-control form-control-lg form-control-solid',
+              {
+                'is-invalid': formik.touched.lastName && formik.errors.lastName,
+              },
+              {
+                'is-valid': formik.touched.lastName && !formik.errors.lastName,
+              }
+            )}
+          />
+          {formik.touched.lastName && formik.errors.lastName && (
+            <div className='fv-plugins-message-container'>
+              <div className='fv-help-block'>
+                <span role='alert'>{formik.errors.lastName}</span>
               </div>
             </div>
           )}

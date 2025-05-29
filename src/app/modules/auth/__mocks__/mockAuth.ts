@@ -29,8 +29,8 @@ export function mockAuth(mock: MockAdapter) {
       const user: UserModel = {
         pk: 1,
         email,
-        first_name: firstname,
-        last_name: lastname,
+        firstName: firstname,
+        lastName: lastname,
         username: `${firstname}-${lastname}`,
         pic: process.env.PUBLIC_URL + '/media/users/default.jpg',
       }

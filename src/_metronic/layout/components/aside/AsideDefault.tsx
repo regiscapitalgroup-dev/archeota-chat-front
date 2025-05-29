@@ -30,7 +30,7 @@ const AsideDefault: FC = () => {
           <Link to='/dashboard'>
             <img
               alt='Logo'
-              className='h-25px logo'
+              className='h-100px logo'
               src={toAbsoluteUrl('/media/logos/archeota-white.svg')}
             />
           </Link>
@@ -50,7 +50,7 @@ const AsideDefault: FC = () => {
         {aside.minimize && (
           <div
             id='kt_aside_toggle'
-            className='btn btn-icon w-auto px-0 btn-active-color-primary aside-toggle'
+            className='btn btn-icon w-auto px-0 btn-active-color-secondary aside-toggle'
             data-kt-toggle='true'
             data-kt-toggle-state='active'
             data-kt-toggle-target='body'

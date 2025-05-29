@@ -1,8 +1,8 @@
 export interface UserModel {
   username: string
   email: string
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
   pk: number, 
   pic?:string
 }
