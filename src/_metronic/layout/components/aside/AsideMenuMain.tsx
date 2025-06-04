@@ -36,7 +36,7 @@ export function AsideMenuMain() {
       <AsideMenuItem
         to='/dashboard'
         icon='/media/icons/duotune/communication/com012.svg'
-        title='Nuevo chat'
+        title='New chat'
         fontIcon='bi-layers'
         onClick={handleNewChat}
       />

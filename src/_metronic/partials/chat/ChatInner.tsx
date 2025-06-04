@@ -5,7 +5,7 @@ import {toAbsoluteUrl, defaultUserInfos, MessageModel, UserInfoModel} from '../.
 import {sendMessageChat} from '../../../app/services/chatService'
 import {shallowEqual, useSelector} from 'react-redux'
 import {RootState} from '../../../setup'
-import { useChatHistory } from '../../../app/context/ChatHistoryContext'
+import {useChatHistory} from '../../../app/context/ChatHistoryContext'
 
 type Props = {
   isDrawer?: boolean
@@ -21,16 +21,16 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
   const {user} = useSelector((state: RootState) => state.auth, shallowEqual)
   const [userLogger, setUserLogger] = useState<string>('')
 
-  const { setOnNewChatRequested } = useChatHistory()
+  const {setOnNewChatRequested} = useChatHistory()
 
   const handleNewChatRequest = useCallback(() => {
-    console.log("ChatInner: Recibida petición de nuevo chat - limpiando mensajes");
-    setMessages([]);
-    setMessage('');
-  }, []); 
+    console.log('ChatInner: Recibida petición de nuevo chat - limpiando mensajes')
+    setMessages([])
+    setMessage('')
+  }, [])
 
   useEffect(() => {
-    setOnNewChatRequested(handleNewChatRequest);
+    setOnNewChatRequested(handleNewChatRequest)
   }, [setOnNewChatRequested, handleNewChatRequest])
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
       const serviceResponse: MessageModel = {
         user: 0,
         type: 'in',
-        text: response.answer || '¡Discúlpame! No pude obtener una respuesta en este momento.',
+        text: response.answer || "Excuse me! I couldn't get an answer right now..",
         time: getCurrentTime(),
       }
 
@@ -85,7 +85,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
       const errorMessage: MessageModel = {
         user: 0,
         type: 'in',
-        text: 'Lo siento, ha ocurrido un error al procesar tu solicitud. Por favor, intenta nuevamente más tarde.',
+        text: 'Sorry, an error occurred while processing your request. Please try again later.',
         time: getCurrentTime(),
       }
       setMessages((prevMessages) => [...prevMessages, errorMessage])
@@ -120,7 +120,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
       style={{height: '100%'}}
       id={isDrawer ? 'kt_drawer_chat_messenger_body' : 'kt_chat_messenger_body'}
     >
-      <div className='card-header d-flex justify-content-center align-items-center'>
+      <div className='card-header border-0 d-flex justify-content-center align-items-center'>
         <div className='text-center'>
           <h5 className='mb-1 fs-2'>Welcome to Archeota</h5>
           <span>{getCurrentDate()}</span>
@@ -206,7 +206,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                     className={clsx(
                       'p-5 rounded',
                       `bg-light-${state}`,
-                      'text-dark fw-bold mw-lg-400px',
+                      'text-dark fw-bold w-100',
                       `text-${message.type === 'in' ? 'start' : 'end'}`
                     )}
                     data-kt-element='message-text'
@@ -218,18 +218,18 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
           })}
         </div>
       ) : (
-        <div className='text-center fs-3 border-0 text-gray-400'>{welcomeMessage}</div>
+        <div className='text-center fs-3 text-gray-600 mb-9'>{welcomeMessage}</div>
       )}
 
       <div
-        className='card-footer pt-4'
+        className='card-footer pt-4 border border-gray-500 '
         id={isDrawer ? 'kt_drawer_chat_messenger_footer' : 'kt_chat_messenger_footer'}
       >
         <textarea
           className='form-control form-control-flush mb-3'
           rows={1}
           data-kt-element='input'
-          placeholder='Type a message'
+          placeholder='Type a message...'
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={onEnterPress}

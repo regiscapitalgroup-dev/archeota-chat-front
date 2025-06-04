@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Formik, Form, Field, ErrorMessage, FieldProps, FormikProps} from 'formik'
+import {Formik, Form, Field, ErrorMessage, FieldProps} from 'formik'
 import * as Yup from 'yup'
 import {AssetsCreateModel} from '../models/AssetsCreateModel'
 import {createAssets, updateAssets} from '../../../services/assetsService'
@@ -17,7 +17,6 @@ const validationSchema = Yup.object({
   valueOverTime: Yup.number()
     .min(0, 'Value over time must be positive')
     .required('Value over time is required'),
-  photo: Yup.string().required('Image is required'),
 })
 
 const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess}) => {
@@ -172,7 +171,7 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess}) 
 
                 {/* Columna derecha con subida de imagen */}
                 <div className='col-lg-4 d-flex flex-column align-items-center'>
-                  <label className='font-weight-bold required'>Photo</label>
+                  <label className='font-weight-bold'>Image</label>
                   <div
                     className='image-input image-input-outline'
                     style={{
@@ -214,9 +213,6 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess}) 
                           <i className='fa fa-times'></i> Remove
                         </button>
                       )}
-                    </div>
-                    <div className='text-danger mt-2 text-center'>
-                      <ErrorMessage name='photo' />
                     </div>
                   </div>
                 </div>

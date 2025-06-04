@@ -3,7 +3,7 @@ export interface AssetsCreateModel {
   name: string;
   value: number | null | undefined;
   valueOverTime: number | null | undefined;
-  photo: string | File;
+  photo?: string | File;
   syntasisSummary?: string;
   fullConversationHistory?: string;
 }
