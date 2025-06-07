@@ -4,10 +4,10 @@ import {ChatInner} from '../../../_metronic/partials/chat/ChatInner'
 
 const DashboardPage: FC = () => (
   <>
-    {/* begin::Row */}
-    <div className='row gy-5 g-xl-8'>
-      <div className='card'>
-        <ChatInner isDrawer />
+    {/* begin::Row */}    
+    <div className='d-flex flex-column h-100'>
+      <div className='card flex-grow-1 d-flex flex-column'>
+        <ChatInner isDrawer={true} />
       </div>
     </div>
     {/* end::Row */}
@@ -15,10 +15,8 @@ const DashboardPage: FC = () => (
 )
 
 const DashboardWrapper: FC = () => {
-  /*  const intl = useIntl() */
   return (
     <>
-      {/* <PageTitle breadcrumbs={[]}>{intl.formatMessage({id: 'MENU.DASHBOARD'})}</PageTitle> */}
       <DashboardPage />
     </>
   )

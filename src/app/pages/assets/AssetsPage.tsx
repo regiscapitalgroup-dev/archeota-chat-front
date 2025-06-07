@@ -4,10 +4,7 @@ import AssetsForm from './components/AssetsForm'
 import {getAssetById, getAssets} from '../../services/assetsService'
 import AssetTable from './components/AssetsGrid'
 import AssetsDetail from './components/AssetsDetail'
-
-interface RouteParams {
-  id: string
-}
+import { RouteParamsModel } from '../shared/models/RouteParamsModel'
 
 const AssetsPage: React.FC = () => {
   const [assets, setAssets] = useState([])
@@ -24,7 +21,7 @@ const AssetsPage: React.FC = () => {
     setAssets(data)
   }
 
-  const {id: routeId} = useParams<RouteParams>()
+  const {id: routeId} = useParams<RouteParamsModel>()
 
   useEffect(() => {
     loadAssets()

@@ -15,7 +15,7 @@ export function PrivateRoutes() {
   return (
     <Suspense fallback={<FallbackView />}>
       <Switch>
-        <Route path='/dashboard' component={DashboardWrapper} />
+        <Route path='/dashboard/:id?' component={DashboardWrapper} />
         <Route path='/builder' component={BuilderPageWrapper} />
         <Route path='/assets/new' component={AssetsPageWrapper} />
         <Route path='/assets/edit/:id' component={AssetsPageWrapper} />
