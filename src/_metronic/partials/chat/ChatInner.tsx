@@ -29,21 +29,21 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
   const [sessionIdChat, setSessionIdChat] = useState<string | null>(null)
   const {id: currentSessionId} = useParams<RouteParamsModel>()
   const {forceReload, setOnNewChatRequested} = useChatHistory()
+  const [additionalInfo, setAdditionalInfo] = useState<Array<any>>([])
   const navigate = useHistory()
   const urlLengthNewChat = 3
   const handleNewChatRequest = useCallback(() => {
     setMessages([])
     setMessage('')
     setSessionIdChat(null)
+    setAdditionalInfo([])
   }, [])
 
   useEffect(() => {
     const fetchChatDetail = async () => {
-      
-
       if (currentSessionId && currentSessionId.length > urlLengthNewChat) {
         setSessionIdChat(currentSessionId || null)
-       
+
         const response = await getChatDetail(currentSessionId)
 
         if (response.length) {
@@ -67,7 +67,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
         }
       }
     }
-  
+
     if (messages.length) {
       setMessages([])
     }
@@ -96,13 +96,22 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
     scrollToBottom()
   }, [messages])
 
-  const sendMessage = async () => {
-    if (!message.trim()) return
+  const handleSelectAdditionalQuestion = async(questionText: string) => {
+    await sendMessage(questionText)
+
+  }
+  
+
+  const sendMessage = async (customMessage?: string) => {
+
+    const msg = customMessage ?? message
+    if (!msg.trim()) return
+    
 
     const newMessage: MessageModel = {
       user: 1,
       type: 'out',
-      text: message,
+      text: msg,
       time: getCurrentTime(),
     }
 
@@ -112,10 +121,12 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
     setLoading(!loading)
 
     try {
-      const response = await sendMessageChat(message, sessionIdChat || undefined)
+      const response = await sendMessageChat(msg, sessionIdChat || undefined)
 
-      const {chatSessionId, generalResponse} = response
-            
+      const {chatSessionId, generalResponse, additionalQuestions} = response
+
+      setAdditionalInfo(additionalQuestions)
+
       const serviceResponse: MessageModel = {
         user: 0,
         type: 'in',
@@ -255,6 +266,35 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                     </div>
                   )
                 })}
+                {additionalInfo.length > 0 && (
+                  <div className='mt-10'>
+                    <div className='card shadow-sm'>
+                      <div className='card-header bg-light-info'>
+                        <h3 className='card-title fw-bold text-dark'>Additional information</h3>
+                      </div>
+                      <div className='card-body'>
+                        <div className='d-flex flex-column gap-4'>
+                          {additionalInfo.map((info, idx) => (
+                            <div key={idx} className='d-flex align-items-start'>
+                              <div className='symbol symbol-30px me-4'>
+                                <span className='symbol-label bg-dark text-white fw-bold'>
+                                  {idx + 1}
+                                </span>
+                              </div>
+                              <div
+                                className='text-gray-800 fw-semibold fs-6 cursor-pointer text-hover-primary'
+                                onClick={() => handleSelectAdditionalQuestion(info?.question)}
+                              >
+                                {info?.question}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div ref={messagesEndRef}></div>
               </div>
             ) : (
@@ -284,7 +324,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
               className={`btn btn-dark ${loading ? 'disabled' : ''}`}
               type='button'
               data-kt-element='send'
-              onClick={sendMessage}
+              onClick={() => sendMessage()}
               disabled={loading}
             >
               {loading ? 'Sending...' : 'Send'}

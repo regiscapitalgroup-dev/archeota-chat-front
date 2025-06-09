@@ -12,12 +12,16 @@ export function AsideMenuMain() {
   const {chats} = useAllHistoryChats(reloadFlag)
 
   const handleNewChat = () => {
-    if (location.pathname === '/dashboard') {
+    if (location.pathname === '/dashboard/new') {
       triggerNewChat()
     } else {
       navigate.push('/dashboard/new')
+      setTimeout(() => {
+        triggerNewChat()
+      }, 50)
     }
   }
+  
 
   return (
     <>
