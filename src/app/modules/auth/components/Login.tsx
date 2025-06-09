@@ -6,7 +6,7 @@ import clsx from 'clsx'
 import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
 import * as auth from '../redux/AuthRedux'
-import {login, registerGoogle} from '../redux/AuthCRUD'
+import {login} from '../redux/AuthCRUD'
 import GoogleLoginButton from './GoogleLoginButton'
 
 const loginSchema = Yup.object().shape({
@@ -50,34 +50,6 @@ export function Login() {
       }, 1000)
     },
   })
-
-  const handleError = () => {
-    console.error('Google login failed')
-  }
-
-  const handleSuccess = (credentialResponse: any) => {
-    console.log('Google login success:', credentialResponse)
-
-    setTimeout(() => {
-      registerGoogle({
-        id_token: credentialResponse?.credential,
-        access_token: credentialResponse?.credential,
-        code: credentialResponse?.credential /* ,
-        credential: credentialResponse?.credential,
-        clientId: credentialResponse?.clientId,
-        select_by: "btn" */,
-      })
-        .then((response) => {
-          /* .then(({data: {accessToken}}) => { */
-          setLoading(false)
-          console.log('response', response)
-          /* dispatch(auth.actions.login(accessToken)) */
-        })
-        .catch(() => {
-          setLoading(false)
-        })
-    }, 1000)
-  }
 
   return (
     <form
@@ -191,45 +163,7 @@ export function Login() {
 
         {/* begin::Separator */}
         <div className='text-center text-muted text-uppercase fw-bolder mb-5'>or</div>
-        {/* end::Separator */}
-
-        {/* begin::Google link */}
-        {/* <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>
-          <img
-            alt='Logo'
-            src={toAbsoluteUrl('/media/svg/brand-logos/google-icon.svg')}
-            className='h-20px me-3'
-          />
-          Continue with Google
-        </a> */}
-
-       {/*  <LoginGoogleBtn></LoginGoogleBtn> */}
-
-       {/*  <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}>
-          <GoogleLogin
-            locale='en'
-            onSuccess={handleSuccess}
-            onError={handleError}
-            useOneTap
-            type='standard'
-            logo_alignment='center'
-            text='continue_with'
-            shape='rectangular'
-            width='400'
-          />
-        </GoogleOAuthProvider> */}
-        {/* end::Google link */}
-
-        {/* begin::Google link */}
-        {/*  <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100'>
-          <img
-            alt='Logo'
-            src={toAbsoluteUrl('/media/svg/brand-logos/apple-black.svg')}
-            className='h-20px me-3'
-          />
-          Continue with Apple
-        </a> */}
-        {/* end::Google link */}
+        {/* end::Separator */}        
         <GoogleLoginButton></GoogleLoginButton>
       </div>
       {/* end::Action */}

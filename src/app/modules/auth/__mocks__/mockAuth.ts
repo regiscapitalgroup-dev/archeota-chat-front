@@ -61,11 +61,4 @@ export function mockAuth(mock: MockAdapter) {
     return [400]
   })
 
-  
-
-  function generateUserId(): number {
-    const ids = UsersTableMock.table.map((el) => el.pk)
-    const maxId = Math.max(...ids)
-    return maxId + 1
-  }
 }
