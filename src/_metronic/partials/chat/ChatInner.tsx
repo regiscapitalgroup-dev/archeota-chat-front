@@ -146,6 +146,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
         time: getCurrentTime(),
       }
       setMessages((prevMessages) => [...prevMessages, errorMessage])
+      setAdditionalInfo([])
     } finally {
       setLoading(false)
     }
@@ -268,17 +269,14 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                 })}
                 {additionalInfo.length > 0 && (
                   <div className='mt-10'>
-                    <div className='card shadow-sm'>
-                      <div className='card-header bg-light-info'>
-                        <h3 className='card-title fw-bold text-dark'>Additional information</h3>
-                      </div>
+                    <div className='card shadow-sm'>                      
                       <div className='card-body'>
                         <div className='d-flex flex-column gap-4'>
                           {additionalInfo.map((info, idx) => (
                             <div key={idx} className='d-flex align-items-start'>
-                              <div className='symbol symbol-30px me-4'>
+                              <div className='symbol symbol-20px me-2'>
                                 <span className='symbol-label bg-dark text-white fw-bold'>
-                                  {idx + 1}
+                                 {/*  {idx + 1} */}
                                 </span>
                               </div>
                               <div
