@@ -96,17 +96,13 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
     scrollToBottom()
   }, [messages])
 
-  const handleSelectAdditionalQuestion = async(questionText: string) => {
+  const handleSelectAdditionalQuestion = async (questionText: string) => {
     await sendMessage(questionText)
-
   }
-  
 
   const sendMessage = async (customMessage?: string) => {
-
     const msg = customMessage ?? message
     if (!msg.trim()) return
-    
 
     const newMessage: MessageModel = {
       user: 1,
@@ -269,14 +265,14 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                 })}
                 {additionalInfo.length > 0 && (
                   <div className='mt-10'>
-                    <div className='card shadow-sm'>                      
+                    <div className='card shadow-sm'>
                       <div className='card-body'>
                         <div className='d-flex flex-column gap-4'>
                           {additionalInfo.map((info, idx) => (
                             <div key={idx} className='d-flex align-items-start'>
                               <div className='symbol symbol-20px me-2'>
                                 <span className='symbol-label bg-dark text-white fw-bold'>
-                                 {/*  {idx + 1} */}
+                                  {/*  {idx + 1} */}
                                 </span>
                               </div>
                               <div

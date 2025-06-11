@@ -1,6 +1,6 @@
 import React from 'react'
 import {KTSVG} from '../../../../_metronic/helpers'
-import { formatCurrencyUSD } from '../../../helpers/FormatCurrency'
+import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
 
 interface AssetTableProps {
   assets: any[]
@@ -22,7 +22,11 @@ const AssetsGrid: React.FC<AssetTableProps> = ({assets, onEdit, onDetail}) => {
       <tbody>
         {assets.map((asset: any) => (
           <tr key={asset.id}>
-            <td>{asset.name}</td>
+            <td>
+              <div className='' onClick={() => onDetail(asset.id)}>
+                {asset.name}
+              </div>
+            </td>
             <td>{formatCurrencyUSD(asset.value)}</td>
             <td>{formatCurrencyUSD(asset.valueOverTime)}</td>
             <td className='text-center'>
