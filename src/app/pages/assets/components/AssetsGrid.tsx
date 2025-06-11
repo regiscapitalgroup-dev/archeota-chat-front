@@ -23,10 +23,14 @@ const AssetsGrid: React.FC<AssetTableProps> = ({assets, onEdit, onDetail}) => {
         {assets.map((asset: any) => (
           <tr key={asset.id}>
             <td>
-              <div className='' onClick={() => onDetail(asset.id)}>
+              <span
+                onClick={() => onDetail(asset.id)}
+                className='text-dark fw-bold text-hover-primary cursor-pointer'
+              >
                 {asset.name}
-              </div>
+              </span>
             </td>
+
             <td>{formatCurrencyUSD(asset.value)}</td>
             <td>{formatCurrencyUSD(asset.valueOverTime)}</td>
             <td className='text-center'>
