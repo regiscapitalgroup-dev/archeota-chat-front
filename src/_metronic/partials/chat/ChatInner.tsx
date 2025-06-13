@@ -30,6 +30,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
   const {id: currentSessionId} = useParams<RouteParamsModel>()
   const {forceReload, setOnNewChatRequested} = useChatHistory()
   const [additionalInfo, setAdditionalInfo] = useState<Array<any>>([])
+  const [categories, setCategories] = useState<string | null | "">("")
   const navigate = useHistory()
   const urlLengthNewChat = 3
   const handleNewChatRequest = useCallback(() => {
@@ -119,9 +120,10 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
     try {
       const response = await sendMessageChat(msg, sessionIdChat || undefined)
 
-      const {chatSessionId, generalResponse, additionalQuestions} = response
+      const {chatSessionId, generalResponse, additionalQuestions, category} = response
 
       setAdditionalInfo(additionalQuestions)
+      setCategories(category)
 
       const serviceResponse: MessageModel = {
         user: 0,
@@ -299,11 +301,11 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
 
         <div
           style={{borderRadius: '10px'}}
-          className='card-footer pt-4 border border-gray-500 '
+          className='card-footer pt-4 border border-gray-500 bg-light'
           id={isDrawer ? 'kt_drawer_chat_messenger_footer' : 'kt_chat_messenger_footer'}
         >
           <textarea
-            className='form-control form-control-flush mb-3'
+            className='form-control form-control-flush mb-3 bg-light'
             rows={1}
             data-kt-element='input'
             placeholder='Type a message...'
@@ -325,6 +327,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
             </button>
           </div>
         </div>
+        
       </div>
     </>
   )

@@ -1,14 +1,24 @@
 import React from 'react'
 import {KTSVG} from '../../../../_metronic/helpers'
 import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
+import LoadingSpinner from '../../../components/LoadingSpinner'
 
 interface AssetTableProps {
   assets: any[]
   onEdit: (id: number) => void
   onDetail: (id: number) => void
+  loading: boolean
 }
 
-const AssetsGrid: React.FC<AssetTableProps> = ({assets, onEdit, onDetail}) => {
+const AssetsGrid: React.FC<AssetTableProps> = ({assets, onEdit, onDetail, loading}) => {
+  if (loading) {
+    return <LoadingSpinner message='Loading assets...' />
+  }
+
+  if (!assets.length) {
+    return <p className='text-center'>No data available.</p>
+  }
+
   return (
     <table className='table align-middle table-row-dashed fs-6 gy-5'>
       <thead>
@@ -24,7 +34,7 @@ const AssetsGrid: React.FC<AssetTableProps> = ({assets, onEdit, onDetail}) => {
           <tr key={asset.id}>
             <td>
               <span
-                onClick={() => onDetail(asset.id)}
+                onClick={() => onEdit(asset.id)}
                 className='text-dark fw-bold text-hover-primary cursor-pointer'
               >
                 {asset.name}

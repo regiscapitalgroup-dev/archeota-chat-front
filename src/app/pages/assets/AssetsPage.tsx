@@ -15,9 +15,11 @@ const AssetsPage: React.FC = () => {
   const isEditMode = location.pathname.includes('/assets/edit')
   const isNewMode = location.pathname.includes('/assets/new')
   const isDetailMode = location.pathname.includes('/assets/detail')
+  const [loading, setLoading] = useState(true)
 
   const loadAssets = async () => {
     const data = await getAssets()
+    setLoading(false)
     setAssets(data)
   }
 
@@ -66,6 +68,7 @@ const AssetsPage: React.FC = () => {
 
         {!isEditMode && !isNewMode && !isDetailMode && (
           <button className='btn btn-dark' onClick={handleCreateNew}>
+             <i className='bi bi-plus fs-5 me-2'></i>
             New Asset
           </button>
         )}
@@ -73,7 +76,7 @@ const AssetsPage: React.FC = () => {
 
       <div className='card-body'>
         {isEditMode || isNewMode || isDetailMode ? (
-          !loadingAsset && (
+          /* !loadingAsset && ( */
             <>
               {isDetailMode ? (
                 <AssetsDetail data={selectedAsset} />
@@ -82,12 +85,13 @@ const AssetsPage: React.FC = () => {
                   isEdit={isEditMode}
                   initialData={selectedAsset}
                   onSuccess={handleSuccess}
+                  loadingInfo={loadingAsset}
                 />
               )}
             </>
-          )
+          /* ) */
         ) : (
-          <AssetTable assets={assets} onEdit={handleEdit} onDetail={handleDetail} />
+          <AssetTable assets={assets} onEdit={handleEdit} onDetail={handleDetail} loading={loading} />
         )}
       </div>
     </div>
