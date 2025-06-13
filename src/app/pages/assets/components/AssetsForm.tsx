@@ -247,7 +247,7 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
                         aria-labelledby='headingOne'
                         data-bs-parent='#kt_accordion'
                       >
-                        <div className='accordion-body'>Contenido de la sección 1</div>
+                        <div className='accordion-body'>Coming soon</div>
                       </div>
                     </div>
                   </div>
