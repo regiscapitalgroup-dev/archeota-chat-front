@@ -6,4 +6,7 @@ export interface AssetsCreateModel {
   photo?: string | File;
   syntasisSummary?: string;
   fullConversationHistory?: string;
+  category?:number;
+  attributes: {},
+  prefilledFromDraft?:boolean
 }

@@ -12,6 +12,7 @@ import {
 } from '../../../app/helpers/FormatDate'
 import {useHistory, useParams} from 'react-router-dom'
 import {RouteParamsModel} from '../../../app/pages/shared/models/RouteParamsModel'
+import {useAssetDraft} from '../../../app/context/AssetDraftContext'
 
 type Props = {
   isDrawer?: boolean
@@ -29,8 +30,9 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
   const [sessionIdChat, setSessionIdChat] = useState<string | null>(null)
   const {id: currentSessionId} = useParams<RouteParamsModel>()
   const {forceReload, setOnNewChatRequested} = useChatHistory()
+  const {setDraft} = useAssetDraft()
   const [additionalInfo, setAdditionalInfo] = useState<Array<any>>([])
-  const [categories, setCategories] = useState<string | null | "">("")
+  const [categories, setCategories] = useState<string | null | ''>('')
   const navigate = useHistory()
   const urlLengthNewChat = 3
   const handleNewChatRequest = useCallback(() => {
@@ -120,10 +122,14 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
     try {
       const response = await sendMessageChat(msg, sessionIdChat || undefined)
 
-      const {chatSessionId, generalResponse, additionalQuestions, category} = response
+      const {chatSessionId, generalResponse, additionalQuestions, category, attributes} = response
 
       setAdditionalInfo(additionalQuestions)
       setCategories(category)
+      setDraft({
+        category,
+        attributes,
+      })
 
       const serviceResponse: MessageModel = {
         user: 0,
@@ -136,7 +142,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
       forceReload()
       navigate.push(`/dashboard/${chatSessionId}`)
     } catch (error) {
-      console.error('Error al obtener respuesta:', error)
+      console.error('Error:', error)
       const errorMessage: MessageModel = {
         user: 0,
         type: 'in',
@@ -326,8 +332,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
               {loading ? 'Sending...' : 'Send'}
             </button>
           </div>
-        </div>
-        
+        </div>        
       </div>
     </>
   )

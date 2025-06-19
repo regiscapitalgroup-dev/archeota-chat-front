@@ -14,6 +14,7 @@ import {Logout, AuthPage} from '../modules/auth'
 import {ErrorsPage} from '../modules/errors/ErrorsPage'
 import {RootState} from '../../setup'
 import {ChatHistoryProvider} from '../context/ChatHistoryContext'
+import { AssetDraftProvider } from '../context/AssetDraftContext'
 
 const Routes: FC = () => {
   const isAuthorized = useSelector<RootState>(({auth}) => auth.user, shallowEqual)
@@ -38,9 +39,11 @@ const Routes: FC = () => {
         <Redirect to='/auth/login' />
       ) : (
         <ChatHistoryProvider>
-          <MasterLayout>
-            <PrivateRoutes />
-          </MasterLayout>
+          <AssetDraftProvider>
+            <MasterLayout>
+              <PrivateRoutes />
+            </MasterLayout>
+          </AssetDraftProvider>
         </ChatHistoryProvider>
       )}
     </Switch>

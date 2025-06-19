@@ -3,11 +3,14 @@ import {useAllHistoryChats} from '../../../../app/hooks/chat/useChats'
 import {AsideMenuItem} from './AsideMenuItem'
 import {useLocation, useHistory} from 'react-router-dom'
 import {HistoryChatModel} from './models/HistoryChatModel'
+import {useAssetDraft} from '../../../../app/context/AssetDraftContext'
+import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
 
 export function AsideMenuMain() {
   const {triggerNewChat, reloadFlag} = useChatHistory()
   const location = useLocation()
   const navigate = useHistory()
+  const {draft} = useAssetDraft()
 
   const {chats} = useAllHistoryChats(reloadFlag)
 
@@ -21,7 +24,6 @@ export function AsideMenuMain() {
       }, 50)
     }
   }
-  
 
   return (
     <>
@@ -38,6 +40,22 @@ export function AsideMenuMain() {
         fontIcon='bi-layers'
         onClick={handleNewChat}
       />
+
+      <div className='separator my-10'></div>
+      {draft && draft.category && (
+        <AsideMenuItemWithSub
+          to='/assets/new'
+          title={`${draft.category.name || draft.category}`}
+          fontIcon='bi-app-indicator'
+          icon='/media/icons/duotune/art/art002.svg'
+          forceOpen={true}
+        >
+          {draft.attributes &&
+            Object.entries(draft.attributes).map(([key, value]) => (
+              <AsideMenuItem key={key} to='/assets/new' title={key} hasBullet={true} />
+            ))}
+        </AsideMenuItemWithSub>
+      )}
 
       <div className='separator my-15'>
         {chats.length > 0 && (

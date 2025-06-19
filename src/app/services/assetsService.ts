@@ -9,6 +9,9 @@ export const createAssets = async (body: AssetsCreateModel) => {
     formData.append('name', body.name)
     formData.append('value', (body.value ?? 0).toString())
     formData.append('value_over_time', (body.valueOverTime ?? 0).toString())
+    if (body.category) {
+      formData.append('category', String(body.category))
+    }
     if (body.syntasisSummary) {
       formData.append('syntasis_summary', body.syntasisSummary)
     }
@@ -18,6 +21,10 @@ export const createAssets = async (body: AssetsCreateModel) => {
 
     if (body.photo instanceof File) {
       formData.append('photo', body.photo)
+    }
+
+    if (body.attributes && Object.keys(body.attributes).length > 0) {
+      formData.append('attributes', JSON.stringify(body.attributes));
     }
 
     const response = await apiClient.post('assets/', formData, {
@@ -50,6 +57,11 @@ export const updateAssets = async (body: AssetsCreateModel) => {
     formData.append('name', body.name)
     formData.append('value', (body.value ?? 0).toString())
     formData.append('value_over_time', (body.valueOverTime ?? 0).toString())
+    if (body.category) {
+      formData.append('category', String(body.category))
+
+    }
+
     if (body.syntasisSummary) {
       formData.append('syntasis_summary', body.syntasisSummary)
     }
@@ -61,6 +73,9 @@ export const updateAssets = async (body: AssetsCreateModel) => {
       formData.append('photo', body.photo)
     }
 
+    if (body.attributes && Object.keys(body.attributes).length > 0) {
+      formData.append('attributes', JSON.stringify(body.attributes));
+    }
 
     const response = await apiClient.put(`assets/${body.id}/`, formData, {
       headers: {
@@ -80,6 +95,16 @@ export const getAssets = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching assets:', error);
+    throw error;
+  }
+};
+
+export const getAssetCategories = async () => {
+  try {
+    const response = await apiClient.get('assets/categories/');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching assets  categories:', error);
     throw error;
   }
 };

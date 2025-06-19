@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {AssetsCreateModel} from '../models/AssetsCreateModel'
-import { formatCurrencyUSD } from '../../../helpers/FormatCurrency'
+import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
 
 interface AssetDetailProps {
   data: AssetsCreateModel
@@ -25,19 +25,26 @@ const AssetsDetail: React.FC<AssetDetailProps> = ({data}) => {
         <div className='row'>
           {/* Columna izquierda */}
           <div className='col-lg-8'>
-            <div className='form-group mb-3'>
-              <label className='text-gray-500'>Name</label>
-              <div className='form-control-plaintext'>{data?.name}</div>
+            <div className='form-group mb-3 row'>
+              <div className='col-md-6'>
+                <label className='text-gray-500'>Name</label>
+                <div className='form-control-plaintext'>{data?.name}</div>
+              </div>
+              <div className='col-md-6'>
+                <label className='text-gray-500'>Category</label>
+                <div className='form-control-plaintext'>{data?.category}</div>
+              </div>
             </div>
-
             <div className='form-group mb-3 row'>
               <div className='col-md-6'>
                 <label className='text-gray-500'>Value</label>
-                <div className='form-control-plaintext'>{ formatCurrencyUSD(data?.value ?? 0) }</div>
+                <div className='form-control-plaintext'>{formatCurrencyUSD(data?.value ?? 0)}</div>
               </div>
               <div className='col-md-6'>
                 <label className='text-gray-500'>Value over time</label>
-                <div className='form-control-plaintext'>{ formatCurrencyUSD(data?.valueOverTime ?? 0) }</div>
+                <div className='form-control-plaintext'>
+                  {formatCurrencyUSD(data?.valueOverTime ?? 0)}
+                </div>
               </div>
             </div>
 
@@ -69,6 +76,38 @@ const AssetsDetail: React.FC<AssetDetailProps> = ({data}) => {
             ></div>
           </div>
         </div>
+        {data?.attributes && Object.keys(data.attributes).length > 0 && (
+          <div className='form-group mb-3'>
+            <label className='text-gray-500 mb-2 fs-5'>Asset Attributes</label>
+            <div className='row g-3'>
+              {Object.entries(data.attributes)
+                .filter(([_, value]) => value && String(value).trim() !== '')
+                .map(([key, value], idx) => (
+                  <div className='col-md-6 col-lg-4' key={key}>
+                    <div className='card card-flush border h-100'>
+                      <div className='card-body d-flex flex-column align-items-start p-4'>
+                        {/* Icono decorativo (puedes cambiar el SVG o icono si quieres) */}
+                        <div className='symbol symbol-30px symbol-circle bg-light-primary mb-3'>
+                          <i className='bi bi-info-circle fs-3 text-primary'></i>
+                        </div>
+                        {/* Título del atributo */}
+                        <div className='fw-semibold text-gray-600 mb-1 text-truncate'>
+                          {key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())}
+                        </div>
+                        {/* Valor del atributo */}
+                        <div className='fs-6 text-gray-900 text-wrap fw-bold'>{String(value)}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              {/* Si no hay ningún atributo con valor, muestra mensaje */}
+              {Object.values(data.attributes).filter((v) => v && String(v).trim() !== '').length ===
+                0 && (
+                <div className='col-12 text-center text-muted py-5'>No attributes captured</div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

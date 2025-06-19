@@ -10,6 +10,7 @@ type Props = {
   icon?: string
   fontIcon?: string
   hasBullet?: boolean
+  forceOpen?: boolean 
 }
 
 const AsideMenuItemWithSub: React.FC<Props> = ({
@@ -19,6 +20,7 @@ const AsideMenuItemWithSub: React.FC<Props> = ({
   icon,
   fontIcon,
   hasBullet,
+  forceOpen
 }) => {
   const {pathname} = useLocation()
   const isActive = checkIsActive(pathname, to)
@@ -27,7 +29,7 @@ const AsideMenuItemWithSub: React.FC<Props> = ({
 
   return (
     <div
-      className={clsx('menu-item', {'here show': isActive}, 'menu-accordion')}
+      className={clsx('menu-item', {'here show': isActive || forceOpen}, 'menu-accordion')}
       data-kt-menu-trigger='click'
     >
       <span className='menu-link'>

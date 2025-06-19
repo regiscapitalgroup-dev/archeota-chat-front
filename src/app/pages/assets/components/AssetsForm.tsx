@@ -5,7 +5,12 @@ import {AssetsCreateModel} from '../models/AssetsCreateModel'
 import {createAssets, updateAssets} from '../../../services/assetsService'
 import {NumericFormat} from 'react-number-format'
 import LoadingSpinner from '../../../components/LoadingSpinner'
-
+import {CategoryAutocompleteField} from './AssetsCategoryField'
+import {DynamicAttributesFields} from './AssetsDynamicAttributesFields'
+import {useHistory} from 'react-router-dom'
+import {useAssetDraft} from '../../../context/AssetDraftContext'
+import {useAssetsCategories} from '../../../hooks/assets/useAssetsCategories'
+import {main} from '@popperjs/core'
 interface AssetFormProps {
   initialData?: any
   isEdit: boolean
@@ -14,17 +19,21 @@ interface AssetFormProps {
 }
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().required('Asset name is required'),
   value: Yup.number().moreThan(0, 'Value must be greater than 0').required('Value is required'),
   valueOverTime: Yup.number()
     .moreThan(0, 'Value over must be greater than 0')
     .required('Value over time is required'),
+  category: Yup.string().required('Category is required'),
 })
 
 const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, loadingInfo}) => {
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-
+  const [collapse, setCollapse] = useState<boolean>(false)
+  const navigate = useHistory()
+  const {draft, setDraft} = useAssetDraft()
+  const {categories, loading: loadingCat, error} = useAssetsCategories()
   const initialValues: AssetsCreateModel = {
     id: 0,
     name: '',
@@ -33,6 +42,9 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
     photo: '',
     syntasisSummary: '',
     fullConversationHistory: '',
+    category: 0,
+    attributes: {},
+    prefilledFromDraft: false,
   }
   const [formValues, setFormValues] = useState<AssetsCreateModel>(initialValues)
 
@@ -73,10 +85,44 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
 
   useEffect(() => {
     if (isEdit && initialData) {
+      setCollapse(true)
       setFormValues(initialData)
       setPreviewImage(initialData.photo || null)
     }
   }, [initialData, isEdit])
+
+  useEffect(() => {
+    if (!isEdit && draft && categories.length) {
+      let matchedCategory = categories.find(
+        (cat) => cat.categoryName?.toLowerCase() === draft.category.toLowerCase()
+      )
+      let categoryId = matchedCategory ? matchedCategory.id : ''
+
+      let mergedAttributes: {[key: string]: any} = {}
+
+      if (matchedCategory && matchedCategory.attributes) {
+        const draftAttributesLower = Object.fromEntries(
+          Object.entries(draft.attributes || {}).map(([k, v]) => [k.toLowerCase(), v])
+        )
+
+        Object.keys(matchedCategory.attributes).forEach((key) => {
+          mergedAttributes[key] =
+            draftAttributesLower[key.toLowerCase()] !== undefined
+              ? draftAttributesLower[key.toLowerCase()]
+              : ''
+        })
+        setCollapse(true)
+      }
+
+      setFormValues((prev) => ({
+        ...prev,
+        category: Number(categoryId),
+        attributes: mergedAttributes,
+        prefilledFromDraft: true,
+      }))
+      setDraft(null)
+    }
+  }, [isEdit, draft, setDraft, categories])
 
   return (
     <div className='card card-custom card-stretch'>
@@ -100,14 +146,20 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
                   <div className='col-lg-8'>
                     <div className='form-group row mb-3'>
                       <div className='col-md-12'>
-                        <label className='required'>Name</label>
+                        <label className='required'>Asset name</label>
                         <Field name='name' className='form-control' />
                         <div className='text-danger'>
                           <ErrorMessage name='name' />
                         </div>
                       </div>
                     </div>
-
+                    <CategoryAutocompleteField
+                      name='category'
+                      isEdit={isEdit}
+                      categories={categories}
+                      loading={loadingCat}
+                      errorCat={error ? error.message : undefined}
+                    />
                     <div className='form-group row mb-3'>
                       <div className='col-md-6'>
                         <label className='required'>Value</label>
@@ -243,11 +295,16 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
                       </h2>
                       <div
                         id='collapseOne'
-                        className='accordion-collapse collapse'
+                        className={`accordion-collapse collapse${collapse ? ' show' : ''}`}
                         aria-labelledby='headingOne'
                         data-bs-parent='#kt_accordion'
                       >
-                        <div className='accordion-body'>Coming soon</div>
+                        <div className='accordion-body'>
+                          <DynamicAttributesFields
+                            attrField='attributes'
+                            prefilledFromDraft={formValues.prefilledFromDraft}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -255,6 +312,15 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
               </div>
 
               <div className='card-footer d-flex gap-2'>
+                <button
+                  type='button'
+                  className='btn btn-secondary flex-grow-1'
+                  style={{minWidth: 0}}
+                  onClick={() => navigate.push('/assets')}
+                >
+                  Cancel
+                </button>
+
                 <button
                   type='submit'
                   id='kt_sign_in_submit'
@@ -269,10 +335,6 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
                     </span>
                   )}
                 </button>
-
-                {/*    <button type='reset' className='btn btn-secondary flex-grow-1' style={{minWidth: 0}}>
-                  Cancel
-                </button> */}
               </div>
             </Form>
           )}
