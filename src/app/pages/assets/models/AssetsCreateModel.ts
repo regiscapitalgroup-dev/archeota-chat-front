@@ -9,4 +9,5 @@ export interface AssetsCreateModel {
   category?:number;
   attributes: {},
   prefilledFromDraft?:boolean
+  assetDate?:string
 }

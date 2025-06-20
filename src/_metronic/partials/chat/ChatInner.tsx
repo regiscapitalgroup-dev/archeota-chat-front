@@ -32,7 +32,6 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
   const {forceReload, setOnNewChatRequested} = useChatHistory()
   const {setDraft} = useAssetDraft()
   const [additionalInfo, setAdditionalInfo] = useState<Array<any>>([])
-  const [categories, setCategories] = useState<string | null | ''>('')
   const navigate = useHistory()
   const urlLengthNewChat = 3
   const handleNewChatRequest = useCallback(() => {
@@ -125,7 +124,6 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
       const {chatSessionId, generalResponse, additionalQuestions, category, attributes} = response
 
       setAdditionalInfo(additionalQuestions)
-      setCategories(category)
       setDraft({
         category,
         attributes,

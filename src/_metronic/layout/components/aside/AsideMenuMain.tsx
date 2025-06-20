@@ -10,17 +10,19 @@ export function AsideMenuMain() {
   const {triggerNewChat, reloadFlag} = useChatHistory()
   const location = useLocation()
   const navigate = useHistory()
-  const {draft} = useAssetDraft()
+  const {draft, setDraft} = useAssetDraft()
 
   const {chats} = useAllHistoryChats(reloadFlag)
 
   const handleNewChat = () => {
     if (location.pathname === '/dashboard/new') {
       triggerNewChat()
+      setDraft(null)
     } else {
       navigate.push('/dashboard/new')
       setTimeout(() => {
         triggerNewChat()
+        setDraft(null)
       }, 50)
     }
   }

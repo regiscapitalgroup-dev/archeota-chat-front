@@ -10,7 +10,7 @@ import {DynamicAttributesFields} from './AssetsDynamicAttributesFields'
 import {useHistory} from 'react-router-dom'
 import {useAssetDraft} from '../../../context/AssetDraftContext'
 import {useAssetsCategories} from '../../../hooks/assets/useAssetsCategories'
-import {main} from '@popperjs/core'
+import {normalizeKey} from '../../../helpers/NormalzeKey'
 interface AssetFormProps {
   initialData?: any
   isEdit: boolean
@@ -92,7 +92,7 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
   }, [initialData, isEdit])
 
   useEffect(() => {
-    if (!isEdit && draft && categories.length) {
+    if (!isEdit && draft && categories.length) {      
       let matchedCategory = categories.find(
         (cat) => cat.categoryName?.toLowerCase() === draft.category.toLowerCase()
       )
@@ -101,14 +101,16 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
       let mergedAttributes: {[key: string]: any} = {}
 
       if (matchedCategory && matchedCategory.attributes) {
-        const draftAttributesLower = Object.fromEntries(
-          Object.entries(draft.attributes || {}).map(([k, v]) => [k.toLowerCase(), v])
+        const draftAttributesNormalized = Object.fromEntries(
+          Object.entries(draft.attributes || {}).map(([k, v]) => [normalizeKey(k), v])
         )
 
+        // Ahora recorre los atributos esperados y haz el match usando la llave normalizada
         Object.keys(matchedCategory.attributes).forEach((key) => {
+          const normalizedKey = normalizeKey(key)
           mergedAttributes[key] =
-            draftAttributesLower[key.toLowerCase()] !== undefined
-              ? draftAttributesLower[key.toLowerCase()]
+            draftAttributesNormalized[normalizedKey] !== undefined
+              ? draftAttributesNormalized[normalizedKey]
               : ''
         })
         setCollapse(true)
