@@ -212,7 +212,7 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
                     </div>
 
                     <div className='form-group mb-3'>
-                      <label>Syntasis summary</label>
+                      <label>Overview</label>
                       <Field
                         as='textarea'
                         name='syntasisSummary'

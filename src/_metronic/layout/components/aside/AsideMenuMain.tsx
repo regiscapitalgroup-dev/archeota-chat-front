@@ -29,6 +29,12 @@ export function AsideMenuMain() {
 
   return (
     <>
+      {/* <AsideMenuItem
+        to='/users'
+        icon='/media/icons/duotune/general/gen049.svg'
+        title='Users'
+        fontIcon='bi-app-indicator'
+      /> */}
       <AsideMenuItem
         to='/assets'
         icon='/media/icons/duotune/art/art002.svg'
@@ -42,8 +48,27 @@ export function AsideMenuMain() {
         fontIcon='bi-layers'
         onClick={handleNewChat}
       />
+      <div className='separator my-5'></div>
 
-      <div className='separator my-10'></div>
+      <div className='menu-item'>
+        <div className='menu-content pt-8 pb-2'>
+          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Claims</span>
+        </div>
+      </div>
+
+      <AsideMenuItem
+        to='/claims/actions'
+        icon='/media/icons/duotune/communication/com012.svg'
+        title='Actions'
+        fontIcon='bi-layers'
+      />
+      <AsideMenuItem
+        to='/claims/transactions/'
+        icon='/media/icons/duotune/communication/com012.svg'
+        title='Transactions'
+        fontIcon='bi-layers'
+      />
+
       {draft && draft.category && (
         <AsideMenuItemWithSub
           to='/assets/new'
