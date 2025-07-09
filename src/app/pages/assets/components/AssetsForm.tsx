@@ -20,9 +20,9 @@ interface AssetFormProps {
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Asset name is required'),
-  valueOverTime: Yup.number()
-    .moreThan(0, 'Value over must be greater than 0')
-    .required('Value over time is required'),
+  estimatedValue: Yup.number()
+    .moreThan(0, 'Estimated value must be greater than 0')
+    .required('Estimated value is required'),
   category: Yup.string().required('Category is required'),
 })
 
