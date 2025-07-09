@@ -11943,7 +11943,7 @@
     "loader-utils" "^2.0.0"
     "schema-utils" "^2.7.0"
 
-"styled-components@>= 5.0.0":
+"styled-components@^6.1.19", "styled-components@>= 5.0.0":
   "integrity" "sha512-1v/e3Dl1BknC37cXMhwGomhO8AkYmN41CqyX9xhUDxry1ns3BFQy2lLDRQXJRdVVWB9OHemv/53xaStimvWyuA=="
   "resolved" "https://registry.npmjs.org/styled-components/-/styled-components-6.1.19.tgz"
   "version" "6.1.19"
