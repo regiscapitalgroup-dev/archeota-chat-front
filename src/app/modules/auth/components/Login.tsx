@@ -109,13 +109,13 @@ export function Login() {
             <label className='form-label fw-bolder text-dark fs-6 mb-0'>Password</label>
             {/* end::Label */}
             {/* begin::Link */}
-            {/* <Link
+            <Link
               to='/auth/forgot-password'
-              className='link-primary fs-6 fw-bolder'
+              className='text-gray-600 fs-7 fw-bolder ms-4'
               style={{marginLeft: '5px'}}
             >
               Forgot Password ?
-            </Link> */}
+            </Link>
             {/* end::Link */}
           </div>
         </div>
@@ -163,7 +163,7 @@ export function Login() {
 
         {/* begin::Separator */}
         <div className='text-center text-muted text-uppercase fw-bolder mb-5'>or</div>
-        {/* end::Separator */}        
+        {/* end::Separator */}
         <GoogleLoginButton></GoogleLoginButton>
       </div>
       {/* end::Action */}

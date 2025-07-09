@@ -35,20 +35,6 @@ export function AsideMenuMain() {
         title='Users'
         fontIcon='bi-app-indicator'
       /> */}
-      <AsideMenuItem
-        to='/assets'
-        icon='/media/icons/duotune/art/art002.svg'
-        title='Assets'
-        fontIcon='bi-app-indicator'
-      />
-      <AsideMenuItem
-        to='/dashboard/new'
-        icon='/media/icons/duotune/communication/com012.svg'
-        title='New chat'
-        fontIcon='bi-layers'
-        onClick={handleNewChat}
-      />
-      <div className='separator my-5'></div>
 
       <div className='menu-item'>
         <div className='menu-content pt-8 pb-2'>
@@ -68,6 +54,27 @@ export function AsideMenuMain() {
         title='Transactions'
         fontIcon='bi-layers'
       />
+      <div className='separator my-5'></div>
+
+      <div className='menu-item'>
+        <div className='menu-content pt-8 pb-2'>
+          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Assets</span>
+        </div>
+      </div>
+      <AsideMenuItem
+        to='/assets'
+        icon='/media/icons/duotune/art/art002.svg'
+        title='Portfolio'
+        fontIcon='bi-app-indicator'
+      />
+      <AsideMenuItem
+        to='/dashboard/new'
+        icon='/media/icons/duotune/communication/com012.svg'
+        title='New chat'
+        fontIcon='bi-layers'
+        onClick={handleNewChat}
+      />
+      <div className='separator my-5'></div>
 
       {draft && draft.category && (
         <AsideMenuItemWithSub

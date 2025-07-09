@@ -7,8 +7,11 @@ export const createAssets = async (body: AssetsCreateModel) => {
 
     const formData = new FormData()
     formData.append('name', body.name)
-    formData.append('value', (body.value ?? 0).toString())
-    formData.append('value_over_time', (body.valueOverTime ?? 0).toString())
+    formData.append('acquisition_value', (body.acquisitionValue ?? 0).toString())
+    formData.append('estimated_value', (body.estimatedValue ?? 0).toString())
+    formData.append('low_value', (body.lowValue ?? 0).toString())
+    formData.append('high_value', (body.highValue ?? 0).toString())
+
     if (body.category) {
       formData.append('category', String(body.category))
     }
@@ -34,7 +37,7 @@ export const createAssets = async (body: AssetsCreateModel) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error al crear asset:', error);
+    console.error('Error to create asset:', error);
     throw error;
   }
 };
@@ -49,17 +52,17 @@ export const getAssetById = async (id: number) => {
   }
 };
 
-
 export const updateAssets = async (body: AssetsCreateModel) => {
   try {
 
     const formData = new FormData()
     formData.append('name', body.name)
-    formData.append('value', (body.value ?? 0).toString())
-    formData.append('value_over_time', (body.valueOverTime ?? 0).toString())
+    formData.append('acquisition_value', (body.acquisitionValue ?? 0).toString())
+    formData.append('estimated_value', (body.estimatedValue ?? 0).toString())
+    formData.append('low_value', (body.lowValue ?? 0).toString())
+    formData.append('high_value', (body.highValue ?? 0).toString())
     if (body.category) {
       formData.append('category', String(body.category))
-
     }
 
     if (body.syntasisSummary) {
@@ -108,3 +111,15 @@ export const getAssetCategories = async () => {
     throw error;
   }
 };
+
+export const getAssetByCategories = async () => {
+
+  try {
+    const response = await apiClient.get('assets/assets-by-category/');
+    return response.data;
+  } catch (error) {
+    throw error;
+
+  }
+
+}

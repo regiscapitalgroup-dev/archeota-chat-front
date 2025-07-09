@@ -1,33 +1,24 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import {useHistory, useLocation, useParams} from 'react-router-dom'
 import AssetsForm from './components/AssetsForm'
 import {getAssetById, getAssets} from '../../services/assetsService'
 import AssetTable from './components/AssetsGrid'
 import AssetsDetail from './components/AssetsDetail'
+import CategoryAssetsTable from './components/CategoryAssetsTable'
 import { RouteParamsModel } from '../shared/models/RouteParamsModel'
+import { useAssetsByCategories } from '../../hooks/assets/useAssetsByCategories'
 
 const AssetsPage: React.FC = () => {
-  const [assets, setAssets] = useState([])
   const [selectedAsset, setSelectedAsset] = useState<any>(null)
   const [loadingAsset, setLoadingAsset] = useState(false)
+  const [reload, setReload] = useState(Math.random() * 40);
   const history = useHistory()
   const location = useLocation()
   const isEditMode = location.pathname.includes('/assets/edit')
   const isNewMode = location.pathname.includes('/assets/new')
   const isDetailMode = location.pathname.includes('/assets/detail')
-  const [loading, setLoading] = useState(true)
-
-  const loadAssets = async () => {
-    const data = await getAssets()
-    setLoading(false)
-    setAssets(data)
-  }
-
+  const {data, loading:loadingAssets} = useAssetsByCategories(reload)
   const {id: routeId} = useParams<RouteParamsModel>()
-
-  useEffect(() => {
-    loadAssets()
-  }, [])
 
   useEffect(() => {
     const fetchAsset = async () => {
@@ -53,7 +44,7 @@ const AssetsPage: React.FC = () => {
   }
 
   const handleSuccess = () => {
-    loadAssets()
+    setReload(Math.random() * 50)
     history.push('/assets')
   }
 
@@ -91,7 +82,11 @@ const AssetsPage: React.FC = () => {
             </>
           /* ) */
         ) : (
-          <AssetTable assets={assets} onEdit={handleEdit} onDetail={handleDetail} loading={loading} />
+          
+          <>
+          {/* <AssetTable assets={assets} onEdit={handleEdit} onDetail={handleDetail} loading={loading} /> */}
+          <CategoryAssetsTable data={data} onEdit={handleEdit} onDetail={handleDetail} loading={loadingAssets} />
+        </>
         )}
       </div>
     </div>

@@ -20,7 +20,6 @@ interface AssetFormProps {
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Asset name is required'),
-  value: Yup.number().moreThan(0, 'Value must be greater than 0').required('Value is required'),
   valueOverTime: Yup.number()
     .moreThan(0, 'Value over must be greater than 0')
     .required('Value over time is required'),
@@ -37,14 +36,21 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
   const initialValues: AssetsCreateModel = {
     id: 0,
     name: '',
-    value: 0,
-    valueOverTime: 0,
+    acquisitionValue: 0,
+    estimatedValue: 0,
     photo: '',
     syntasisSummary: '',
     fullConversationHistory: '',
     category: 0,
     attributes: {},
     prefilledFromDraft: false,
+    highValue: 0,
+    lowValue: 0,
+    categoryDetails: {
+      attributes: null,
+      categoryName: '',
+      id: 0,
+    },
   }
   const [formValues, setFormValues] = useState<AssetsCreateModel>(initialValues)
 
@@ -86,13 +92,16 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
   useEffect(() => {
     if (isEdit && initialData) {
       setCollapse(true)
-      setFormValues(initialData)
+      setFormValues({
+        ...initialData,
+        category: initialData.categoryDetails?.id ? Number(initialData.categoryDetails.id) : 0,
+      })
       setPreviewImage(initialData.photo || null)
     }
   }, [initialData, isEdit])
 
   useEffect(() => {
-    if (!isEdit && draft && categories.length) {      
+    if (!isEdit && draft && categories.length) {
       let matchedCategory = categories.find(
         (cat) => cat.categoryName?.toLowerCase() === draft.category.toLowerCase()
       )
@@ -105,7 +114,6 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
           Object.entries(draft.attributes || {}).map(([k, v]) => [normalizeKey(k), v])
         )
 
-        // Ahora recorre los atributos esperados y haz el match usando la llave normalizada
         Object.keys(matchedCategory.attributes).forEach((key) => {
           const normalizedKey = normalizeKey(key)
           mergedAttributes[key] =
@@ -164,8 +172,8 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
                     />
                     <div className='form-group row mb-3'>
                       <div className='col-md-6'>
-                        <label className='required'>Value</label>
-                        <Field name='value'>
+                        <label>Acquisition Value</label>
+                        <Field name='acquisitionValue'>
                           {({field, form}: FieldProps) => (
                             <NumericFormat
                               className='form-control'
@@ -182,13 +190,10 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
                             />
                           )}
                         </Field>
-                        <div className='text-danger'>
-                          <ErrorMessage name='value' />
-                        </div>
                       </div>
                       <div className='col-md-6'>
-                        <label className='required'>Value over time</label>
-                        <Field name='valueOverTime'>
+                        <label className='required'>Estimated Value</label>
+                        <Field name='estimatedValue'>
                           {({field, form}: FieldProps) => (
                             <NumericFormat
                               className='form-control'
@@ -206,8 +211,51 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
                           )}
                         </Field>
                         <div className='text-danger'>
-                          <ErrorMessage name='valueOverTime' />
+                          <ErrorMessage name='estimatedValue' />
                         </div>
+                      </div>
+                    </div>
+
+                    <div className='form-group row mb-3'>
+                      <div className='col-md-6'>
+                        <label>Low Value</label>
+                        <Field name='lowValue'>
+                          {({field, form}: FieldProps) => (
+                            <NumericFormat
+                              className='form-control'
+                              thousandSeparator=','
+                              decimalSeparator='.'
+                              prefix='$'
+                              decimalScale={2}
+                              fixedDecimalScale={true}
+                              allowNegative={false}
+                              value={field.value ?? 0}
+                              onValueChange={({floatValue}) => {
+                                form.setFieldValue(field.name, floatValue ?? 0)
+                              }}
+                            />
+                          )}
+                        </Field>
+                      </div>
+                      <div className='col-md-6'>
+                        <label>High Value</label>
+                        <Field name='highValue'>
+                          {({field, form}: FieldProps) => (
+                            <NumericFormat
+                              className='form-control'
+                              thousandSeparator=','
+                              decimalSeparator='.'
+                              prefix='$'
+                              decimalScale={2}
+                              fixedDecimalScale={true}
+                              allowNegative={false}
+                              value={field.value ?? 0}
+                              onValueChange={({floatValue}) => {
+                                form.setFieldValue(field.name, floatValue ?? 0)
+                              }}
+                            />
+                          )}
+                        </Field>
                       </div>
                     </div>
 

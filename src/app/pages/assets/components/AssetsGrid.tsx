@@ -24,8 +24,7 @@ const AssetsGrid: React.FC<AssetTableProps> = ({assets, onEdit, onDetail, loadin
       <thead>
         <tr className='text-start text-muted fw-bold fs-7 text-uppercase gs-0'>
           <th>Name</th>
-          <th>Value</th>
-          <th>Value Over Time</th>
+          <th>Estimated Value</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -37,12 +36,10 @@ const AssetsGrid: React.FC<AssetTableProps> = ({assets, onEdit, onDetail, loadin
                 onClick={() => onEdit(asset.id)}
                 className='text-dark fw-bold text-hover-primary cursor-pointer'
               >
-                {asset.name}
+                {asset?.name}
               </span>
             </td>
-
-            <td>{formatCurrencyUSD(asset.value)}</td>
-            <td>{formatCurrencyUSD(asset.valueOverTime)}</td>
+            <td>{formatCurrencyUSD(asset?.valueOverTime)}</td>
             <td className='text-center'>
               <div className='d-flex justify-content-start gap-2'>
                 {/* Botón Ver Detalle */}

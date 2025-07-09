@@ -5,6 +5,7 @@ import {Registration} from './components/Registration'
 import {ForgotPassword} from './components/ForgotPassword'
 import {Login} from './components/Login'
 import {toAbsoluteUrl} from '../../../_metronic/helpers'
+import {ResetPassword} from './components/ResetPassword'
 
 export function AuthPage() {
   useEffect(() => {
@@ -20,7 +21,11 @@ export function AuthPage() {
       <div className='d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20'>
         {/* begin::Logo */}
         <a href='#' className='mb-12'>
-          <img alt='Logo' src={toAbsoluteUrl('/media/logos/archeota-dark.svg')} className='h-50px' />
+          <img
+            alt='Logo'
+            src={toAbsoluteUrl('/media/logos/archeota-dark.svg')}
+            className='h-50px'
+          />
         </a>
         {/* end::Logo */}
         {/* begin::Wrapper */}
@@ -29,6 +34,7 @@ export function AuthPage() {
             <Route path='/auth/login' component={Login} />
             <Route path='/auth/registration' component={Registration} />
             <Route path='/auth/forgot-password' component={ForgotPassword} />
+            <Route path='/reset-password/:user/:token' component={ResetPassword} />
             <Redirect from='/auth' exact={true} to='/auth/login' />
             <Redirect to='/auth/login' />
           </Switch>

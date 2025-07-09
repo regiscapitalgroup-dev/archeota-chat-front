@@ -8,10 +8,11 @@ interface AssetDetailProps {
 
 const AssetsDetail: React.FC<AssetDetailProps> = ({data}) => {
   const [previewImage, setPreviewImage] = useState<string | null>(null)
-
+  const [category, setCategory] = useState(null);
   useEffect(() => {
     if (data?.photo && typeof data.photo === 'string') {
       setPreviewImage(data.photo)
+      
     }
   }, [data])
 
@@ -32,18 +33,30 @@ const AssetsDetail: React.FC<AssetDetailProps> = ({data}) => {
               </div>
               <div className='col-md-6'>
                 <label className='text-gray-500'>Category</label>
-                <div className='form-control-plaintext'>{data?.category}</div>
+                <div className='form-control-plaintext'>{data?.categoryDetails?.categoryName}</div>
               </div>
             </div>
             <div className='form-group mb-3 row'>
               <div className='col-md-6'>
-                <label className='text-gray-500'>Value</label>
-                <div className='form-control-plaintext'>{formatCurrencyUSD(data?.value ?? 0)}</div>
+                <label className='text-gray-500'>Acquisition value</label>
+                <div className='form-control-plaintext'>{formatCurrencyUSD(data?.acquisitionValue ?? 0)}</div>
               </div>
               <div className='col-md-6'>
-                <label className='text-gray-500'>Value over time</label>
+                <label className='text-gray-500'>Estimated value</label>
                 <div className='form-control-plaintext'>
-                  {formatCurrencyUSD(data?.valueOverTime ?? 0)}
+                  {formatCurrencyUSD(data?.estimatedValue ?? 0)}
+                </div>
+              </div>
+            </div>
+            <div className='form-group mb-3 row'>
+              <div className='col-md-6'>
+                <label className='text-gray-500'>Low value</label>
+                <div className='form-control-plaintext'>{formatCurrencyUSD(data?.lowValue ?? 0)}</div>
+              </div>
+              <div className='col-md-6'>
+                <label className='text-gray-500'>High value</label>
+                <div className='form-control-plaintext'>
+                  {formatCurrencyUSD(data?.highValue ?? 0)}
                 </div>
               </div>
             </div>

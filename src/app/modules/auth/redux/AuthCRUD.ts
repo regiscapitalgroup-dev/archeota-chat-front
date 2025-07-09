@@ -29,21 +29,26 @@ export async function registerGoogle(data: any) {
   return res;
 }
 
-// Server should return object => { result: boolean } (Is Email in DB)
-export function requestPassword(email: string) {
-  return axios.post<{ result: boolean }>('REQUEST_PASSWORD_URL', { email })
-}
-
 export async function getUserByToken() {
   const res = apiClient.get<UserModel>('auth/user/')
   return (await res).data
 }
 
-
-// Envías directamente el id_token a tu backend
 export async function registerGoogleV2(idToken: string) {
   const response = await apiClient.post('auth/google-login/', {
     id_token: idToken,
   });
   return response.data;
+}
+
+export async function requestPassword(email: string) {
+  return await apiClient.post('auth/password-reset/', { email })
+}
+
+export async function recoverAccount(token: string, new_password: string, user: string) {
+  const response = await apiClient.post(
+    `auth/reset-password/confirm/`,
+    { password: new_password, user: user, token: token }
+  )
+  return response.data
 }
