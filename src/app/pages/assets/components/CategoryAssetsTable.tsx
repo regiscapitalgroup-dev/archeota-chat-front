@@ -6,7 +6,7 @@ import {CategoryAssets, Asset} from '../models/AssetsGroupModel'
 import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
 import {KTSVG} from '../../../../_metronic/helpers'
 import LoadingSpinner from '../../../components/LoadingSpinner'
-import { useHistory } from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 interface Props {
   data: CategoryAssets[]
@@ -36,7 +36,6 @@ const AssetExpandComponent: React.FC<
     loading: boolean
   }
 > = ({data, onDetail, onEdit, loading}) => (
-  
   <div style={{padding: 16}}>
     <h6 style={{marginBottom: 8}}>
       Assets in <b>{data.category}</b>
@@ -96,10 +95,6 @@ interface Props {
 const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading}) => {
   const history = useHistory()
 
-  if (loading) {
-    return <LoadingSpinner message='Loading asset...' />
-  }
-
   const handleCreateNew = () => {
     history.push('/assets/new')
   }
@@ -139,6 +134,8 @@ const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading})
             )}
             highlightOnHover
             striped
+            progressPending={loading}
+            progressComponent={<LoadingSpinner message='Loading data...' />}
           />
         </div>
       </div>

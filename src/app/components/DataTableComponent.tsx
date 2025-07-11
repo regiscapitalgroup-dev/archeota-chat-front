@@ -2,6 +2,7 @@
 
 import React from 'react'
 import DataTable, { TableColumn } from 'react-data-table-component'
+import LoadingSpinner from './LoadingSpinner'
 
 type DataTableComponentProps<T> = {
   columns: TableColumn<T>[]
@@ -44,6 +45,7 @@ function DataTableComponent<T extends object>({
       columns={columns}
       data={data}
       progressPending={loading}
+      progressComponent={<LoadingSpinner message='Loading data...' />}
       pagination={pagination}
       paginationServer={paginationServer}
       paginationTotalRows={totalRows}

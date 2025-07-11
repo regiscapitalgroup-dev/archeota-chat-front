@@ -2,6 +2,7 @@ import React from 'react'
 import { TableColumn } from 'react-data-table-component'
 import DataTableComponent from '../../../components/DataTableComponent'
 import { ClaimsActionsModel } from '../models/ClaimsActionsModel'
+import LoadingSpinner from '../../../components/LoadingSpinner'
 
 const columns: TableColumn<ClaimsActionsModel>[] = [
   { name: 'Ticker Symbol', selector: row => row.tyckerSymbol, sortable: true },
@@ -41,7 +42,13 @@ type ClaimsActionsGridProps = {
   loading: boolean
 }
 
+
+
 const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({ data, loading }) => {
+  if (loading) {
+    return <LoadingSpinner message='Loading asset...' />
+  }
+ 
   return (
     <div className="card shadow-sm mb-10">
       <div className="card-header border-0 pt-5 d-flex justify-content-between align-items-center">
