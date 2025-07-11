@@ -26,3 +26,19 @@ export const waitAndFormatTimestamp = (timestamp: string): Promise<string> => {
         }, delay > 0 ? delay : 0);
     });
 };
+
+export const toShortDateString = (dateStr: string, locale = 'en-GB') => {
+    const date = new Date(dateStr.replace(' ', 'T'))
+    return date.toLocaleDateString(locale, {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+    })
+}
+
+
+export const getISODate = (dateStr: string): string => {
+    const d = new Date(dateStr.replace(' ', 'T'))
+    if (isNaN(d.getTime())) return ''
+    return d.toISOString().slice(0, 10)
+}

@@ -32,7 +32,8 @@ export const getActionsClaims = async () => {
 
 export const getTransactionsClaims = async (page:number) => {
   try {
-    const response = await apiClient.get('assets/claim-transactions/');
+    const response = await apiClient.get(`assets/claim-transactions/?page=${page}`);
+
     return response.data;
   } catch (error) {
     console.error('Error fetching claims transactions:', error);

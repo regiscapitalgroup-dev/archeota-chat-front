@@ -35,10 +35,9 @@ const ClaimsPage = () => {
           <ClaimTransactionsTable
             data={transactions}
             loading={loadingTrans}
-            page={page}
             setPage={setPage}
             totalCount={count}
-            pageSize={pageSize}
+            page={page} 
           />
         )}
         {isGridActions && <ClaimsActionsGrid data={actions || []} loading={loadingAct} />}

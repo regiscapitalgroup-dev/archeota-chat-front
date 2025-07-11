@@ -6,6 +6,7 @@ import {CategoryAssets, Asset} from '../models/AssetsGroupModel'
 import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
 import {KTSVG} from '../../../../_metronic/helpers'
 import LoadingSpinner from '../../../components/LoadingSpinner'
+import { useHistory } from 'react-router-dom'
 
 interface Props {
   data: CategoryAssets[]
@@ -35,6 +36,7 @@ const AssetExpandComponent: React.FC<
     loading: boolean
   }
 > = ({data, onDetail, onEdit, loading}) => (
+  
   <div style={{padding: 16}}>
     <h6 style={{marginBottom: 8}}>
       Assets in <b>{data.category}</b>
@@ -92,26 +94,56 @@ interface Props {
 }
 
 const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading}) => {
+  const history = useHistory()
+
   if (loading) {
     return <LoadingSpinner message='Loading asset...' />
   }
 
+  const handleCreateNew = () => {
+    history.push('/assets/new')
+  }
+
   return (
     <>
-      <DataTable
-      title=''
-      columns={columns}
-      data={data}
-      pagination
-      expandableRows
-      expandableRowsComponent={(props) => (
-        <AssetExpandComponent {...props} onDetail={onDetail} onEdit={onEdit} loading={loading} />
-      )}
-      highlightOnHover
-      striped
+      <div className='card shadow-sm mb-10'>
+        <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center position-relative'>
+          <div>
+            <h3 className='card-title align-items-start flex-column'>
+              <span className='fw-bolder text-dark fs-3'>Assets</span>
+              <span className='text-muted mt-1 fs-7'>List of assets by category</span>
+            </h3>
+          </div>
+          <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
+            <button className='btn btn-sm btn-dark' onClick={handleCreateNew}>
+              <i className='bi bi-plus fs-5 me-2'></i>
+              New Asset
+            </button>
+          </div>
+        </div>
+
+        <div className='card-body py-3'>
+          <DataTable
+            title=''
+            columns={columns}
+            data={data}
+            pagination
+            expandableRows
+            expandableRowsComponent={(props) => (
+              <AssetExpandComponent
+                {...props}
+                onDetail={onDetail}
+                onEdit={onEdit}
+                loading={loading}
+              />
+            )}
+            highlightOnHover
+            striped
           />
+        </div>
+      </div>
     </>
   )
 }
-  
+
 export default CategoryAssetsTable

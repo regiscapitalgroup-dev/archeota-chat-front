@@ -1,71 +1,95 @@
-import React from 'react'
-import {ColumnDef} from '@tanstack/react-table'
+import React, {useMemo, useState} from 'react'
+import {TableColumn} from 'react-data-table-component'
 import {ClaimTransactionModel} from '../models/ClaimsTransactionsModel'
-import TableServerPaginated from '../../../components/TableServerPaginated'
 import {useHistory} from 'react-router-dom'
+import DataTableComponent from '../../../components/DataTableComponent'
+import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
+import {getISODate, toShortDateString} from '../../../helpers/FormatDate'
+import {ToolbarWithFilter} from './ToolbarWithFilter'
 
 type Props = {
   data: ClaimTransactionModel[]
   loading: boolean
-  page: number
   setPage: (page: number) => void
   totalCount: number
-  pageSize?: number 
+  page: number 
 }
 
-const ClaimTransactionsTable: React.FC<Props> = ({
-  data,
-  loading,
-  page,
-  setPage,
-  totalCount,
-  pageSize = 10,
-}) => {
+const ClaimTransactionsTable: React.FC<Props> = ({data, loading, setPage, totalCount, page}) => {
   const history = useHistory()
 
-  const columns: ColumnDef<ClaimTransactionModel, any>[] = [
-    {header: 'Account Name', accessorKey: 'accountName'},
-    {header: 'Account Type', accessorKey: 'accountType'},
-    {header: 'Description', accessorKey: 'description'},
-    {header: 'Symbol', accessorKey: 'symbol'},
+  const [filters, setFilters] = useState({accountName: '', tradeDate: ''})
+  const filteredItems = useMemo(
+    () =>
+      data.filter((item) => {
+        const accountMatch =
+          !filters.accountName ||
+          (item.accountName &&
+            item.accountName.toLowerCase().includes(filters.accountName.toLowerCase()))
+        const dateMatch =
+          !filters.tradeDate ||
+          (item.tradeDate &&
+            getISODate(item.tradeDate) === getISODate(filters.tradeDate))
+        return accountMatch && dateMatch
+      }),
+    [data, filters]
+  )
+
+  const columns: TableColumn<ClaimTransactionModel>[] = [
+    {name: 'Account Name', selector: (row) => row.accountName, sortable: true},
+    {name: 'Account Type', selector: (row) => row.accountType, sortable: true},
+    {name: 'Description', selector: (row) => row.description, sortable: true},
+    {name: 'Symbol', selector: (row) => row.symbol, sortable: true},
     {
-      header: 'Amount',
-      accessorKey: 'amount',
-      cell: (info) => `$${info.getValue()}`,
+      name: 'Trade Date',
+      selector: (row) => row.tradeDate,
+      cell: (row) => {
+        return <div>{toShortDateString(row.tradeDate)}</div>
+      },
+      sortable: true,
+    },
+    {
+      name: 'Amount',
+      selector: (row) => formatCurrencyUSD(Number(row.amount) ?? 0),
+      sortable: true,
+      right: true,
     },
   ]
+  const handleReset = () => setFilters({accountName: '', tradeDate: ''})
 
   return (
     <div className='card shadow-sm mb-10'>
-      <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center'>
-        <h3 className='card-title align-items-start flex-column'>
-          <span className='fw-bolder text-dark fs-3'>Claims Transactions</span>
-          <span className='text-muted mt-1 fs-7'>List of claims transactions</span>
-        </h3>
-        <div className='card-toolbar'>
+      <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center position-relative'>
+        <div>
+          <h3 className='card-title align-items-start flex-column'>
+            <span className='fw-bolder text-dark fs-3'>Claims Transactions</span>
+            <span className='text-muted mt-1 fs-7'>List of claims transactions</span>
+          </h3>
+        </div>
+        <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
+          <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} />
+
           <button
             className='btn btn-sm btn-dark'
-            onClick={() => {
-              history.push('/claims/upload-transactions')
-            }}
+            onClick={() => history.push('/claims/upload-transactions')}
           >
             Import file
           </button>
         </div>
       </div>
+
       <div className='card-body py-3'>
-        <div className='table-responsive'>
-          <TableServerPaginated
-            columns={columns}
-            data={data}
-            loading={loading}
-            message='Loading transactions...'
-            pageIndex={page - 1}
-            setPageIndex={(idx) => setPage(idx + 1)}
-            totalPages={Math.ceil(totalCount / pageSize)}
-            pageSize={pageSize}
-          />
-        </div>
+        <DataTableComponent
+          columns={columns}
+          data={filteredItems}
+          loading={loading}
+          pagination
+          paginationServer
+          totalRows={totalCount}
+          onChangePage={(page) => setPage(page)}
+          customTitle={null}
+          paginationDefaultPage={page}
+        />
       </div>
     </div>
   )
