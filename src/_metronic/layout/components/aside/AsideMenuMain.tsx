@@ -86,7 +86,12 @@ export function AsideMenuMain() {
         >
           {draft.attributes &&
             Object.entries(draft.attributes).map(([key, value]) => (
-              <AsideMenuItem key={key} to='/assets/new' title={key} hasBullet={true} />
+              <AsideMenuItem
+                key={key}
+                to='/assets/new'
+                title={`${key}: ${value}`}
+                hasBullet={true}
+              />
             ))}
         </AsideMenuItemWithSub>
       )}
