@@ -35,58 +35,90 @@ const AssetExpandComponent: React.FC<
     onEdit: (id: number) => void
     loading: boolean
   }
-> = ({data, onDetail, onEdit, loading}) => (
-  <div style={{padding: 16}}>
-    <h6 style={{marginBottom: 8}}>
-      Assets in <b>{data.category}</b>
-    </h6>
-    <DataTable
-      columns={[
-        {name: 'Name', selector: (row: Asset) => row.name},
-        {
-          name: 'Acquisition Value',
-          selector: (row: Asset) => formatCurrencyUSD(Number(row.acquisitionValue) || 0),
-        },
-        {
-          name: 'Estimated Value',
-          selector: (row: Asset) => formatCurrencyUSD(Number(row.estimatedValue) || 0),
-        },
-        {
-          name: 'Acctions',
-          cell: (row: Asset) => (
-            <div className='d-flex justify-content-start gap-2'>
-              {/* Botón Ver Detalle */}
-              <a
-                title='Detail'
-                type='button'
-                className='btn btn-icon  btn-active-color-dark btn-sm'
-                onClick={() => onDetail(row.id)}
-              >
-                <KTSVG path='/media/icons/duotune/general/gen004.svg' className='svg-icon-3' />
-              </a>
+> = ({data, onDetail, onEdit, loading}) => {
+  const totalAcquisition = data.assets.reduce(
+    (acc, item) => acc + (Number(item.acquisitionValue) || 0),
+    0
+  )
 
-              {/* Botón Editar */}
-              <a
-                title='Edit'
-                /*   type='button' */
-                className='btn btn-icon btn-active-color-dark btn-sm'
-                onClick={() => onEdit(row.id)}
-              >
-                <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-              </a>
-            </div>
-          ),
-        },
-      ]}
-      data={data.assets}
-      dense
-      noHeader
-      highlightOnHover
-      striped
-      pagination={false}
-    />
-  </div>
-)
+  const totalEstimated = data.assets.reduce(
+    (acc, item) => acc + (Number(item.estimatedValue) || 0),
+    0
+  )
+
+  return (
+    <>
+      <div style={{padding: 16}}>
+        <h6 style={{marginBottom: 8}}>
+          Assets in <b>{data.category}</b>
+        </h6>
+        <DataTable
+          columns={[
+            {name: 'Name', selector: (row: Asset) => row.name},
+
+            {
+              name: 'Acquisition Value',
+              selector: (row: Asset) => formatCurrencyUSD(Number(row.acquisitionValue) || 0),
+            },
+            {
+              name: 'Estimated Value',
+              selector: (row: Asset) => formatCurrencyUSD(Number(row.estimatedValue) || 0),
+            },
+            {
+              name: 'Acctions',
+              cell: (row: Asset) => (
+                <div className='d-flex justify-content-start gap-2'>
+                  <a
+                    title='Detail'
+                    type='button'
+                    className='btn btn-icon  btn-active-color-dark btn-sm'
+                    onClick={() => onDetail(row.id)}
+                  >
+                    <KTSVG path='/media/icons/duotune/general/gen004.svg' className='svg-icon-3' />
+                  </a>
+
+                  <a
+                    title='Edit'
+                    className='btn btn-icon btn-active-color-dark btn-sm'
+                    onClick={() => onEdit(row.id)}
+                  >
+                    <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
+                  </a>
+                </div>
+              ),
+            },
+          ]}
+          data={data.assets}
+          dense
+          noHeader
+          highlightOnHover
+          striped
+          pagination={false}
+        />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-center',
+            background: '#23272b',
+            color: '#fff',
+            padding: '12px 24px',
+            fontWeight: 700,
+            borderRadius: '0 0 8px 8px',
+          }}
+        >
+          <div style={{width: '30%'}}></div>
+          <div style={{width: '25%', textAlign: 'right'}}>
+            {totalAcquisition.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
+          </div>
+          <div style={{width: '25%', textAlign: 'right'}}>
+            {totalEstimated.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
+          </div>
+          <div style={{width: '10%'}}></div>
+        </div>
+      </div>
+    </>
+  )
+}
 
 interface Props {
   data: CategoryAssets[]
@@ -98,7 +130,7 @@ const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading})
   const handleCreateNew = () => {
     history.push('/assets/new')
   }
-
+ 
   return (
     <>
       <div className='card shadow-sm mb-10'>
