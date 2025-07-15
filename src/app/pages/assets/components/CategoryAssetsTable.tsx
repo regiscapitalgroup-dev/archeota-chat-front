@@ -66,6 +66,7 @@ const AssetExpandComponent: React.FC<
             },
             {
               name: 'Acctions',
+              width:'20%',
               cell: (row: Asset) => (
                 <div className='d-flex justify-content-start gap-2'>
                   <a
@@ -97,23 +98,24 @@ const AssetExpandComponent: React.FC<
         />
         <div
           style={{
+            width: '100%',
             display: 'flex',
-            justifyContent: 'flex-center',
             background: '#23272b',
             color: '#fff',
-            padding: '12px 24px',
             fontWeight: 700,
             borderRadius: '0 0 8px 8px',
+            marginTop: 0,
+            borderTop: '3px solid #23272b',
           }}
         >
-          <div style={{width: '30%'}}></div>
-          <div style={{width: '25%', textAlign: 'right'}}>
+          <div style={{width: '30%', padding: '12px 8px'}}></div>
+          <div style={{width: '25%', textAlign: 'right', padding: '12px 8px'}}>
             {totalAcquisition.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
           </div>
-          <div style={{width: '25%', textAlign: 'right'}}>
+          <div style={{width: '25%', textAlign: 'right', padding: '12px 8px'}}>
             {totalEstimated.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
           </div>
-          <div style={{width: '10%'}}></div>
+          <div style={{width: '10%', padding: '12px 8px'}}></div>
         </div>
       </div>
     </>
@@ -130,7 +132,7 @@ const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading})
   const handleCreateNew = () => {
     history.push('/assets/new')
   }
- 
+
   return (
     <>
       <div className='card shadow-sm mb-10'>
