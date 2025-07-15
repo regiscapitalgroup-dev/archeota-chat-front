@@ -130,7 +130,6 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
         attributes: mergedAttributes,
         prefilledFromDraft: true,
       }))
-      setDraft(null)
     }
   }, [isEdit, draft, setDraft, categories])
 

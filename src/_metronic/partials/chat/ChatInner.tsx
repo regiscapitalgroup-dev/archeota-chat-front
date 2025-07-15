@@ -32,6 +32,8 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
   const {forceReload, setOnNewChatRequested} = useChatHistory()
   const {setDraft} = useAssetDraft()
   const [additionalInfo, setAdditionalInfo] = useState<Array<any>>([])
+  const [extraQuestions, setExtraQuestions] = useState<Array<any>>([])
+
   const navigate = useHistory()
   const urlLengthNewChat = 3
   const handleNewChatRequest = useCallback(() => {
@@ -39,6 +41,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
     setMessage('')
     setSessionIdChat(null)
     setAdditionalInfo([])
+    setExtraQuestions([])
   }, [])
 
   useEffect(() => {
@@ -63,7 +66,10 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
               text: item.answerText,
               time: timestamp,
             }
-
+            setDraft({
+              category: item?.category,
+              attributes: item?.attributes,
+            })
             setMessages((prevMessages) => [...prevMessages, outMessage, inMessage])
           }
         }
@@ -121,9 +127,17 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
     try {
       const response = await sendMessageChat(msg, sessionIdChat || undefined)
 
-      const {chatSessionId, generalResponse, additionalQuestions, category, attributes} = response
+      const {
+        chatSessionId,
+        generalResponse,
+        additionalQuestions,
+        extraQuestions,
+        category,
+        attributes,
+      } = response
 
       setAdditionalInfo(additionalQuestions)
+      setExtraQuestions(extraQuestions)
       setDraft({
         category,
         attributes,
@@ -149,6 +163,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
       }
       setMessages((prevMessages) => [...prevMessages, errorMessage])
       setAdditionalInfo([])
+      setExtraQuestions([])
     } finally {
       setLoading(false)
     }
@@ -271,26 +286,98 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                 })}
                 {additionalInfo.length > 0 && (
                   <div className='mt-10'>
-                    <div className='card shadow-sm'>
-                      <div className='card-body'>
-                        <div className='d-flex flex-column gap-4'>
-                          {additionalInfo.map((info, idx) => (
-                            <div key={idx} className='d-flex align-items-start'>
-                              <div className='symbol symbol-20px me-2'>
-                                <span className='symbol-label bg-dark text-white fw-bold'>
-                                  {/*  {idx + 1} */}
-                                </span>
-                              </div>
-                              <div
-                                className='text-gray-800 fw-semibold fs-6 cursor-pointer text-hover-primary'
-                                onClick={() => handleSelectAdditionalQuestion(info?.question)}
-                              >
-                                {info?.question}
-                              </div>
+                    <div className='row g-6'>
+                      {/* Columna 1 */}
+                      <div
+                        className={
+                          extraQuestions && extraQuestions.length > 0 ? 'col-12 col-md-6' : 'col-12'
+                        }
+                      >
+                        <div className='card bg-dark-700 border-0 shadow-sm h-100'>
+                          <div className='card-body'>
+                            <div className='d-flex flex-column gap-4'>
+                              {additionalInfo.map((info, idx) => (
+                                <div key={idx} className='d-flex align-items-start'>
+                                  {/* Viñeta elegante y discreta */}
+                                  <div
+                                    className='d-flex align-items-center justify-content-center me-3'
+                                    style={{
+                                      width: 28,
+                                      height: 28,
+                                      minWidth: 28,
+                                      minHeight: 28,
+                                      borderRadius: '50%',
+                                      background: 'rgba(40,40,50,0.95)',
+                                      border: '1.5px solid #23272f',
+                                      boxShadow: '0 1px 2px rgba(0,0,0,0.10)',
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        color: '#d1d5db',
+                                        fontWeight: 700,
+                                        fontSize: 13,
+                                        letterSpacing: 0.2,
+                                      }}
+                                    >
+                                    </span>
+                                  </div>
+                                  <div
+                                    className='text-gray-600 fw-semibold fs-6 cursor-pointer text-hover-dark'
+                                    onClick={() => handleSelectAdditionalQuestion(info?.question)}
+                                  >
+                                    {info?.question}
+                                  </div>
+                                </div>
+                              ))}
                             </div>
-                          ))}
+                          </div>
                         </div>
                       </div>
+                      {/* Columna 2 */}
+                      {extraQuestions && extraQuestions.length > 0 && (
+                        <div className='col-12 col-md-6'>
+                          <div className='card bg-dark-700 border-0 shadow-sm h-100'>
+                            <div className='card-body'>
+                              <div className='d-flex flex-column gap-4'>
+                                {extraQuestions.map((info, idx) => (
+                                  <div key={idx} className='d-flex align-items-start'>
+                                    <div
+                                      className='d-flex align-items-center justify-content-center me-3'
+                                      style={{
+                                        width: 28,
+                                        height: 28,
+                                        minWidth: 28,
+                                        minHeight: 28,
+                                        borderRadius: '50%',
+                                        background: 'rgba(40,40,50,0.95)',
+                                        border: '1.5px solid #23272f',
+                                        boxShadow: '0 1px 2px rgba(0,0,0,0.10)',
+                                      }}
+                                    >
+                                      <span
+                                        style={{
+                                          color: '#d1d5db',
+                                          fontWeight: 700,
+                                          fontSize: 13,
+                                          letterSpacing: 0.2,
+                                        }}
+                                      >
+                                      </span>
+                                    </div>
+                                    <div
+                                      className='text-gray-600 fw-semibold fs-6 cursor-pointer text-hover-dark'
+                                      onClick={() => handleSelectAdditionalQuestion(info?.question)}
+                                    >
+                                      {info?.question}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -330,7 +417,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
               {loading ? 'Sending...' : 'Send'}
             </button>
           </div>
-        </div>        
+        </div>
       </div>
     </>
   )

@@ -62,8 +62,8 @@ const ClaimTransactionsTable: React.FC<Props> = ({data, loading, setPage, totalC
       <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center position-relative'>
         <div>
           <h3 className='card-title align-items-start flex-column'>
-            <span className='fw-bolder text-dark fs-3'>Claims Transactions</span>
-            <span className='text-muted mt-1 fs-7'>List of claims transactions</span>
+            <span className='fw-bolder text-dark fs-3'>Stock Transactions </span>
+            <span className='text-muted mt-1 fs-7'>List of movements</span>
           </h3>
         </div>
         <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
