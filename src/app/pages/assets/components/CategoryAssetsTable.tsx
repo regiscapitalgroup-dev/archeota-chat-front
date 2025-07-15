@@ -47,78 +47,83 @@ const AssetExpandComponent: React.FC<
   )
 
   return (
-    <>
-      <div style={{padding: 16}}>
-        <h6 style={{marginBottom: 8}}>
-          Assets in <b>{data.category}</b>
-        </h6>
-        <DataTable
-          columns={[
-            {name: 'Name', selector: (row: Asset) => row.name},
-
-            {
-              name: 'Acquisition Value',
-              selector: (row: Asset) => formatCurrencyUSD(Number(row.acquisitionValue) || 0),
-            },
-            {
-              name: 'Estimated Value',
-              selector: (row: Asset) => formatCurrencyUSD(Number(row.estimatedValue) || 0),
-            },
-            {
-              name: 'Acctions',
-              width:'20%',
-              cell: (row: Asset) => (
-                <div className='d-flex justify-content-start gap-2'>
-                  <a
-                    title='Detail'
-                    type='button'
-                    className='btn btn-icon  btn-active-color-dark btn-sm'
-                    onClick={() => onDetail(row.id)}
-                  >
-                    <KTSVG path='/media/icons/duotune/general/gen004.svg' className='svg-icon-3' />
-                  </a>
-
-                  <a
-                    title='Edit'
-                    className='btn btn-icon btn-active-color-dark btn-sm'
-                    onClick={() => onEdit(row.id)}
-                  >
-                    <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                  </a>
-                </div>
-              ),
-            },
-          ]}
-          data={data.assets}
-          dense
-          noHeader
-          highlightOnHover
-          striped
-          pagination={false}
-        />
-        <div
-          style={{
-            width: '100%',
-            display: 'flex',
-            background: '#23272b',
-            color: '#fff',
-            fontWeight: 700,
-            borderRadius: '0 0 8px 8px',
-            marginTop: 0,
-            borderTop: '3px solid #23272b',
-          }}
-        >
-          <div style={{width: '30%', padding: '12px 8px'}}></div>
-          <div style={{width: '25%', textAlign: 'right', padding: '12px 8px'}}>
-            {totalAcquisition.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
-          </div>
-          <div style={{width: '25%', textAlign: 'right', padding: '12px 8px'}}>
-            {totalEstimated.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
-          </div>
-          <div style={{width: '10%', padding: '12px 8px'}}></div>
+    <div style={{padding: 16, background: "#f8f9fa", borderRadius: "0 0 12px 12px"}}>
+      <h6 style={{marginBottom: 12, fontWeight: 600, color: "#212529"}}>
+        Assets in <b>{data.category}</b>
+      </h6>
+      <DataTable
+        columns={[
+          {name: 'Name', selector: (row: Asset) => row.name, width: '30%'},
+          {
+            name: 'Acquisition Value',
+            selector: (row: Asset) => formatCurrencyUSD(Number(row.acquisitionValue) || 0),
+            width: '25%',
+            right: true,
+          },
+          {
+            name: 'Estimated Value',
+            selector: (row: Asset) => formatCurrencyUSD(Number(row.estimatedValue) || 0),
+            width: '25%',
+            right: true,
+          },
+          {
+            name: 'Actions',
+            width:'20%',
+            cell: (row: Asset) => (
+              <div className='d-flex justify-content-start gap-2'>
+                <a
+                  title='Detail'
+                  type='button'
+                  className='btn btn-icon  btn-active-color-dark btn-sm'
+                  onClick={() => onDetail(row.id)}
+                >
+                  <KTSVG path='/media/icons/duotune/general/gen004.svg' className='svg-icon-3' />
+                </a>
+                <a
+                  title='Edit'
+                  className='btn btn-icon btn-active-color-dark btn-sm'
+                  onClick={() => onEdit(row.id)}
+                >
+                  <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
+                </a>
+              </div>
+            ),
+          },
+        ]}
+        data={data.assets}
+        dense
+        noHeader
+        highlightOnHover
+        striped
+        pagination={false}
+      />
+      {/* Footer de totales */}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          background: '#222e3c',    // Fondo oscuro y pro
+          color: '#fff',
+          fontWeight: 700,
+          borderRadius: '0 0 8px 8px',
+          borderTop: '3px solid #47525e',
+          marginTop: -2,
+          fontSize: 16,
+          letterSpacing: 0.5,
+          alignItems: "center",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.10)"
+        }}
+      >
+        <div style={{width: '30%', padding: '12px 8px'}}>Total</div>
+        <div style={{width: '25%', padding: '12px 8px', textAlign: 'right'}}>
+          {totalAcquisition.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
         </div>
+        <div style={{width: '25%', padding: '12px 8px', textAlign: 'right'}}>
+          {totalEstimated.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
+        </div>
+        <div style={{width: '20%', padding: '12px 8px'}}></div>
       </div>
-    </>
+    </div>
   )
 }
 
