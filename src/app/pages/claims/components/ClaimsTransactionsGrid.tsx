@@ -12,13 +12,13 @@ type Props = {
   loading: boolean
   setPage: (page: number) => void
   totalCount: number
-  page: number 
+  page: number
 }
 
 const ClaimTransactionsTable: React.FC<Props> = ({data, loading, setPage, totalCount, page}) => {
   const history = useHistory()
 
-  const [filters, setFilters] = useState({accountName: '', tradeDate: ''})
+  const [filters, setFilters] = useState({accountName: '', tradeDate: '', symbol: ''})
   const filteredItems = useMemo(
     () =>
       data.filter((item) => {
@@ -28,9 +28,12 @@ const ClaimTransactionsTable: React.FC<Props> = ({data, loading, setPage, totalC
             item.accountName.toLowerCase().includes(filters.accountName.toLowerCase()))
         const dateMatch =
           !filters.tradeDate ||
-          (item.tradeDate &&
-            getISODate(item.tradeDate) === getISODate(filters.tradeDate))
-        return accountMatch && dateMatch
+          (item.tradeDate && getISODate(item.tradeDate) === getISODate(filters.tradeDate))
+
+        const symbolMatch =
+          !filters.symbol ||
+          (item.symbol && item.symbol.toLowerCase().includes(filters.symbol.toLowerCase()))
+        return accountMatch && dateMatch && symbolMatch
       }),
     [data, filters]
   )
@@ -55,7 +58,7 @@ const ClaimTransactionsTable: React.FC<Props> = ({data, loading, setPage, totalC
       right: true,
     },
   ]
-  const handleReset = () => setFilters({accountName: '', tradeDate: ''})
+  const handleReset = () => setFilters({accountName: '', tradeDate: '', symbol: ''})
 
   return (
     <div className='card shadow-sm mb-10'>

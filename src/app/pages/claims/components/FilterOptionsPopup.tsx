@@ -3,6 +3,7 @@ import React, {useEffect, useRef} from 'react'
 type Filters = {
   accountName: string
   tradeDate: string
+  symbol: string
 }
 
 type Props = {
@@ -68,13 +69,23 @@ export const FilterOptionsPopup: React.FC<Props> = ({
             placeholder='Filter by Account Name'
           />
         </div>
-        <div className='mb-8'>
+        <div className='mb-3'>
           <label className='form-label'>Trade Date:</label>
           <input
             type='date'
             className='form-control'
             value={filters.tradeDate}
             onChange={(e) => setFilters({...filters, tradeDate: e.target.value})}
+          />
+        </div>
+        <div className='mb-8'>
+          <label className='form-label'>Symbol:</label>
+          <input
+            type='text'
+            className='form-control'
+            value={filters.symbol}
+            onChange={(e) => setFilters({...filters, symbol: e.target.value})}
+            placeholder='Filter by Symbol'
           />
         </div>
         <div className='d-flex justify-content-between'>

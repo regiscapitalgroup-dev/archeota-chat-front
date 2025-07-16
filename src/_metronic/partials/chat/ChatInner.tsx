@@ -191,7 +191,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
           </div>
         </div>
 
-        <div className='flex-grow-1'>
+        <div className='flex-grow-1 mb-10'>
           <div
             className={clsx('scroll-y px-5 me-n5 pe-5')}
             data-kt-element='messages'
@@ -294,41 +294,44 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                         }
                       >
                         <div className='card bg-dark-700 border-0 shadow-sm h-100'>
+                          <div className='card-header bg-dark ' style={{ minHeight:'45px'}}>
+                            <span className='card-title text-muted fs-6'>Our expert want to know…</span>
+                          </div>
                           <div className='card-body'>
                             <div className='d-flex flex-column gap-4'>
                               {additionalInfo.map((info, idx) => (
-                                <div key={idx} className='d-flex align-items-start'>
-                                  {/* Viñeta elegante y discreta */}
-                                  <div
-                                    className='d-flex align-items-center justify-content-center me-3'
+                                <div key={idx} className='d-flex align-items-center'>
+                                {/* Viñeta elegante y discreta con icono */}
+                                <div
+                                  className='d-flex align-items-center justify-content-center me-3'
+                                  style={{
+                                    width: 21,
+                                    height: 21,
+                                    borderRadius: '50%',
+                                    background: 'linear-gradient(135deg, #23272f 100%)',
+                                    boxShadow: '0 1px 6px 0 rgba(48,81,255,0.18)',
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  <i
+                                    className="bi bi-question"
                                     style={{
-                                      width: 28,
-                                      height: 28,
-                                      minWidth: 28,
-                                      minHeight: 28,
-                                      borderRadius: '50%',
-                                      background: 'rgba(40,40,50,0.95)',
-                                      border: '1.5px solid #23272f',
-                                      boxShadow: '0 1px 2px rgba(0,0,0,0.10)',
+                                      color: '#fff',
+                                      fontSize: 14,
+                                      lineHeight: 1,
+                                      display: 'block',
+                                      filter: 'drop-shadow(0 0 2pxrgba(6, 6, 8, 0.27))',
                                     }}
-                                  >
-                                    <span
-                                      style={{
-                                        color: '#d1d5db',
-                                        fontWeight: 700,
-                                        fontSize: 13,
-                                        letterSpacing: 0.2,
-                                      }}
-                                    >
-                                    </span>
-                                  </div>
-                                  <div
-                                    className='text-gray-600 fw-semibold fs-6 cursor-pointer text-hover-dark'
-                                    onClick={() => handleSelectAdditionalQuestion(info?.question)}
-                                  >
-                                    {info?.question}
-                                  </div>
+                                  />
                                 </div>
+                                <div
+                                  className='text-gray-600 fw-semibold fs-7 cursor-pointer text-hover-dark'
+                                  onClick={() => handleSelectAdditionalQuestion(info?.question)}
+                                >
+                                  {info?.question}
+                                </div>
+                              </div>
+                              
                               ))}
                             </div>
                           </div>
@@ -338,36 +341,40 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                       {extraQuestions && extraQuestions.length > 0 && (
                         <div className='col-12 col-md-6'>
                           <div className='card bg-dark-700 border-0 shadow-sm h-100'>
+                            <div className='card-header bg-dark' style={{ minHeight:'45px'}}>
+                              <span className='card-title text-muted fs-6'>
+                                Would you like to know …
+                              </span>
+                            </div>
                             <div className='card-body'>
                               <div className='d-flex flex-column gap-4'>
                                 {extraQuestions.map((info, idx) => (
-                                  <div key={idx} className='d-flex align-items-start'>
+                                  <div key={idx} className='d-flex align-items-center'>
                                     <div
-                                      className='d-flex align-items-center justify-content-center me-3'
-                                      style={{
-                                        width: 28,
-                                        height: 28,
-                                        minWidth: 28,
-                                        minHeight: 28,
-                                        borderRadius: '50%',
-                                        background: 'rgba(40,40,50,0.95)',
-                                        border: '1.5px solid #23272f',
-                                        boxShadow: '0 1px 2px rgba(0,0,0,0.10)',
-                                      }}
-                                    >
-                                      <span
-                                        style={{
-                                          color: '#d1d5db',
-                                          fontWeight: 700,
-                                          fontSize: 13,
-                                          letterSpacing: 0.2,
-                                        }}
-                                      >
-                                      </span>
-                                    </div>
+                                  className='d-flex align-items-center justify-content-center me-3'
+                                  style={{
+                                    width: 21,
+                                    height: 21,
+                                    borderRadius: '50%',
+                                    background: 'linear-gradient(135deg, #23272f 100%)',
+                                    boxShadow: '0 1px 6px 0 rgba(48,81,255,0.18)',
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  <i
+                                    className="bi bi-question"
+                                    style={{
+                                      color: '#fff',
+                                      fontSize: 14,
+                                      lineHeight: 1,
+                                      display: 'block',
+                                      filter: 'drop-shadow(0 0 2pxrgba(6, 6, 8, 0.27))',
+                                    }}
+                                  />
+                                </div>
                                     <div
-                                      className='text-gray-600 fw-semibold fs-6 cursor-pointer text-hover-dark'
-                                      onClick={() => handleSelectAdditionalQuestion(info?.question)}
+                                      className='text-gray-600 fw-semibold fs-7 text-hover-dark'
+                                      /* onClick={() => handleSelectAdditionalQuestion(info?.question)} */
                                     >
                                       {info?.question}
                                     </div>

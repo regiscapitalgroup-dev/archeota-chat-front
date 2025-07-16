@@ -3,8 +3,8 @@ import { KTSVG } from '../../../../_metronic/helpers'
 import { FilterOptionsPopup } from './FilterOptionsPopup'
 
 interface ToolbarWithFilterProps {
-  filters: { accountName: string; tradeDate: string }
-  setFilters: (filters: { accountName: string; tradeDate: string }) => void
+  filters: { accountName: string; tradeDate: string; symbol: string; }
+  setFilters: (filters: { accountName: string; tradeDate: string; symbol:string }) => void
   onReset: () => void
 }
 
