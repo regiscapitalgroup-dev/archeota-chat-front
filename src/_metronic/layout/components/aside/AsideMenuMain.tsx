@@ -44,13 +44,13 @@ export function AsideMenuMain() {
 
       <AsideMenuItem
         to='/claims/actions'
-        icon='/media/icons/duotune/communication/com012.svg'
+        icon='/media/icons/duotune/general/gen048.svg'
         title='Actions'
         fontIcon='bi-layers'
       />
       <AsideMenuItem
         to='/claims/transactions/'
-        icon='/media/icons/duotune/communication/com012.svg'
+        icon='/media/icons/duotune/general/gen022.svg'
         title='Transactions'
         fontIcon='bi-layers'
       />
