@@ -13,6 +13,7 @@ type Props = {
   hasBullet?: boolean
   onClick?: () => void
   children?: React.ReactNode
+  className?: string
 }
 
 const AsideMenuItem: React.FC<Props> = ({
@@ -23,6 +24,7 @@ const AsideMenuItem: React.FC<Props> = ({
   fontIcon,
   hasBullet = false,
   onClick,
+  className
 }) => {
   const {pathname} = useLocation()
   const isActive = checkIsActive(pathname, to)
@@ -54,7 +56,7 @@ const AsideMenuItem: React.FC<Props> = ({
   return (
     <div className='menu-item'>
       <Link
-        className={clsx('menu-link without-sub', {active: isActive})}
+        className={clsx('menu-link without-sub', {active: isActive}, className)}
         to={to}
         onClick={handleClick}
       >

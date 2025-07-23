@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {useHistory, useLocation, useParams} from 'react-router-dom'
 import AssetsForm from './components/AssetsForm'
-import {getAssetById, getAssets} from '../../services/assetsService'
+import {getAssetById} from '../../services/assetsService'
 import AssetsDetail from './components/AssetsDetail'
 import CategoryAssetsTable from './components/CategoryAssetsTable'
 import {RouteParamsModel} from '../shared/models/RouteParamsModel'

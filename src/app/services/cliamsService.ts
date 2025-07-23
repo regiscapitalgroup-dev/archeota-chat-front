@@ -9,9 +9,9 @@ export const createClaims = async (
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await apiClient.post('transactions/import-data/', formData, {
+    const response = await apiClient.post('assets/transactions/import-data/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
-      onUploadProgress, 
+      onUploadProgress,
     });
     return response.data;
   } catch (error) {
@@ -30,13 +30,24 @@ export const getActionsClaims = async () => {
   }
 };
 
-export const getTransactionsClaims = async (page:number) => {
+export const getTransactionsClaims = async (page: number) => {
   try {
     const response = await apiClient.get(`assets/claim-transactions/?page=${page}`);
 
     return response.data;
   } catch (error) {
     console.error('Error fetching claims transactions:', error);
+    throw error;
+  }
+};
+
+export const getTransactionsLogs = async (guid: string) => {
+  try {
+    const response = await apiClient.get(`assets/import-logs/${guid}/`);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching logs transactions:', error);
     throw error;
   }
 };

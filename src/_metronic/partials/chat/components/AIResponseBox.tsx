@@ -5,7 +5,7 @@ interface AIResponseBoxProps {
   maxHeight?: number
 }
 
-const AIResponseBox = ({ text, maxHeight = 150 }: AIResponseBoxProps) => (
+const AIResponseBox = ({ text, maxHeight = 100 }: AIResponseBoxProps) => (
   <div
     className="card card-flush border-0 shadow-sm mb-7 bg-light-info"
     style={{

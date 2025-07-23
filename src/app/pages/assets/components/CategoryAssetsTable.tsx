@@ -7,6 +7,7 @@ import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
 import {KTSVG} from '../../../../_metronic/helpers'
 import LoadingSpinner from '../../../components/LoadingSpinner'
 import {useHistory} from 'react-router-dom'
+import CountUp from 'react-countup'
 
 interface Props {
   data: CategoryAssets[]
@@ -45,10 +46,9 @@ const AssetExpandComponent: React.FC<
     (acc, item) => acc + (Number(item.estimatedValue) || 0),
     0
   )
-
   return (
-    <div style={{padding: 16, background: "#f8f9fa", borderRadius: "0 0 12px 12px"}}>
-      <h6 style={{marginBottom: 12, fontWeight: 600, color: "#212529"}}>
+    <div style={{padding: 16, background: '#f8f9fa', borderRadius: '0 0 12px 12px'}}>
+      <h6 style={{marginBottom: 12, fontWeight: 600, color: '#212529'}}>
         Assets in <b>{data.category}</b>
       </h6>
       <DataTable
@@ -68,7 +68,7 @@ const AssetExpandComponent: React.FC<
           },
           {
             name: 'Actions',
-            width:'20%',
+            width: '20%',
             cell: (row: Asset) => (
               <div className='d-flex justify-content-start gap-2'>
                 <a
@@ -102,7 +102,7 @@ const AssetExpandComponent: React.FC<
         style={{
           width: '100%',
           display: 'flex',
-          background: '#222e3c',    // Fondo oscuro y pro
+          background: '#222e3c', // Fondo oscuro y pro
           color: '#fff',
           fontWeight: 700,
           borderRadius: '0 0 8px 8px',
@@ -110,8 +110,8 @@ const AssetExpandComponent: React.FC<
           marginTop: -2,
           fontSize: 16,
           letterSpacing: 0.5,
-          alignItems: "center",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.10)"
+          alignItems: 'center',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.10)',
         }}
       >
         <div style={{width: '30%', padding: '12px 8px'}}>Total</div>
@@ -138,6 +138,44 @@ const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading})
     history.push('/assets/new')
   }
 
+  const totalGlobalEstimated = React.useMemo(() => {
+    return data.reduce((sum, category) => {
+      const subtotal = category.assets.reduce(
+        (acc, asset) => acc + (Number(asset.estimatedValue) || 0),
+        0
+      )
+      return sum + subtotal
+    }, 0)
+  }, [data])
+
+  const customHeader = (
+    <div style={{display: 'flex', width: '100%', marginBottom: 8}}>
+      <div style={{width: '30%'}} />
+      <div
+        style={{
+          width: '25%',
+          textAlign: 'right',
+          fontWeight: 700,
+          fontSize: 18,
+          color: '#222e3c',
+          letterSpacing: '0.5px',
+        }}
+      >
+        Estimated Value :{' '}
+        <CountUp
+          end={totalGlobalEstimated}
+          duration={1.5}
+          separator=','
+          decimals={2}
+          decimal='.'
+          prefix='$'
+        />
+      </div>
+      <div style={{width: '25%'}} />
+      {/* <div style={{ width: '20%' }} /> */}
+    </div>
+  )
+
   return (
     <>
       <div className='card shadow-sm mb-10'>
@@ -157,6 +195,33 @@ const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading})
         </div>
 
         <div className='card-body py-3'>
+          <div className='d-flex justify-content-center align-items-center mb-6 w-100'>
+            <span className='fs-4 fw-semibold text-muted me-2' style={{whiteSpace: 'nowrap'}}>
+              Total Estimated Value:
+            </span>
+            <span
+              className='fs-2 fw-bolder text-dark'
+              style={{
+                lineHeight: 1,
+                minWidth: '170px',
+                display: 'inline-block',
+                textAlign: 'left',
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              $
+              <CountUp
+                end={totalGlobalEstimated}
+                duration={1.5}
+                decimals={2}
+                separator=','
+                decimal='.'
+              >
+                {({countUpRef}) => <span ref={countUpRef} />}
+              </CountUp>
+            </span>
+          </div>
+
           <DataTable
             title=''
             columns={columns}

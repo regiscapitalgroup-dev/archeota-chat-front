@@ -124,11 +124,14 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
         setCollapse(true)
       }
 
+      console.log(draft)
+
       setFormValues((prev) => ({
         ...prev,
         category: Number(categoryId),
         attributes: mergedAttributes,
         prefilledFromDraft: true,
+        syntasisSummary: draft?.summary
       }))
     }
   }, [isEdit, draft, setDraft, categories])

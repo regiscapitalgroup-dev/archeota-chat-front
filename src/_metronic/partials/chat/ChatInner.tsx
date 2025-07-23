@@ -55,6 +55,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
         const response = await getChatDetail(currentSessionId)
 
         if (response.length) {
+          console.log(response)
           for (const item of response) {
             const timestamp = await waitAndFormatTimestamp(item.timestamp)
             const outMessage: MessageModel = {
@@ -72,6 +73,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
             setDraft({
               category: item?.category,
               attributes: item?.attributes,
+              summary: item?.summary,
             })
             setMessages((prevMessages) => [...prevMessages, outMessage, inMessage])
           }
@@ -145,6 +147,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
       setDraft({
         category,
         attributes,
+        summary,
       })
       setSummary(summary)
       const serviceResponse: MessageModel = {
@@ -275,7 +278,10 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                         </div>
 
                         {message.type === 'in' ? (
-                          <AIResponseBox text={message.text} />
+                          <>
+                            {summary && <ChatSummaryBox text={summary} />}
+                            <AIResponseBox text={message.text} />
+                          </>
                         ) : (
                           <div
                             className={clsx(
@@ -292,7 +298,6 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                     </div>
                   )
                 })}
-                {summary && <ChatSummaryBox text={summary} />}
 
                 {additionalInfo.length > 0 && (
                   <div className='mt-10'>
@@ -306,7 +311,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                         <div className='card bg-dark-700 border-0 shadow-sm h-100'>
                           <div className='card-header bg-dark ' style={{minHeight: '45px'}}>
                             <span className='card-title text-muted fs-6'>
-                              Our expert want to know…
+                              Would you like to know …
                             </span>
                           </div>
                           <div className='card-body'>
@@ -354,7 +359,7 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
                           <div className='card bg-dark-700 border-0 shadow-sm h-100'>
                             <div className='card-header bg-dark' style={{minHeight: '45px'}}>
                               <span className='card-title text-muted fs-6'>
-                                Would you like to know …
+                                Our expert want to know…
                               </span>
                             </div>
                             <div className='card-body'>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AssetsCategoriesModel } from '../../pages/assets/models/AssetsCategories';
-import { getAssetByCategories, getAssetCategories } from '../../services/assetsService';
+import { getAssetByCategories } from '../../services/assetsService';
 
 
 export const useAssetsByCategories = ( reload: number) => {

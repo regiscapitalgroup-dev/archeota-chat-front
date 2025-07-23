@@ -4,7 +4,7 @@ import {createClaims} from '../../../services/cliamsService'
 import {useHistory} from 'react-router-dom'
 
 type Props = {
-  onUploadSuccess?: (value: number) => void
+  onUploadSuccess?: (value: number, guid: string) => void
 }
 
 const dropzoneStyle: React.CSSProperties = {
@@ -43,10 +43,11 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess}) => {
         if (percent === 100) setProcessing(true)
       }
     })
-      .then(() => {
+      .then((data) => {
+        const {importJobId} = data
         setUploadSuccess(true)
         setTimeout(() => {
-          onUploadSuccess?.(Math.random() * 100)
+          onUploadSuccess?.(Math.random() * 100, importJobId)
           navigate.push('/claims/transactions')
         }, 1200)
       })

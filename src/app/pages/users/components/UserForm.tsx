@@ -47,6 +47,7 @@ const UserForm = ({
     roleId: 0,
     corporationId: 0,
     userIds: [],
+    signature: '',
     ...initialData,
   }
 

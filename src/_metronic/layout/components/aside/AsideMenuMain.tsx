@@ -77,23 +77,29 @@ export function AsideMenuMain() {
       <div className='separator my-5'></div>
 
       {draft && draft.category && (
-        <AsideMenuItemWithSub
-          to='/assets/new'
-          title={`${draft.category.name || draft.category}`}
-          fontIcon='bi-app-indicator'
-          icon='/media/icons/duotune/art/art002.svg'
-          forceOpen={true}
-        >
-          {draft.attributes &&
-            Object.entries(draft.attributes).map(([key, value]) => (
-              <AsideMenuItem
-                key={key}
-                to='/assets/new'
-                title={`${key}: ${value}`}
-                hasBullet={true}
-              />
-            ))}
-        </AsideMenuItemWithSub>
+        <>
+          <AsideMenuItemWithSub
+            to='/assets/new'
+            title={`${draft.category.name || draft.category}`}
+            fontIcon='bi-app-indicator'
+            icon='/media/icons/duotune/art/art002.svg'
+            forceOpen={true}
+          >
+            <div className='mb-5'>
+            {draft.attributes &&
+              Object.entries(draft.attributes).map(([key, value]) => (
+                <AsideMenuItem
+                  key={key}
+                  to='/assets/new'
+                  title={`${key}: ${value}`}
+                  hasBullet={true}
+                />
+              ))}
+            </div>
+            
+            <AsideMenuItem to='/assets/new' title='New asset'  className='badge badge-white' />
+          </AsideMenuItemWithSub>
+        </>
       )}
 
       <div className='separator my-15'>

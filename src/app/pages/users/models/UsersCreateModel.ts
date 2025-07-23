@@ -7,4 +7,5 @@ export interface UserCreateModel {
     roleId: number,
     corporationId: number
     userIds?: string[]
+    signature?: string
 }
