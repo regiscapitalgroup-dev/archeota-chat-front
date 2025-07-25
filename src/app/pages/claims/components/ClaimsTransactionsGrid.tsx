@@ -70,7 +70,9 @@ const ClaimTransactionsTable: React.FC<Props> = ({data, loading, setPage, totalC
           </h3>
         </div>
         <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
-          <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} />
+          {data.length > 0 && (
+            <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} />
+          )}
 
           <button
             className='btn btn-sm btn-dark'
