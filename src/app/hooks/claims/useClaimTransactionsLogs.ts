@@ -1,16 +1,10 @@
 import { useState, useEffect } from 'react'
 import { getTransactionsLogs } from '../../services/cliamsService'
-import { ClaimTransactionModel } from '../../pages/claims/models/ClaimsTransactionsModel'
+import { ImportJobLog } from '../../pages/claims/models/ClaimsTransactionsErrorLogModel'
 
-type ApiResponse = {
-    count: number
-    next: string | null
-    previous: string | null
-    results: ClaimTransactionModel[]
-}
 
 export const useTransactionsLogs = (guid: string) => {
-    const [logs, setLogs] = useState<any[]>([])
+    const [logs, setLogs] = useState<ImportJobLog[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<Error | null>(null)
 
@@ -20,9 +14,9 @@ export const useTransactionsLogs = (guid: string) => {
         const fetch = async () => {
             try {
                 setLoading(true)
-                const data: ApiResponse = await getTransactionsLogs(guid)
+                const data: ImportJobLog[] = await getTransactionsLogs(guid)
                 if (isMounted) {
-                    setLogs(data.results)
+                    setLogs(data)
                 }
             } catch (err) {
                 if (isMounted) setError(err as Error)
@@ -30,7 +24,11 @@ export const useTransactionsLogs = (guid: string) => {
                 if (isMounted) setLoading(false)
             }
         }
-        fetch()
+
+        if (guid) {
+            fetch()
+        }
+
         return () => {
             isMounted = false
         }

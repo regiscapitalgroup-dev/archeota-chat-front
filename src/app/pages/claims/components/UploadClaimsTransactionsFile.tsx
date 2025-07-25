@@ -1,10 +1,11 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {useDropzone} from 'react-dropzone'
 import {createClaims} from '../../../services/cliamsService'
-import {useHistory} from 'react-router-dom'
+import {useTransactionsLogs} from '../../../hooks/claims/useClaimTransactionsLogs'
+import ErrorLogsTimeline from './ClaimsTransactionsErrorLogsTimeline'
 
 type Props = {
-  onUploadSuccess?: (value: number, guid: string) => void
+  onUploadSuccess?: (value: number) => void
 }
 
 const dropzoneStyle: React.CSSProperties = {
@@ -24,7 +25,8 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess}) => {
   const [processing, setProcessing] = useState<boolean>(false)
   const [uploadSuccess, setUploadSuccess] = useState<boolean | null>(null)
   const [fileName, setFileName] = useState<string>('')
-  const navigate = useHistory()
+  const [guidUpload, setGuidUpload] = useState<string>('')
+  const {logs} = useTransactionsLogs(guidUpload)
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (!acceptedFiles.length) return
@@ -44,12 +46,15 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess}) => {
       }
     })
       .then((data) => {
-        const {importJobId} = data
-        setUploadSuccess(true)
-        setTimeout(() => {
-          onUploadSuccess?.(Math.random() * 100, importJobId)
-          navigate.push('/claims/transactions')
-        }, 1200)
+        const {importJobId, successfulImports} = data
+
+        if (successfulImports) {
+          setUploadSuccess(true)
+          onUploadSuccess?.(Math.random() * 100)
+        } else {
+          setUploadSuccess(false)
+          setGuidUpload(importJobId)
+        }
       })
       .catch(() => setUploadSuccess(false))
       .finally(() => {
@@ -69,7 +74,7 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess}) => {
   })
 
   return (
-    <div className='card card-flush py-5 px-5' style={{maxWidth: 500, margin: '0 auto'}}>
+    <div className='card card-flush py-5 px-5'>
       <div
         {...getRootProps()}
         style={{
@@ -114,12 +119,16 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess}) => {
         </div>
       )}
 
-      {uploadSuccess === true && (
-        <div className='alert alert-success py-2'>File uploaded successfully!</div>
+      {uploadSuccess && <div className='alert alert-success py-2'>File uploaded successfully!</div>}
+
+      {uploadSuccess === false && !uploading && (
+        <div className='alert alert-danger py-2'>Error uploading file.</div>
       )}
 
-      {uploadSuccess === false && (
-        <div className='alert alert-danger py-2'>Error uploading file.</div>
+      {logs && logs.length > 0 && uploadSuccess === false && (
+        <div className='mt-5'>
+          <ErrorLogsTimeline logs={logs} />
+        </div>
       )}
     </div>
   )

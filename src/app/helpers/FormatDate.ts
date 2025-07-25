@@ -42,3 +42,18 @@ export const getISODate = (dateStr: string): string => {
     if (isNaN(d.getTime())) return ''
     return d.toISOString().slice(0, 10)
 }
+
+
+export const formatLogDateTime = (dateStr: string, locale = 'en-GB') => {
+    const date = new Date(dateStr.replace(' ', 'T'))
+    if (isNaN(date.getTime())) return ''
+    return `${date.toLocaleDateString(locale, {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+    })}, ${date.toLocaleTimeString(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+    })}`
+  }
+  

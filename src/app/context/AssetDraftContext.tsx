@@ -3,7 +3,9 @@ import React, { createContext, useContext, useState } from 'react'
 export interface AssetDraftData {
   category?: any,
   attributes?: any
-  summary?: string
+  summary?: string,
+  lastQuestion?:string,
+  lastAnswer?:string
 }
 
 const AssetDraftContext = createContext<{

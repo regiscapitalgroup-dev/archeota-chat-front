@@ -55,7 +55,6 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
         const response = await getChatDetail(currentSessionId)
 
         if (response.length) {
-          console.log(response)
           for (const item of response) {
             const timestamp = await waitAndFormatTimestamp(item.timestamp)
             const outMessage: MessageModel = {
@@ -74,6 +73,8 @@ const ChatInner: FC<Props> = ({isDrawer = false}) => {
               category: item?.category,
               attributes: item?.attributes,
               summary: item?.summary,
+              lastAnswer: item?.lastAnswer,
+              lastQuestion: item?.lastQuestion
             })
             setMessages((prevMessages) => [...prevMessages, outMessage, inMessage])
           }

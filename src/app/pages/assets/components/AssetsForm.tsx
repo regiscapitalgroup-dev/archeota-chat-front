@@ -123,15 +123,26 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
         })
         setCollapse(true)
       }
+      const fullConversation= [];
 
-      console.log(draft)
+      if (draft?.lastQuestion) {
+        fullConversation.push(`Question:\n${draft.lastQuestion}`);
+      }
+      
+      if (draft?.lastAnswer) {
+        fullConversation.push(`Answer:\n${draft.lastAnswer}`);
+      }
+      
+      const _fullConversation = fullConversation.join('\n\n');
 
       setFormValues((prev) => ({
         ...prev,
         category: Number(categoryId),
         attributes: mergedAttributes,
         prefilledFromDraft: true,
-        syntasisSummary: draft?.summary
+        syntasisSummary: draft?.summary,
+        fullConversationHistory: _fullConversation
+        
       }))
     }
   }, [isEdit, draft, setDraft, categories])
