@@ -1,10 +1,9 @@
 import Select from 'react-select'
 import {useField, useFormikContext} from 'formik'
 import {UserRolesModel} from '../models/UserRolesModel'
-import { useEffect } from 'react'
 
 export const RolesAutocompleteField = ({
-  name = 'roleId',
+  name = 'role',
   isEdit = false,
   roles = [] as UserRolesModel[],
   loading = false,
@@ -14,8 +13,8 @@ export const RolesAutocompleteField = ({
   const [field, meta] = useField(name)
 
   const options = roles?.map((rol) => ({
-    value: rol.id,
-    label: rol.description,
+    value: rol.code,
+    label: rol.code,
   }))
 
   const selectedOption = options?.find((opt) => opt.value === field.value) || null

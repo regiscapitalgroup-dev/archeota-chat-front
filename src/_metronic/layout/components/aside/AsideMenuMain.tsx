@@ -29,12 +29,12 @@ export function AsideMenuMain() {
 
   return (
     <>
-      {/* <AsideMenuItem
+      <AsideMenuItem
         to='/users'
         icon='/media/icons/duotune/general/gen049.svg'
         title='Users'
         fontIcon='bi-app-indicator'
-      /> */}
+      />
 
       <div className='menu-item'>
         <div className='menu-content pt-8 pb-2'>

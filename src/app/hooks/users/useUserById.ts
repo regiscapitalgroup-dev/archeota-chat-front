@@ -14,7 +14,11 @@ export const useUserById = (userId: number) => {
                 setLoading(true);
                 const data = await getUserById(userId);
                 if (isMounted) {
-                    setUser(data);
+                    setUser({
+                        ...data,
+                        first_name: data?.firstName,
+                        last_name: data?.lastName
+                    });
                 }
             } catch (err) {
                 if (isMounted) {

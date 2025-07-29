@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {  getUsers } from '../../services/usersService';
 
-export const useUsers = () => {
+export const useUsers = (reload: number) => {
     const [users, setUsers] = useState<any | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -30,7 +30,7 @@ export const useUsers = () => {
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [reload]);
 
     return { users, loading, error };
 };

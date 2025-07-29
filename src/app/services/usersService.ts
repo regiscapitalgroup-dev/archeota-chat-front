@@ -5,7 +5,7 @@ import { UserCreateModel } from "../pages/users/models/UsersCreateModel";
 export const createUser = async (body: UserCreateModel) => {
     try {
 
-        const response = await apiClient.post('users/', body);
+        const response = await apiClient.post('auth/users/', body);
         return response.data;
     } catch (error) {
         console.error('Error the create user:', error);
@@ -15,7 +15,7 @@ export const createUser = async (body: UserCreateModel) => {
 
 export const getUserById = async (id: number) => {
     try {
-        const response = await apiClient.get(`users/${id}/`);
+        const response = await apiClient.get(`auth/users/${id}/`);
         return response.data;
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -26,7 +26,7 @@ export const getUserById = async (id: number) => {
 
 export const updateUser = async (body: UserCreateModel) => {
     try {
-        const response = await apiClient.put(`users/${body.id}/`, body);
+        const response = await apiClient.put(`auth/users/${body.id}/`, body);
         return response.data;
     } catch (error) {
         console.error('Error updating user:', error);
@@ -36,7 +36,7 @@ export const updateUser = async (body: UserCreateModel) => {
 
 export const getUsers = async () => {
     try {
-        const response = await apiClient.get('users/');
+        const response = await apiClient.get('auth/users/');
         return response.data;
     } catch (error) {
         console.error('Error fetching users:', error);

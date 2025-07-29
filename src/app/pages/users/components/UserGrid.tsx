@@ -2,14 +2,14 @@ import React from 'react'
 import {TableColumn} from 'react-data-table-component'
 import DataTableComponent from '../../../components/DataTableComponent'
 import {KTSVG} from '../../../../_metronic/helpers'
-import { useHistory } from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 export type User = {
   id: number
-  name: string
+  firstName: string
+  lastName: string
   email: string
   phoneNumber?: string
-  nationalId: string
   role: string
 }
 
@@ -32,7 +32,10 @@ const getColumns = (
 ): TableColumn<User>[] => [
   {
     name: 'Name',
-    selector: (row) => row.name,
+    selector: (row) => row.firstName,
+    cell: (row) => {
+      return <div>{`${row.firstName} ${row.lastName}`}</div>
+    },
     sortable: true,
   },
   {
@@ -40,16 +43,7 @@ const getColumns = (
     selector: (row) => row.email,
     sortable: true,
   },
-  {
-    name: 'Phone',
-    selector: (row) => row.phoneNumber || '',
-    sortable: true,
-  },
-  {
-    name: 'Nationality ID',
-    selector: (row) => row.nationalId,
-    sortable: true,
-  },
+
   {
     name: 'Role',
     selector: (row) => roleLabels[row.role] || row.role,
@@ -59,14 +53,14 @@ const getColumns = (
     name: 'Actions',
     cell: (row) => (
       <div className='d-flex justify-content-start gap-2'>
-        <a
+        {/* <a
           title='Detail'
           type='button'
           className='btn btn-icon  btn-active-color-dark btn-sm'
           onClick={() => onDetail(row.id)}
         >
           <KTSVG path='/media/icons/duotune/general/gen004.svg' className='svg-icon-3' />
-        </a>
+        </a> */}
         <a
           title='Edit'
           className='btn btn-icon btn-active-color-dark btn-sm'
@@ -80,7 +74,7 @@ const getColumns = (
 ]
 
 const UsersGrid: React.FC<UsersGridProps> = ({users, onEdit, onDetail, loading = false}) => {
-  const history = useHistory();
+  const history = useHistory()
   const handleCreateNew = () => {
     history.push('/users/new')
   }

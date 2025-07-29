@@ -8,6 +8,7 @@ import {UserCreateModel} from '../models/UsersCreateModel'
 import {createUser, updateUser} from '../../../services/usersService'
 import {RolesAutocompleteField} from './UsersRolesField'
 import {useUserRoles} from '../../../hooks/users/useUserRoles'
+import Swal from 'sweetalert2'
 
 interface UserFormProps {
   initialData?: Partial<UserCreateModel>
@@ -17,16 +18,17 @@ interface UserFormProps {
 }
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('Name is required'),
+  first_name: Yup.string().required('First name is required'),
+  last_name: Yup.string().required('Last name is required'),
   email: Yup.string().email('Invalid email').required('email is required'),
-  nationalId: Yup.number()
+  /*  nationalId: Yup.number()
     .typeError('Nationality id is required')
     .moreThan(0, 'Nationality id is required')
-    .required('Nationality id is required'),
+    .required('Nationality id is required'), */
 
-  roleId: Yup.number()
+  role: Yup.string()
     .typeError('Role is required')
-    .moreThan(0, 'Role is required')
+    /* .moreThan(0, 'Role is required') */
     .required('Role is required'),
 })
 
@@ -40,14 +42,11 @@ const UserForm = ({
   const navigate = useHistory()
   const {roles, loading: loadingRoles, error} = useUserRoles()
   const initialValues: UserCreateModel = {
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
-    phoneNumber: '',
-    nationalId: 0,
-    roleId: 0,
-    corporationId: 0,
-    userIds: [],
-    signature: '',
+    role: '',
+    password: '12345',
     ...initialData,
   }
 
@@ -56,10 +55,40 @@ const UserForm = ({
     try {
       if (isEdit) {
         await updateUser(values)
+          .then(() => {
+            onSuccess && onSuccess()
+          })
+          .catch((error) => {
+            const nonFieldErrors = error?.response?.data?.nonFieldErrors
+            Swal.fire({           
+              icon: 'error',
+              title: 'Oops...',
+              text: nonFieldErrors,
+              customClass: {
+                confirmButton: 'btn-dark',
+              },
+            })
+            console.log('nonFieldErrors', nonFieldErrors)
+          })
       } else {
         await createUser(values)
+          .then(() => {
+            onSuccess && onSuccess()
+          })
+          .catch((error) => {
+            const nonFieldErrors = error?.response?.data?.nonFieldErrors
+            Swal.fire({           
+              icon: 'error',
+              title: 'Oops...',
+              text: nonFieldErrors,
+              customClass: {
+                confirmButton: 'btn-dark',
+              },
+            })
+            console.log('nonFieldErrors', nonFieldErrors)
+            console.log('error', error)
+          })
       }
-      onSuccess && onSuccess()
     } catch (err) {
       console.error(err)
     } finally {
@@ -86,28 +115,27 @@ const UserForm = ({
               <div className='card-body'>
                 <div className='row'>
                   {/* Columna izquierda */}
-                  <div className='col-md-6'>
-                    <div className='form-group mb-3'>
-                      <label className='required'>Name</label>
-                      <Field name='name' className='form-control' />
-                      <div className='text-danger'>
-                        <ErrorMessage name='name' />
+                  <div className='col-md-12'>
+                    <div className='row'>
+                      <div className='col-md-6'>
+                        <div className='form-group mb-3'>
+                          <label className='required'>First Name</label>
+                          <Field name='first_name' className='form-control' />
+                          <div className='text-danger'>
+                            <ErrorMessage name='first_name' />
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-md-6'>
+                        <div className='form-group mb-3'>
+                          <label className='required'>Last Name</label>
+                          <Field name='last_name' className='form-control' />
+                          <div className='text-danger'>
+                            <ErrorMessage name='last_name' />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className='form-group mb-3'>
-                      <label>Phone Number</label>
-                      <Field name='phoneNumber' className='form-control' />
-                      <div className='text-danger'>
-                        <ErrorMessage name='phoneNumber' />
-                      </div>
-                    </div>
-                    <RolesAutocompleteField
-                      name='roleId'
-                      isEdit={isEdit}
-                      roles={roles}
-                      loading={loadingRoles}
-                      errorRol={error ? error.message : undefined}
-                    />
                   </div>
 
                   {/* Columna derecha */}
@@ -119,13 +147,23 @@ const UserForm = ({
                         <ErrorMessage name='email' />
                       </div>
                     </div>
-                    <div className='form-group mb-3'>
+                  </div>
+
+                  <div className='col-md-6'>
+                    <RolesAutocompleteField
+                      name='role'
+                      isEdit={isEdit}
+                      roles={roles}
+                      loading={loadingRoles}
+                      errorRol={error ? error.message : undefined}
+                    />
+                    {/* <div className='form-group mb-3'>
                       <label className='required'>Nationality Id</label>
                       <Field name='nationalId' className='form-control' />
                       <div className='text-danger'>
                         <ErrorMessage name='nationalId' />
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
