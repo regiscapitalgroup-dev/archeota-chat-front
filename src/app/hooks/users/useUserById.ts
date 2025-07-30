@@ -30,9 +30,10 @@ export const useUserById = (userId: number) => {
                 }
             }
         };
-
         if (userId) {
             fetch()
+        } else {
+            setUser(null)
         }
         return () => {
             isMounted = false;
