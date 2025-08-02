@@ -5,13 +5,17 @@ import {useLocation, useHistory} from 'react-router-dom'
 import {HistoryChatModel} from './models/HistoryChatModel'
 import {useAssetDraft} from '../../../../app/context/AssetDraftContext'
 import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
+import {shallowEqual, useSelector} from 'react-redux'
+import {RootState} from '../../../../setup/redux/RootReducer'
+import { canAccessModule } from '../../../../app/helpers/permissions'
+import { Modules } from '../../../../app/constants/modules'
 
 export function AsideMenuMain() {
   const {triggerNewChat, reloadFlag} = useChatHistory()
   const location = useLocation()
   const navigate = useHistory()
   const {draft, setDraft} = useAssetDraft()
-
+  const user = useSelector((state: RootState) => state.auth.user, shallowEqual)
   const {chats} = useAllHistoryChats(reloadFlag)
 
   const handleNewChat = () => {
@@ -29,12 +33,22 @@ export function AsideMenuMain() {
 
   return (
     <>
+     {canAccessModule(Modules.USERS, user?.role || '') && (
+      <>
+      <div className='menu-item'>
+        <div className='menu-content pt-8 pb-2'>
+          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>User Management</span>
+        </div>
+      </div>
       <AsideMenuItem
         to='/users'
         icon='/media/icons/duotune/general/gen049.svg'
         title='Users'
         fontIcon='bi-app-indicator'
       />
+      </>
+    )}
+      
 
       <div className='menu-item'>
         <div className='menu-content pt-8 pb-2'>
@@ -86,18 +100,18 @@ export function AsideMenuMain() {
             forceOpen={true}
           >
             <div className='mb-5'>
-            {draft.attributes &&
-              Object.entries(draft.attributes).map(([key, value]) => (
-                <AsideMenuItem
-                  key={key}
-                  to='/assets/new'
-                  title={`${key}: ${value}`}
-                  hasBullet={true}
-                />
-              ))}
+              {draft.attributes &&
+                Object.entries(draft.attributes).map(([key, value]) => (
+                  <AsideMenuItem
+                    key={key}
+                    to='/assets/new'
+                    title={`${key}: ${value}`}
+                    hasBullet={true}
+                  />
+                ))}
             </div>
-            
-            <AsideMenuItem to='/assets/new' title='New asset'  className='badge badge-white' />
+
+            <AsideMenuItem to='/assets/new' title='New asset' className='badge badge-white' />
           </AsideMenuItemWithSub>
         </>
       )}

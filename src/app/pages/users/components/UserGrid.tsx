@@ -3,6 +3,7 @@ import {TableColumn} from 'react-data-table-component'
 import DataTableComponent from '../../../components/DataTableComponent'
 import {KTSVG} from '../../../../_metronic/helpers'
 import {useHistory} from 'react-router-dom'
+import { getRoleDescriptionByCode } from '../../../helpers/role'
 
 export type User = {
   id: number
@@ -47,6 +48,15 @@ const getColumns = (
   {
     name: 'Role',
     selector: (row) => roleLabels[row.role] || row.role,
+    cell: (row) => {
+      return (
+        <span
+          className='badge badge-light-info fw-bolder text-uppercase fs-9 px-2 py-1  text-truncate'
+        >
+           {getRoleDescriptionByCode(row.role)}
+        </span>
+      )
+    },
     sortable: true,
   },
   {

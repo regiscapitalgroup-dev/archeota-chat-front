@@ -4,7 +4,7 @@ import {shallowEqual, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {UserModel} from '../../../../app/modules/auth/models/UserModel'
 import {RootState} from '../../../../setup'
-import { toAbsoluteUrl } from '../../../helpers'
+import {toAbsoluteUrl} from '../../../helpers'
 
 const HeaderUserMenu: FC = () => {
   const user: UserModel = useSelector<RootState>(({auth}) => auth.user, shallowEqual) as UserModel
@@ -14,17 +14,24 @@ const HeaderUserMenu: FC = () => {
       data-kt-menu='true'
     >
       <div className='menu-item px-3'>
-        <div className='menu-content d-flex align-items-center px-3'>
+        <div className='menu-content d-flex align-items-center px-3' style={{maxWidth: '100%'}}>
           <div className='symbol symbol-50px me-5'>
-            <img alt='Logo' src={toAbsoluteUrl(`/media/avatars/150-2.jpg`)} />
+            <img alt='Avatar' src={toAbsoluteUrl('/media/avatars/150-2.jpg')} />
           </div>
-
-          <div className='d-flex flex-column'>
+          <div className='d-flex flex-column' style={{maxWidth: '180px'}}>
             <div className='fw-bolder d-flex align-items-center fs-5'>
               {user.firstName} {user.lastName}
-              {/* <span className='badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2'>Pro</span> */}
+              <span title={user.roleDescription} className='badge badge-light-info fw-bolder text-uppercase fs-9 px-2 py-1 ms-2 text-truncate'>
+                {user.roleDescription}
+              </span>
             </div>
-            <a href='#' className='fw-bold text-muted text-hover-primary fs-7'>
+            
+            <a
+              href='#'
+              className='text-muted text-hover-primary fs-7 text-truncate d-block'
+              style={{maxWidth: '100%'}}
+              title={user.email}
+            >
               {user.email}
             </a>
           </div>

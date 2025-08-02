@@ -4,5 +4,7 @@ export interface UserModel {
   firstName: string
   lastName: string
   pk: number, 
-  pic?:string
+  pic?:string,
+  role?: string,
+  roleDescription?: string
 }

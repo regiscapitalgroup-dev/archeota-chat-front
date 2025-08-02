@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {Formik, Form, Field, ErrorMessage} from 'formik'
 import * as Yup from 'yup'
-// import { createUser, updateUser } from 'tu-servicio-usuarios'
 import LoadingSpinner from '../../../components/LoadingSpinner'
 import {useHistory} from 'react-router-dom'
 import {UserCreateModel} from '../models/UsersCreateModel'
@@ -21,14 +20,8 @@ const validationSchema = Yup.object({
   first_name: Yup.string().required('First name is required'),
   last_name: Yup.string().required('Last name is required'),
   email: Yup.string().email('Invalid email').required('email is required'),
-  /*  nationalId: Yup.number()
-    .typeError('Nationality id is required')
-    .moreThan(0, 'Nationality id is required')
-    .required('Nationality id is required'), */
-
   role: Yup.string()
     .typeError('Role is required')
-    /* .moreThan(0, 'Role is required') */
     .required('Role is required'),
 })
 
@@ -102,7 +95,7 @@ const UserForm = ({
         <h3 className='card-title'>{isEdit ? 'Edit User' : 'New User'}</h3>
       </div>
       {loadingInfo ? (
-        <LoadingSpinner message='Loading users...' />
+        <LoadingSpinner message='Loading data...' />
       ) : (
         <Formik
           enableReinitialize
@@ -138,7 +131,6 @@ const UserForm = ({
                     </div>
                   </div>
 
-                  {/* Columna derecha */}
                   <div className='col-md-6'>
                     <div className='form-group mb-3'>
                       <label className='required'>Email</label>
