@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useState} from 'react'
 import {useDropzone} from 'react-dropzone'
 import {createClaims} from '../../../services/cliamsService'
 import {useTransactionsLogs} from '../../../hooks/claims/useClaimTransactionsLogs'
@@ -6,6 +6,7 @@ import ErrorLogsTimeline from './ClaimsTransactionsErrorLogsTimeline'
 
 type Props = {
   onUploadSuccess?: (value: number) => void
+  user?: any
 }
 
 const dropzoneStyle: React.CSSProperties = {
@@ -19,7 +20,7 @@ const dropzoneStyle: React.CSSProperties = {
   transition: 'border .24s ease-in-out',
 }
 
-const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess}) => {
+const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) => {
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [uploading, setUploading] = useState<boolean>(false)
   const [processing, setProcessing] = useState<boolean>(false)
@@ -28,40 +29,42 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess}) => {
   const [guidUpload, setGuidUpload] = useState<string>('')
   const {logs} = useTransactionsLogs(guidUpload)
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (!acceptedFiles.length) return
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (!acceptedFiles.length) return
 
-    const file = acceptedFiles[0]
-    setFileName(file.name)
-    setUploadProgress(0)
-    setUploading(true)
-    setUploadSuccess(null)
-    setProcessing(false)
-
-    createClaims(file, (progressEvent) => {
-      if (progressEvent.total) {
-        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        setUploadProgress(percent)
-        if (percent === 100) setProcessing(true)
-      }
-    })
-      .then((data) => {
-        const {importJobId, successfulImports} = data
-
-        if (successfulImports) {
-          setUploadSuccess(true)
-          onUploadSuccess?.(Math.random() * 100)
-        } else {
-          setUploadSuccess(false)
-          setGuidUpload(importJobId)
+      const file = acceptedFiles[0]
+      setFileName(file.name)
+      setUploadProgress(0)
+      setUploading(true)
+      setUploadSuccess(null)
+      setProcessing(false)
+      createClaims(file, user?.value, (progressEvent) => {
+        if (progressEvent.total) {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          setUploadProgress(percent)
+          if (percent === 100) setProcessing(true)
         }
       })
-      .catch(() => setUploadSuccess(false))
-      .finally(() => {
-        setUploading(false)
-        setProcessing(false)
-      })
-  }, [])
+        .then((data) => {
+          const {importJobId, successfulImports} = data
+
+          if (successfulImports) {
+            setUploadSuccess(true)
+            onUploadSuccess?.(Math.random() * 100)
+          } else {
+            setUploadSuccess(false)
+            setGuidUpload(importJobId)
+          }
+        })
+        .catch(() => setUploadSuccess(false))
+        .finally(() => {
+          setUploading(false)
+          setProcessing(false)
+        })
+    },
+    [user]
+  )
 
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
     onDrop,
@@ -74,7 +77,7 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess}) => {
   })
 
   return (
-    <div className='card card-flush py-5 px-5'>
+    <div className='card card-flush py-5 '>
       <div
         {...getRootProps()}
         style={{

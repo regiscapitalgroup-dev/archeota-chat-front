@@ -3,11 +3,13 @@ import apiClient from "../helpers/apiClient";
 
 export const createClaims = async (
   file: File,
+  user?:number,
   onUploadProgress?: (progressEvent: ProgressEvent) => void
 ) => {
   try {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('target_user_id', user && user > 0 ? user.toString() : '');
 
     const response = await apiClient.post('assets/transactions/import-data/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

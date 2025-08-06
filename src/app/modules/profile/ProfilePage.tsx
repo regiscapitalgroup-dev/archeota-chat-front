@@ -28,11 +28,11 @@ const ProfilePage: React.FC = () => {
     <>
       <ProfileHeader />
       <Switch>
-        <Route path='/crafted/pages/profile/overview'>
+       {/*  <Route path='/crafted/pages/profile/overview'>
           <PageTitle breadcrumbs={profileBreadCrumbs}>Overview</PageTitle>
           <Overview />
-        </Route>
-        <Route path='/crafted/pages/profile/projects'>
+        </Route> */}
+        {/* <Route path='/crafted/pages/profile/projects'>
           <PageTitle breadcrumbs={profileBreadCrumbs}>Projects</PageTitle>
           <Projects />
         </Route>
@@ -49,7 +49,7 @@ const ProfilePage: React.FC = () => {
           <Connections />
         </Route>
         <Redirect from='/crafted/pages/profile' exact={true} to='/crafted/pages/profile/overview' />
-        <Redirect to='/crafted/pages/profile/overview' />
+        <Redirect to='/crafted/pages/profile/overview' /> */}
       </Switch>
     </>
   )

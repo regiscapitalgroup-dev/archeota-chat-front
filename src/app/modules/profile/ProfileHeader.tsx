@@ -4,9 +4,13 @@ import {KTSVG, toAbsoluteUrl} from '../../../_metronic/helpers'
 import {Link} from 'react-router-dom'
 import {Dropdown1} from '../../../_metronic/partials'
 import {useLocation} from 'react-router-dom'
+import { shallowEqual, useSelector } from 'react-redux'
+import { RootState } from '../../../setup'
+import { getRoleDescriptionByCode } from '../../helpers/role'
 
 const ProfileHeader: React.FC = () => {
   const location = useLocation()
+  const user = useSelector((state: RootState) => state.auth.user, shallowEqual)
 
   return (
     <div className='card mb-5 mb-xl-10'>
@@ -24,7 +28,7 @@ const ProfileHeader: React.FC = () => {
               <div className='d-flex flex-column'>
                 <div className='d-flex align-items-center mb-2'>
                   <a href='#' className='text-gray-800 text-hover-primary fs-2 fw-bolder me-1'>
-                    Max Smith
+                    {`${user?.firstName} ${user?.lastName}`}
                   </a>
                   <a href='#'>
                     <KTSVG
@@ -35,7 +39,7 @@ const ProfileHeader: React.FC = () => {
                 </div>
 
                 <div className='d-flex flex-wrap fw-bold fs-6 mb-4 pe-2'>
-                  <a
+                  {/* <a
                     href='#'
                     className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2'
                   >
@@ -43,7 +47,7 @@ const ProfileHeader: React.FC = () => {
                       path='/media/icons/duotune/communication/com006.svg'
                       className='svg-icon-4 me-1'
                     />
-                    Developer
+                    {`${getRoleDescriptionByCode(user?.role ?? '')}`}
                   </a>
                   <a
                     href='#'
@@ -53,8 +57,8 @@ const ProfileHeader: React.FC = () => {
                       path='/media/icons/duotune/general/gen018.svg'
                       className='svg-icon-4 me-1'
                     />
-                    SF, Bay Area
-                  </a>
+                    {user?.profile?.companyName}
+                  </a> */}
                   <a
                     href='#'
                     className='d-flex align-items-center text-gray-400 text-hover-primary mb-2'
@@ -63,12 +67,12 @@ const ProfileHeader: React.FC = () => {
                       path='/media/icons/duotune/communication/com011.svg'
                       className='svg-icon-4 me-1'
                     />
-                    max@kt.com
+                    {user?.email}
                   </a>
                 </div>
               </div>
 
-              <div className='d-flex my-4'>
+              {/* <div className='d-flex my-4'>
                 <a href='#' className='btn btn-sm btn-light me-2' id='kt_user_follow_button'>
                   <KTSVG
                     path='/media/icons/duotune/arrows/arr012.svg'
@@ -100,37 +104,37 @@ const ProfileHeader: React.FC = () => {
                   </button>
                   <Dropdown1 />
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className='d-flex flex-wrap flex-stack'>
               <div className='d-flex flex-column flex-grow-1 pe-8'>
                 <div className='d-flex flex-wrap'>
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
-                    <div className='d-flex align-items-center'>
-                      <KTSVG
+                    <div className='d-flex align-items-center' >
+                      {/* <KTSVG
                         path='/media/icons/duotune/arrows/arr066.svg'
                         className='svg-icon-3 svg-icon-success me-2'
-                      />
-                      <div className='fs-2 fw-bolder'>4500$</div>
+                      /> */}
+                      <div className='fs-4 fw-bolder text-gray-400  '>{user?.profile?.companyName}</div>
                     </div>
 
-                    <div className='fw-bold fs-6 text-gray-400'>Earnings</div>
+                    <div className='fw-bold fs-6 text-dark'>Company</div>
                   </div>
 
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
                     <div className='d-flex align-items-center'>
-                      <KTSVG
+                      {/* <KTSVG
                         path='/media/icons/duotune/arrows/arr065.svg'
                         className='svg-icon-3 svg-icon-danger me-2'
-                      />
-                      <div className='fs-2 fw-bolder'>75</div>
+                      /> */}
+                      <div className='fs-4 fw-bolder  text-gray-400'>{`${getRoleDescriptionByCode(user?.role ?? '')}`}</div>
                     </div>
 
-                    <div className='fw-bold fs-6 text-gray-400'>Projects</div>
+                    <div className='fw-bold fs-6 text-dark'>Role</div>
                   </div>
 
-                  <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
+                  {/* <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
                     <div className='d-flex align-items-center'>
                       <KTSVG
                         path='/media/icons/duotune/arrows/arr066.svg'
@@ -140,7 +144,7 @@ const ProfileHeader: React.FC = () => {
                     </div>
 
                     <div className='fw-bold fs-6 text-gray-400'>Success Rate</div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -163,7 +167,7 @@ const ProfileHeader: React.FC = () => {
 
         <div className='d-flex overflow-auto h-55px'>
           <ul className='nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap'>
-            <li className='nav-item'>
+            {/* <li className='nav-item'>
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
@@ -173,8 +177,8 @@ const ProfileHeader: React.FC = () => {
               >
                 Overview
               </Link>
-            </li>
-            <li className='nav-item'>
+            </li> */}
+            {/* <li className='nav-item'>
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
@@ -217,7 +221,7 @@ const ProfileHeader: React.FC = () => {
               >
                 Connections
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

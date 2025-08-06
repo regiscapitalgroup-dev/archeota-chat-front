@@ -6,5 +6,6 @@ export interface UserModel {
   pk: number, 
   pic?:string,
   role?: string,
-  roleDescription?: string
+  roleDescription?: string,
+  profile: any
 }
