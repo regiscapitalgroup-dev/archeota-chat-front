@@ -13,6 +13,8 @@ import {useDispatch} from 'react-redux'
 import {setSelectedUser} from '../../../../app/modules/users/SelectedUser'
 import {useState} from 'react'
 import {useUsers} from '../../../../app/hooks/users/useUsers'
+import {useCategories} from '../../../../app/hooks/categories/useCategories'
+import {clearSelectedCategory, setSelectedCategory} from '../../../../app/modules/categories'
 
 export function AsideMenuMain() {
   const {triggerNewChat, reloadFlag} = useChatHistory()
@@ -24,6 +26,8 @@ export function AsideMenuMain() {
   const dispatch = useDispatch()
   const [realod, setRealod] = useState<number>(Math.random() * 20)
   const {users, loading: loadingAllUsers, error: ErrorList} = useUsers(realod)
+  const {categories} = useCategories()
+
   const handleNewChat = () => {
     if (location.pathname === '/dashboard/new') {
       triggerNewChat()
@@ -126,7 +130,33 @@ export function AsideMenuMain() {
         icon='/media/icons/duotune/art/art002.svg'
         title='Portfolio'
         fontIcon='bi-app-indicator'
+        onClick={() => dispatch(clearSelectedCategory())}
       />
+      <AsideMenuItemWithSub
+        to=''
+        title='Categories'
+        fontIcon='bi-people'
+        icon='/media/icons/duotune/general/gen049.svg'
+      >
+        {categories &&
+          categories.map((cat: any) => (
+            <AsideMenuItem
+              key={cat.id}
+              to={''}
+              title={cat?.categoryName}
+              hasBullet={true}
+              onClick={() => {
+                dispatch(
+                  setSelectedCategory({
+                    id: cat.id,
+                    name: cat.categoryName,
+                  })
+                )
+                navigate.push(`/assets`)
+              }}
+            />
+          ))}
+      </AsideMenuItemWithSub>
       <AsideMenuItem
         to='/dashboard/new'
         icon='/media/icons/duotune/communication/com012.svg'

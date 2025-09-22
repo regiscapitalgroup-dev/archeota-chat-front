@@ -6,11 +6,12 @@ import AssetsDetail from './components/AssetsDetail'
 import CategoryAssetsTable from './components/CategoryAssetsTable'
 import {RouteParamsModel} from '../shared/models/RouteParamsModel'
 import {useAssetsByCategories} from '../../hooks/assets/useAssetsByCategories'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../setup'
+import {useSelector} from 'react-redux'
+import {RootState} from '../../../setup'
 
 const AssetsPage: React.FC = () => {
   const selectedUser = useSelector((state: RootState) => state.selectedUser?.current)
+  const selectedCategory = useSelector((state: RootState) => state.selectedCategory?.current)
   const [selectedAsset, setSelectedAsset] = useState<any>(null)
   const [loadingAsset, setLoadingAsset] = useState(false)
   const [reload, setReload] = useState(Math.random() * 40)
@@ -21,7 +22,7 @@ const AssetsPage: React.FC = () => {
   const isDetailMode = location.pathname.includes('/assets/detail')
   const {data, loading: loadingAssets} = useAssetsByCategories(reload, selectedUser?.id)
   const {id: routeId} = useParams<RouteParamsModel>()
-
+  const [filterData, setFilterData] = useState<any>([])
   useEffect(() => {
     const fetchAsset = async () => {
       if ((routeId && isEditMode) || isDetailMode) {
@@ -50,6 +51,15 @@ const AssetsPage: React.FC = () => {
     history.push(`/assets/detail/${assetId}`)
   }
 
+  useEffect(() => {
+    if (data.length && selectedCategory?.id) {
+      const filter = data.filter((x) => x.category == selectedCategory.name)
+      setFilterData(filter)
+    } else {
+      setFilterData(data)
+    }
+  }, [data, selectedCategory])
+
   return (
     <div className='card mb-10'>
       <div className='card-body'>
@@ -72,7 +82,7 @@ const AssetsPage: React.FC = () => {
           <>
             {/* <AssetTable assets={assets} onEdit={handleEdit} onDetail={handleDetail} loading={loading} /> */}
             <CategoryAssetsTable
-              data={data}
+              data={filterData}
               onEdit={handleEdit}
               onDetail={handleDetail}
               loading={loadingAssets}

@@ -6,6 +6,7 @@ import {UserModel} from '../../../../app/modules/auth/models/UserModel'
 import {RootState} from '../../../../setup'
 import {toAbsoluteUrl} from '../../../helpers'
 import { clearSelectedUser } from '../../../../app/modules/users/SelectedUser'
+import { clearSelectedCategory } from '../../../../app/modules/categories'
 
 
 const HeaderUserMenu: FC = () => {
@@ -22,6 +23,7 @@ const HeaderUserMenu: FC = () => {
           <div className='symbol symbol-50px me-5'>
             <img
               alt='Avatar'
+              referrerPolicy="no-referrer"
               src={
                 profile?.getProfilePicture
                   ? profile.getProfilePicture
@@ -65,7 +67,7 @@ const HeaderUserMenu: FC = () => {
         </Link>
       </div>
       <div className='menu-item px-5'>
-        <Link to={'/assets'} className='menu-link px-5'>
+        <Link to={'/assets'} className='menu-link px-5' onClick={() => dispatch(clearSelectedCategory())}>
           My Assets
         </Link>
       </div>
