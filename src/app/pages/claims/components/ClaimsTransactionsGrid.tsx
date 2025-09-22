@@ -13,9 +13,17 @@ type Props = {
   setPage: (page: number) => void
   totalCount: number
   page: number
+  selectedUser?: any
 }
 
-const ClaimTransactionsTable: React.FC<Props> = ({data, loading, setPage, totalCount, page}) => {
+const ClaimTransactionsTable: React.FC<Props> = ({
+  data,
+  loading,
+  setPage,
+  totalCount,
+  page,
+  selectedUser,
+}) => {
   const history = useHistory()
 
   const [filters, setFilters] = useState({accountName: '', tradeDate: '', symbol: ''})
@@ -65,7 +73,9 @@ const ClaimTransactionsTable: React.FC<Props> = ({data, loading, setPage, totalC
       <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center position-relative'>
         <div>
           <h3 className='card-title align-items-start flex-column'>
-            <span className='fw-bolder text-dark fs-3'>Stock Transactions </span>
+            <span className='fw-bolder text-dark fs-3'>
+              Stock Transactions {selectedUser ? selectedUser?.name : ''}
+            </span>
             <span className='text-muted mt-1 fs-7'>List of movements</span>
           </h3>
         </div>

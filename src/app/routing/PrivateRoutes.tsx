@@ -6,6 +6,7 @@ import {MenuTestPage} from '../pages/MenuTestPage'
 import AssetsPageWrapper from '../pages/assets/AssetsWrapper'
 import UsersPageWrapper from '../pages/users/UsersWrapper'
 import ClaimsPageWrapper from '../pages/claims/ClaimsWrapper'
+import {DashboardCoreWrapper} from '../pages/dashboardCore/DashboardCoreWrapper'
 export function PrivateRoutes() {
   const BuilderPageWrapper = lazy(() => import('../pages/layout-builder/BuilderPageWrapper'))
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
@@ -17,6 +18,7 @@ export function PrivateRoutes() {
   return (
     <Suspense fallback={<FallbackView />}>
       <Switch>
+        <Route path='/dashboard/claims' component={DashboardCoreWrapper} />
         <Route path='/dashboard/:id?' component={DashboardWrapper} />
         <Route path='/builder' component={BuilderPageWrapper} />
         <Route path='/assets/new' component={AssetsPageWrapper} />
@@ -26,7 +28,7 @@ export function PrivateRoutes() {
         <Route path='/users/new' component={UsersPageWrapper} />
         <Route path='/users/edit/:id' component={UsersPageWrapper} />
         <Route exact path='/users' component={UsersPageWrapper} />
-        <Route exact path='/claims/actions' component={ClaimsPageWrapper} />
+        <Route exact path='/claims/actions/:user?' component={ClaimsPageWrapper} />
         <Route exact path='/claims/transactions' component={ClaimsPageWrapper} />
         <Route exact path='/claims/upload-transactions' component={ClaimsPageWrapper} />
         <Route path='/crafted/pages/profile' component={ProfilePage} />
@@ -35,8 +37,8 @@ export function PrivateRoutes() {
         <Route path='/crafted/account' component={AccountPage} />
         <Route path='/apps/chat' component={ChatPage} />
         <Route path='/menu-test' component={MenuTestPage} />
-        <Redirect from='/auth' to='/dashboard' />
-        <Redirect exact from='/' to='/dashboard' />
+        <Redirect from='/auth' to='/dashboard/claims' />
+        <Redirect exact from='/' to='/dashboard/claims' />
         <Redirect to='error/404' />
       </Switch>
     </Suspense>

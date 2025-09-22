@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { UserModel } from '../models/UserModel'
 import apiClient from '../../../helpers/apiClient'
 import { RegisterModel } from '../models/RegisterModel'

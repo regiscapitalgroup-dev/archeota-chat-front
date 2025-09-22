@@ -7,8 +7,12 @@ import {useAssetDraft} from '../../../../app/context/AssetDraftContext'
 import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
 import {shallowEqual, useSelector} from 'react-redux'
 import {RootState} from '../../../../setup/redux/RootReducer'
-import { canAccessModule } from '../../../../app/helpers/permissions'
-import { Modules } from '../../../../app/constants/modules'
+import {canAccessModule} from '../../../../app/helpers/permissions'
+import {Modules} from '../../../../app/constants/modules'
+import {useDispatch} from 'react-redux'
+import {setSelectedUser} from '../../../../app/modules/users/SelectedUser'
+import {useState} from 'react'
+import {useUsers} from '../../../../app/hooks/users/useUsers'
 
 export function AsideMenuMain() {
   const {triggerNewChat, reloadFlag} = useChatHistory()
@@ -17,7 +21,9 @@ export function AsideMenuMain() {
   const {draft, setDraft} = useAssetDraft()
   const user = useSelector((state: RootState) => state.auth.user, shallowEqual)
   const {chats} = useAllHistoryChats(reloadFlag)
-
+  const dispatch = useDispatch()
+  const [realod, setRealod] = useState<number>(Math.random() * 20)
+  const {users, loading: loadingAllUsers, error: ErrorList} = useUsers(realod)
   const handleNewChat = () => {
     if (location.pathname === '/dashboard/new') {
       triggerNewChat()
@@ -33,22 +39,62 @@ export function AsideMenuMain() {
 
   return (
     <>
-     {canAccessModule(Modules.USERS, user?.role || '') && (
-      <>
       <div className='menu-item'>
         <div className='menu-content pt-8 pb-2'>
-          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>User Management</span>
+          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Dashboard</span>
         </div>
       </div>
+
       <AsideMenuItem
-        to='/users'
-        icon='/media/icons/duotune/general/gen049.svg'
-        title='Users'
-        fontIcon='bi-app-indicator'
+        to='/dashboard/claims'
+        icon='/media/icons/duotune/general/gen011.svg'
+        title='Dashboard'
+        fontIcon='bi-layers'
       />
-      </>
-    )}
-      
+
+      {canAccessModule(Modules.USERS, user?.role || '') && (
+        <>
+          <div className='menu-item'>
+            <div className='menu-content pt-8 pb-2'>
+              <span className='menu-section text-muted text-uppercase fs-8 ls-1'>
+                User Management
+              </span>
+            </div>
+          </div>
+
+          <AsideMenuItem
+            to='/users'
+            title='Users'
+            fontIcon='bi-people'
+            icon='/media/icons/duotune/general/gen049.svg'
+          />
+          <AsideMenuItemWithSub
+            to=''
+            title='Assigned users'
+            fontIcon='bi-people'
+            icon='/media/icons/duotune/general/gen049.svg'
+          >
+            {users &&
+              users.map((user: any) => (
+                <AsideMenuItem
+                  key={user.id}
+                  to={`/claims/actions/${user?.firstName}`}
+                  title={user?.firstName}
+                  hasBullet={true}
+                  onClick={() => {
+                    dispatch(
+                      setSelectedUser({
+                        id: user.id,
+                        name: user.firstName,
+                      })
+                    )
+                    navigate.push(`/claims/actions/${user?.firstName}`)
+                  }}
+                />
+              ))}
+          </AsideMenuItemWithSub>
+        </>
+      )}
 
       <div className='menu-item'>
         <div className='menu-content pt-8 pb-2'>

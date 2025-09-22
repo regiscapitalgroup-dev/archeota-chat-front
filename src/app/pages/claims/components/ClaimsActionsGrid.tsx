@@ -2,6 +2,8 @@ import React from 'react'
 import {TableColumn} from 'react-data-table-component'
 import DataTableComponent from '../../../components/DataTableComponent'
 import {ClaimsActionsModel} from '../models/ClaimsActionsModel'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../../setup'
 
 const columns: TableColumn<ClaimsActionsModel>[] = [
   {name: 'Ticker Symbol', selector: (row) => row.tyckerSymbol, sortable: true},
@@ -38,15 +40,17 @@ const columns: TableColumn<ClaimsActionsModel>[] = [
 
 type ClaimsActionsGridProps = {
   data: ClaimsActionsModel[]
-  loading: boolean
+  loading: boolean,
+  selectedUser?: any
 }
 
-const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading}) => {
+const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, selectedUser}) => {
+
   return (
     <div className='card shadow-sm mb-10'>
       <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center'>
         <h3 className='card-title align-items-start flex-column'>
-          <span className='fw-bolder text-dark fs-3'>Claims Actions</span>
+          <span className='fw-bolder text-dark fs-3'>Claims Actions {selectedUser?  selectedUser?.name : ""}</span>
           <span className='text-muted mt-1 fs-7'>List of claims actions</span>
         </h3>
       </div>

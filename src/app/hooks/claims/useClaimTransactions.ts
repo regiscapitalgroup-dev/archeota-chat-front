@@ -9,7 +9,7 @@ type ApiResponse = {
   results: ClaimTransactionModel[]
 }
 
-export const useTransactionsClaim = (pageSize = 10, reload:number) => {
+export const useTransactionsClaim = (pageSize = 10, reload: number, user?: string) => {
   const [transactions, setTransactions] = useState<ClaimTransactionModel[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
@@ -21,7 +21,7 @@ export const useTransactionsClaim = (pageSize = 10, reload:number) => {
     const fetch = async () => {
       try {
         setLoading(true)
-        const data: ApiResponse = await getTransactionsClaims(page)
+        const data: ApiResponse = await getTransactionsClaims(page, user)
         if (isMounted) {
           setTransactions(data.results)
           setCount(data.count)

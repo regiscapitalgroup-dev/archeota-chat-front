@@ -3,7 +3,7 @@ import apiClient from "../helpers/apiClient";
 
 export const createClaims = async (
   file: File,
-  user?:number,
+  user?: number,
   onUploadProgress?: (progressEvent: ProgressEvent) => void
 ) => {
   try {
@@ -22,9 +22,10 @@ export const createClaims = async (
   }
 };
 
-export const getActionsClaims = async () => {
+export const getActionsClaims = async (user_id?: string) => {
   try {
-    const response = await apiClient.get('assets/claim-actions/');
+    const user = user_id ? `?user_id=${Number(user_id)}` : '';
+    const response = await apiClient.get(`claims/claim-actions/${user}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching claims actions:', error);
@@ -32,9 +33,10 @@ export const getActionsClaims = async () => {
   }
 };
 
-export const getTransactionsClaims = async (page: number) => {
+export const getTransactionsClaims = async (page: number, user_id?: string) => {
   try {
-    const response = await apiClient.get(`assets/claim-transactions/?page=${page}`);
+    const user = user_id ? `&user_id=${Number(user_id)}` : '';
+    const response = await apiClient.get(`claims/claim-transactions/?page=${page}${user}`);
 
     return response.data;
   } catch (error) {
@@ -50,6 +52,19 @@ export const getTransactionsLogs = async (guid: string) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching logs transactions:', error);
+    throw error;
+  }
+};
+
+export const getClaimsByStatus = async (user_id?: string) => {
+  try {
+
+    const user = user_id ? `?user_id=${Number(user_id)}` : '';
+    const response = await apiClient.get(`claims/claim-actions/dashboard/${user}`);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching claims by status:', error);
     throw error;
   }
 };

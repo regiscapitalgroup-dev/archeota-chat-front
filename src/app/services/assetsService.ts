@@ -112,10 +112,11 @@ export const getAssetCategories = async () => {
   }
 };
 
-export const getAssetByCategories = async () => {
+export const getAssetByCategories = async (user_id?: string) => {
 
   try {
-    const response = await apiClient.get('assets/assets-by-category/');
+    const user = user_id ? `?user_id=${Number(user_id)}` : '';
+    const response = await apiClient.get(`assets/assets-by-category/${user}`);
     return response.data;
   } catch (error) {
     throw error;

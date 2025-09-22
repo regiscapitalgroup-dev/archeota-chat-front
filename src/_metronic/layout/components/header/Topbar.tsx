@@ -1,7 +1,10 @@
 import clsx from 'clsx'
 import React, {FC} from 'react'
-import { toAbsoluteUrl} from '../../../helpers'
+import {toAbsoluteUrl} from '../../../helpers'
 import {HeaderNotificationsMenu, HeaderUserMenu, QuickLinks} from '../../../partials'
+import {shallowEqual, useSelector} from 'react-redux'
+import {RootState} from '../../../../setup'
+import {UserModel} from '../../../../app/modules/auth/models/UserModel'
 
 const toolbarButtonMarginClass = 'ms-1 ms-lg-3',
   /* toolbarButtonHeightClass = 'w-30px h-30px w-md-40px h-md-40px', */
@@ -9,7 +12,9 @@ const toolbarButtonMarginClass = 'ms-1 ms-lg-3',
 /*   toolbarButtonIconSizeClass = 'svg-icon-1' */
 
 const Topbar: FC = () => {
+  const user = useSelector<RootState>(({auth}) => auth.user, shallowEqual) as UserModel
 
+  const {profile} = user
   return (
     <div className='d-flex align-items-stretch flex-shrink-0'>
       {/* Search */}
@@ -104,7 +109,14 @@ const Topbar: FC = () => {
           data-kt-menu-placement='bottom-end'
           data-kt-menu-flip='bottom'
         >
-          <img src={toAbsoluteUrl('/media/avatars/150-2.jpg')} alt='metronic' />
+          <img
+            src={
+              profile?.getProfilePicture
+                ? profile.getProfilePicture
+                : toAbsoluteUrl('/media/avatars/150-2.jpg')
+            }
+            alt='profile'
+          />
         </div>
         <HeaderUserMenu />
         {/* end::Toggle */}

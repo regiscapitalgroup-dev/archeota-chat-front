@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { getAssetByCategories } from '../../services/assetsService';
-import { string } from 'yup';
+import { getClaimsByStatus } from '../../services/cliamsService';
 
-
-export const useAssetsByCategories = ( reload: number, user? :string) => {
-    const [data, setData] = useState<any[]>([]);
+export const useClaimsByStatus = (user?:string) => {
+    const [data, setData] = useState<any | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -13,7 +11,7 @@ export const useAssetsByCategories = ( reload: number, user? :string) => {
         const fetch = async () => {
             try {
                 setLoading(true);
-                const data = await getAssetByCategories(user);
+                const data = await getClaimsByStatus(user);
                 if (isMounted) {
                     setData(data);
                 }
@@ -27,11 +25,12 @@ export const useAssetsByCategories = ( reload: number, user? :string) => {
                 }
             }
         };
+
         fetch()
         return () => {
             isMounted = false;
         };
-    }, [reload, user]);
+    }, []);
 
     return { data, loading, error };
 };

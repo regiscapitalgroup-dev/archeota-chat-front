@@ -19,7 +19,8 @@ const ClaimsPage = () => {
   const isGridTransacctions = location.pathname.includes('claims/transactions')
   const [reloadUser] = useState<number>(Math.random() * 50)
   const [reload, setReload] = useState<number>(Math.random() * 50)
-  const {actions, loading: loadingAct} = useActionsClaim()
+  const selectedUser = useSelector((state: RootState) => state.selectedUser?.current);
+  const {actions, loading: loadingAct} = useActionsClaim(selectedUser?.id)
   const {
     transactions,
     loading: loadingTrans,
@@ -99,9 +100,10 @@ const ClaimsPage = () => {
             setPage={setPage}
             totalCount={count}
             page={page}
+            selectedUser={selectedUser}
           />
         )}
-        {isGridActions && <ClaimsActionsGrid data={actions || []} loading={loadingAct} />}
+        {isGridActions && <ClaimsActionsGrid data={actions || []} loading={loadingAct} selectedUser={selectedUser}/>}
       </div>
     </div>
   )

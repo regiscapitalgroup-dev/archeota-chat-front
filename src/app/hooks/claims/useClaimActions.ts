@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getActionsClaims } from '../../services/cliamsService';
 import { ClaimsActionsModel } from '../../pages/claims/models/ClaimsActionsModel';
 
-export const useActionsClaim = () => {
+export const useActionsClaim = (id?: string) => {
     const [actions, setActions] = useState<ClaimsActionsModel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -12,7 +12,8 @@ export const useActionsClaim = () => {
         const fetch = async () => {
             try {
                 setLoading(true);
-                const data = await getActionsClaims();
+                let userId = id ? id : ''
+                const data = await getActionsClaims(userId);
                 if (isMounted) {
                     setActions(data);
                 }
@@ -31,7 +32,7 @@ export const useActionsClaim = () => {
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [id]);
 
     return { actions, loading, error };
 };

@@ -6,8 +6,11 @@ import AssetsDetail from './components/AssetsDetail'
 import CategoryAssetsTable from './components/CategoryAssetsTable'
 import {RouteParamsModel} from '../shared/models/RouteParamsModel'
 import {useAssetsByCategories} from '../../hooks/assets/useAssetsByCategories'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../setup'
 
 const AssetsPage: React.FC = () => {
+  const selectedUser = useSelector((state: RootState) => state.selectedUser?.current)
   const [selectedAsset, setSelectedAsset] = useState<any>(null)
   const [loadingAsset, setLoadingAsset] = useState(false)
   const [reload, setReload] = useState(Math.random() * 40)
@@ -16,7 +19,7 @@ const AssetsPage: React.FC = () => {
   const isEditMode = location.pathname.includes('/assets/edit')
   const isNewMode = location.pathname.includes('/assets/new')
   const isDetailMode = location.pathname.includes('/assets/detail')
-  const {data, loading: loadingAssets} = useAssetsByCategories(reload)
+  const {data, loading: loadingAssets} = useAssetsByCategories(reload, selectedUser?.id)
   const {id: routeId} = useParams<RouteParamsModel>()
 
   useEffect(() => {
@@ -73,6 +76,7 @@ const AssetsPage: React.FC = () => {
               onEdit={handleEdit}
               onDetail={handleDetail}
               loading={loadingAssets}
+              selectedUser={selectedUser}
             />
           </>
         )}

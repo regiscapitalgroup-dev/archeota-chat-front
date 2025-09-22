@@ -129,9 +129,10 @@ const AssetExpandComponent: React.FC<
 
 interface Props {
   data: CategoryAssets[]
+  selectedUser?: any
 }
 
-const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading}) => {
+const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading, selectedUser}) => {
   const history = useHistory()
 
   const handleCreateNew = () => {
@@ -182,7 +183,9 @@ const CategoryAssetsTable: React.FC<Props> = ({data, onDetail, onEdit, loading})
         <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center position-relative'>
           <div>
             <h3 className='card-title align-items-start flex-column'>
-              <span className='fw-bolder text-dark fs-3'>Assets</span>
+              <span className='fw-bolder text-dark fs-3'>
+                Assets {selectedUser ? selectedUser?.name : ''}
+              </span>
               <span className='text-muted mt-1 fs-7'>List of assets by category</span>
             </h3>
           </div>
