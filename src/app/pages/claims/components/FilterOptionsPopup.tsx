@@ -1,28 +1,25 @@
 import React, {useEffect, useRef} from 'react'
+import { FilterProp } from '../models/FilterProp.Model'
 
-type Filters = {
-  accountName: string
-  tradeDate: string
-  symbol: string
+type Props<T> = {
+  show: boolean;
+  anchorRef: React.RefObject<HTMLButtonElement>;
+  filters: T;
+  props: FilterProp[];
+  setFilters: (filters: T) => void;
+  onClose: () => void;
+  onReset: () => void;
 }
 
-type Props = {
-  show: boolean
-  anchorRef: React.RefObject<HTMLButtonElement>
-  filters: Filters
-  setFilters: (filters: Filters) => void
-  onClose: () => void
-  onReset: () => void
-}
-
-export const FilterOptionsPopup: React.FC<Props> = ({
+export const FilterOptionsPopup = <T,>({
   show,
   anchorRef,
   filters,
+  props,
   setFilters,
   onClose,
   onReset,
-}) => {
+}: Props<T>) => {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -53,41 +50,46 @@ export const FilterOptionsPopup: React.FC<Props> = ({
       maxWidth: '96vw',
     }
   }
-  
 
   return (
     <div ref={dropdownRef} className='card shadow-lg rounded-4' style={style}>
       <div className='card-body p-4'>
         <div className='fw-bold fs-5 mb-3'>Filter Options</div>
-        <div className='mb-3'>
-          <label className='form-label'>Account Name:</label>
-          <input
-            type='text'
-            className='form-control'
-            value={filters.accountName}
-            onChange={(e) => setFilters({...filters, accountName: e.target.value})}
-            placeholder='Filter by Account Name'
-          />
-        </div>
-        <div className='mb-3'>
-          <label className='form-label'>Trade Date:</label>
-          <input
-            type='date'
-            className='form-control'
-            value={filters.tradeDate}
-            onChange={(e) => setFilters({...filters, tradeDate: e.target.value})}
-          />
-        </div>
-        <div className='mb-8'>
-          <label className='form-label'>Symbol:</label>
-          <input
-            type='text'
-            className='form-control'
-            value={filters.symbol}
-            onChange={(e) => setFilters({...filters, symbol: e.target.value})}
-            placeholder='Filter by Symbol'
-          />
-        </div>
+        {
+          props.map((p, i) => {
+            return (
+              <div key={i} className="mb-3">
+                <label className="form-label">{p.label}</label>
+                {
+                  p.type==="input" ? 
+                    <input type="text" className="form-control" value={(filters as Record<string, string>)[p.key]} onChange={(e) => setFilters({...filters, [p.key]: e.target.value})}/> 
+                  : p.type==="date" ? 
+                    <input type="date" className="form-control" value={(filters as Record<string, string>)[p.key]} onChange={(e) => setFilters({...filters, [p.key]: e.target.value})}/>
+                  :
+                    (p.type.map(box => (
+                      <div key={i+box} className="form-check form-check-custom form-check-solid mb-3">
+                          <input className="form-check-input" 
+                            type="checkbox" 
+                            checked={(filters as Record<string, string[]>)[p.key].includes(box)} id={`${box}_cbox`}
+                            onChange={() => 
+                              setFilters({
+                                ...filters, 
+                                [p.key]: 
+                                  ((filters as Record<string, string[]>)[p.key].includes(box) ? 
+                                    (filters as Record<string, string[]>)[p.key].filter(v => v !== box)
+                                    : [...((filters as Record<string, string[]>)[p.key] || []), box]
+                                  )})}
+                            />
+                          <label className="form-check-label" htmlFor={`${box}_cbox`}>
+                              {box}
+                          </label>
+                      </div>
+                    )))   
+                }
+              </div>
+            );
+          })
+        }
         <div className='d-flex justify-content-between'>
           <button className='btn btn-light' type='button' onClick={onReset}>
             Reset

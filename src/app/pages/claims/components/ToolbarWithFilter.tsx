@@ -1,18 +1,21 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { KTSVG } from '../../../../_metronic/helpers'
+import { FilterProp } from '../models/FilterProp.Model'
 import { FilterOptionsPopup } from './FilterOptionsPopup'
 
-interface ToolbarWithFilterProps {
-  filters: { accountName: string; tradeDate: string; symbol: string; }
-  setFilters: (filters: { accountName: string; tradeDate: string; symbol:string }) => void
+interface ToolbarWithFilterProps<T> {
+  filters: T,
+  props: FilterProp[],
+  setFilters: (filters: T) => void
   onReset: () => void
 }
 
-export const ToolbarWithFilter = ({
+export const ToolbarWithFilter = <T, >({
   filters,
+  props,
   setFilters,
   onReset,
-}: ToolbarWithFilterProps) => {
+}: ToolbarWithFilterProps<T>) => {
   const [showDropdown, setShowDropdown] = useState(false)
   const filterBtnRef = useRef<HTMLButtonElement>(null)
 
@@ -38,10 +41,10 @@ export const ToolbarWithFilter = ({
           setFilters={setFilters}
           onClose={() => setShowDropdown(false)}
           onReset={onReset}
+          props={props}
         />
       </div>
       {/* end::Wrapper */}
-      
     </div>
   )
 }
