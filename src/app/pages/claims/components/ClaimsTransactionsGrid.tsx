@@ -94,7 +94,7 @@ const ClaimTransactionsTable: React.FC<Props> = ({
           {data.length > 0 && (
             <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} props={[]} />
           )} 
-          <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active'>
+          <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active' onClick={() => history.push('/claims/transactions/new')}>
             <KTSVG
               path="/media/icons/duotune/general/gen041.svg" 
               className="svg-icon-5 svg-icon-gray-500 ms-1" 

@@ -106,7 +106,7 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
         </h3>
         <div className="d-flex gap-2 ms-auto align-items-center">
           <ToolbarWithFilter props={FilterProps} filters={filters} setFilters={setFilters} onReset={() => setFilters({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] })} />
-          <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active'>
+          <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active' onClick={() => history.push('/claims/actions/new')}>
             <KTSVG
               path="/media/icons/duotune/general/gen041.svg" 
               className="svg-icon-5 svg-icon-gray-500 ms-1" 
