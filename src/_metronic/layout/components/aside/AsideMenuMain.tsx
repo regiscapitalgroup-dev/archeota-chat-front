@@ -28,6 +28,9 @@ export function AsideMenuMain() {
   const {users, loading: loadingAllUsers, error: ErrorList} = useUsers(realod)
   const {categories} = useCategories()
 
+  const isClaims = location.pathname.startsWith('/claims');
+  const isAssets = location.pathname.startsWith('/assets');
+
   const handleNewChat = () => {
     if (location.pathname === '/dashboard/new') {
       triggerNewChat()
@@ -100,71 +103,83 @@ export function AsideMenuMain() {
         </>
       )}
 
-      <div className='menu-item'>
-        <div className='menu-content pt-8 pb-2'>
-          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Claims</span>
-        </div>
-      </div>
+      { isClaims && (
+        <>
+          <div className='menu-item'>
+            <div className='menu-content pt-8 pb-2'>
+              <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Claims</span>
+            </div>
+          </div>
 
-      <AsideMenuItem
-        to='/claims/actions'
-        icon='/media/icons/duotune/general/gen048.svg'
-        title='Actions'
-        fontIcon='bi-layers'
-      />
-      <AsideMenuItem
-        to='/claims/transactions/'
-        icon='/media/icons/duotune/general/gen022.svg'
-        title='Transactions'
-        fontIcon='bi-layers'
-      />
-      <div className='separator my-5'></div>
+          <AsideMenuItem
+            to='/claims/actions'
+            icon='/media/icons/duotune/general/gen048.svg'
+            title='Actions'
+            fontIcon='bi-layers'
+          />
+          <AsideMenuItem
+            to='/claims/transactions/'
+            icon='/media/icons/duotune/general/gen022.svg'
+            title='Transactions'
+            fontIcon='bi-layers'
+          />
+          <div className='separator my-5'></div>
+        </>
+      )}
 
-      <div className='menu-item'>
-        <div className='menu-content pt-8 pb-2'>
-          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Assets</span>
-        </div>
-      </div>
-      <AsideMenuItem
-        to='/assets'
-        icon='/media/icons/duotune/art/art002.svg'
-        title='Portfolio'
-        fontIcon='bi-app-indicator'
-        onClick={() => dispatch(clearSelectedCategory())}
-      />
-      <AsideMenuItemWithSub
-        to=''
-        title='Categories'
-        fontIcon='bi-people'
-        icon='/media/icons/duotune/general/gen049.svg'
-      >
-        {categories &&
-          categories.map((cat: any) => (
+      {
+        isAssets && (
+          <>
+            <div className='menu-item'>
+              <div className='menu-content pt-8 pb-2'>
+                <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Assets</span>
+              </div>
+            </div>
             <AsideMenuItem
-              key={cat.id}
-              to={''}
-              title={cat?.categoryName}
-              hasBullet={true}
-              onClick={() => {
-                dispatch(
-                  setSelectedCategory({
-                    id: cat.id,
-                    name: cat.categoryName,
-                  })
-                )
-                navigate.push(`/assets`)
-              }}
+              to='/assets'
+              icon='/media/icons/duotune/art/art002.svg'
+              title='Portfolio'
+              fontIcon='bi-app-indicator'
+              onClick={() => dispatch(clearSelectedCategory())}
             />
-          ))}
-      </AsideMenuItemWithSub>
-      <AsideMenuItem
-        to='/dashboard/new'
-        icon='/media/icons/duotune/communication/com012.svg'
-        title='New chat'
-        fontIcon='bi-layers'
-        onClick={handleNewChat}
-      />
-      <div className='separator my-5'></div>
+            <AsideMenuItemWithSub
+              to=''
+              title='Categories'
+              fontIcon='bi-people'
+              icon='/media/icons/duotune/general/gen049.svg'
+            >
+              {categories &&
+                categories.map((cat: any) => (
+                  <AsideMenuItem
+                    key={cat.id}
+                    to={''}
+                    title={cat?.categoryName}
+                    hasBullet={true}
+                    onClick={() => {
+                      dispatch(
+                        setSelectedCategory({
+                          id: cat.id,
+                          name: cat.categoryName,
+                        })
+                      )
+                      navigate.push(`/assets`)
+                    }}
+                  />
+                ))}
+            </AsideMenuItemWithSub>
+            <AsideMenuItem
+              to='/dashboard/new'
+              icon='/media/icons/duotune/communication/com012.svg'
+              title='New chat'
+              fontIcon='bi-layers'
+              onClick={handleNewChat}
+            />
+            <div className='separator my-5'></div>
+          </>
+        )
+      }
+
+      
 
       {draft && draft.category && (
         <>
