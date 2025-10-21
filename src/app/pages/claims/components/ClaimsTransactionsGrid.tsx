@@ -6,6 +6,8 @@ import DataTableComponent from '../../../components/DataTableComponent'
 import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
 import {getISODate, toShortDateString} from '../../../helpers/FormatDate'
 import {ToolbarWithFilter} from './ToolbarWithFilter'
+import { KTSVG } from '../../../../_metronic/helpers'
+import ActionTable from './ActionTable'
 
 type Props = {
   data: ClaimTransactionModel[]
@@ -46,6 +48,11 @@ const ClaimTransactionsTable: React.FC<Props> = ({
     [data, filters]
   )
 
+  const _onEditRecord = (row: ClaimTransactionModel) => history.push(`/claims/transactions/edit/${row.id}`);
+  const _onDeleteRecord = (row: ClaimTransactionModel) => {
+
+  };
+
   const columns: TableColumn<ClaimTransactionModel>[] = [
     {name: 'Account Name', selector: (row) => row.accountName, sortable: true},
     {name: 'Account Type', selector: (row) => row.accountType, sortable: true},
@@ -65,6 +72,10 @@ const ClaimTransactionsTable: React.FC<Props> = ({
       sortable: true,
       right: true,
     },
+    {
+      name: 'Actions',
+      cell: (row) => (<ActionTable onDelete={() => _onDeleteRecord(row)} onEdit={() => _onEditRecord(row)}/>)
+    }
   ]
   const handleReset = () => setFilters({accountName: '', tradeDate: '', symbol: ''})
 
@@ -76,14 +87,21 @@ const ClaimTransactionsTable: React.FC<Props> = ({
             <span className='fw-bolder text-dark fs-3'>
               Stock Transactions {selectedUser ? selectedUser?.name : ''}
             </span>
-            <span className='text-muted mt-1 fs-7'>List of movements</span>
+            <span className='text-muted mt-1 fs-7'>List of movements</span>
           </h3>
         </div>
         <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
           {data.length > 0 && (
-            <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} />
-          )}
-
+            <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} props={[]} />
+          )} 
+          <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active'>
+            <KTSVG
+              path="/media/icons/duotune/general/gen041.svg" 
+              className="svg-icon-5 svg-icon-gray-500 ms-1" 
+            />
+            New
+          </button>
+          
           <button
             className='btn btn-sm btn-dark'
             onClick={() => history.push('/claims/upload-transactions')}
