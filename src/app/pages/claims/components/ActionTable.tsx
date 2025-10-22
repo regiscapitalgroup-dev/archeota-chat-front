@@ -37,12 +37,17 @@ const ActionTable = ({ onEdit, onDelete }: ActionTableProps) => {
         setShow(false);
       }
     }
-    window.addEventListener('resize', () => setShow(false));
-    window.addEventListener('scroll', () => setShow(false));
+
+    function handleAction() {
+      setShow(false);
+    }
+
+    window.addEventListener('resize', handleAction);
+    window.addEventListener('scroll', handleAction);
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      window.addEventListener('resize', () => setShow(false));
-      window.addEventListener('scroll', () => setShow(false));
+      window.removeEventListener('resize', handleAction);
+      window.removeEventListener('scroll', handleAction);
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [show, btn])
