@@ -19,19 +19,19 @@ export function PrivateRoutes() {
     <Suspense fallback={<FallbackView />}>
       <Switch>
         <Route path='/dashboard/claims' component={DashboardCoreWrapper} />
-        <Route path='/dashboard/:id?' component={DashboardWrapper} />
-        <Route path='/builder' component={BuilderPageWrapper} />
-        <Route path='/assets/new' component={AssetsPageWrapper} />
-        <Route path='/assets/edit/:id' component={AssetsPageWrapper} />
-        <Route path='/assets/detail/:id' component={AssetsPageWrapper} />
-        <Route exact path='/assets' component={AssetsPageWrapper} />
         <Route path='/users/new' component={UsersPageWrapper} />
         <Route path='/users/edit/:id' component={UsersPageWrapper} />
         <Route exact path='/users' component={UsersPageWrapper} />
-        {/* <Route exact path='/claims/actions' component={ClaimsPageWrapper} />
+        {/* <Route path='/assets/chat/:id?' component={DashboardWrapper} />
+        <Route path='/assets/new' component={AssetsPageWrapper} />
+        <Route path='/assets/edit/:id' component={AssetsPageWrapper} />
+        <Route path='/assets/detail/:id' component={AssetsPageWrapper} />
+        <Route exact path='/assets' component={AssetsPageWrapper} /> 
+        <Route exact path='/claims/actions' component={ClaimsPageWrapper} />
         <Route exact path='/claims/transactions' component={ClaimsPageWrapper} />
         <Route exact path='/claims/upload-transactions' component={ClaimsPageWrapper} /> */}
         <Route path='/claims' component={ClaimsPageWrapper}/>
+        <Route path='/assets' component={AssetsPageWrapper}/>
         { /** DevOnly */}
         <Route path='/crafted/pages/profile' component={ProfilePage} />
         <Route path='/crafted/pages/wizards' component={WizardsPage} />
@@ -39,7 +39,7 @@ export function PrivateRoutes() {
         <Route path='/crafted/account' component={AccountPage} />
         <Route path='/apps/chat' component={ChatPage} />
         <Route path='/menu-test' component={MenuTestPage} />
-        
+        <Route path='/builder' component={BuilderPageWrapper} />
         <Redirect from='/auth' to='/dashboard/claims' />
         <Redirect exact from='/' to='/dashboard/claims' />
         <Redirect to='error/404' />

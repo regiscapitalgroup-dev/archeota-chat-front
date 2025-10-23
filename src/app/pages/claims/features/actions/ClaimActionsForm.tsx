@@ -4,7 +4,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import * as Yup from 'yup';
 import { getActionsClaimsById } from "../../../../services/cliamsService";
 import { RouteParamsModel } from "../../../shared/models/RouteParamsModel";
-import { ClaimsActionsCreateModel } from "../../models/ClaimsActionCreateModel";
+import { ClaimsActionsCreateModel } from "../../models/ClaimsActionsCreateModel";
 import { ClaimsActionsModel } from "../../models/ClaimsActionsModel";
 import LoadingSpinner from "../../../../components/LoadingSpinner";
 import { NumericFormat } from "react-number-format";

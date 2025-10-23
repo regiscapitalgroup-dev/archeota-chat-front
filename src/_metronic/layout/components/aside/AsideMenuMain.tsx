@@ -28,15 +28,15 @@ export function AsideMenuMain() {
   const {users, loading: loadingAllUsers, error: ErrorList} = useUsers(realod)
   const {categories} = useCategories()
 
-  const isClaims = location.pathname.startsWith('/claims');
+  const isClaims = location.pathname.startsWith('/claims') || location.pathname.startsWith('/dashboard');
   const isAssets = location.pathname.startsWith('/assets');
 
   const handleNewChat = () => {
-    if (location.pathname === '/dashboard/new') {
+    if (location.pathname === '/assets/chat/new') {
       triggerNewChat()
       setDraft(null)
     } else {
-      navigate.push('/dashboard/new')
+      navigate.push('/assets/chat/new')
       setTimeout(() => {
         triggerNewChat()
         setDraft(null)
@@ -118,7 +118,7 @@ export function AsideMenuMain() {
             fontIcon='bi-layers'
           />
           <AsideMenuItem
-            to='/claims/transactions/'
+            to='/claims/transactions'
             icon='/media/icons/duotune/general/gen022.svg'
             title='Transactions'
             fontIcon='bi-layers'
@@ -168,7 +168,7 @@ export function AsideMenuMain() {
                 ))}
             </AsideMenuItemWithSub>
             <AsideMenuItem
-              to='/dashboard/new'
+              to='/assets/chat/new'
               icon='/media/icons/duotune/communication/com012.svg'
               title='New chat'
               fontIcon='bi-layers'
@@ -181,7 +181,7 @@ export function AsideMenuMain() {
 
       
 
-      {draft && draft.category && (
+      {isAssets && draft && draft.category && (
         <>
           <AsideMenuItemWithSub
             to='/assets/new'
@@ -207,8 +207,8 @@ export function AsideMenuMain() {
         </>
       )}
 
-      <div className='separator my-15'>
-        {chats.length > 0 && (
+      <div>
+        {isAssets && chats.length > 0 && (
           <>
             <div className='menu-item'>
               <div className='menu-content pt-8 pb-2'>
@@ -218,11 +218,11 @@ export function AsideMenuMain() {
             {chats.map((item: HistoryChatModel) => (
               <AsideMenuItem
                 key={item.sessionId}
-                to={`/dashboard/${item.sessionId}`}
+                to={`/assets/chat/${item.sessionId}`}
                 icon='/media/icons/duotune/communication/com009.svg'
                 title={item.title}
                 fontIcon='bi-layers'
-                onClick={() => navigate.push(`/dashboard/${item.sessionId}`)}
+                onClick={() => navigate.push(`/assets/chat/${item.sessionId}`)}
               />
             ))}
           </>
