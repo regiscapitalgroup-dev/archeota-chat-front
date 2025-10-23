@@ -8,6 +8,8 @@ import { FilterProp } from '../models/FilterProp.Model'
 import ActionTable from './ActionTable'
 import { ToolbarWithFilter } from './ToolbarWithFilter'
 import { KTSVG } from '../../../../_metronic/helpers';
+import Swal from 'sweetalert2';
+import { deleteActionClaim } from '../../../services/cliamsService';
 
 const FilterProps: FilterProp[] = [
   {
@@ -44,19 +46,37 @@ type Filter = {
 }
 
 type ClaimsActionsGridProps = {
-  data: ClaimsActionsModel[]
-  loading: boolean,
-  selectedUser?: any
+  data: ClaimsActionsModel[];
+  loading: boolean;
+  selectedUser?: any;
+  onReload: () => void;
 }
 
-const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, selectedUser}) => {
+const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, selectedUser, onReload}) => {
   const [filters, setFilters] = useState({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] } as Filter)
   const filteredData = useMemo(() => filterData(data, filters), [data, filters]);
   const history = useHistory();
 
   const _onEditRecord = (row: ClaimsActionsModel) => history.push(`/claims/actions/edit/${row.id}`);
-  const _onDeleteRecord = (row: ClaimsActionsModel) => {
-
+  const _onDeleteRecord = async (row: ClaimsActionsModel) => {
+    const _result = await Swal.fire({
+      title: 'Delete claim action',
+      text: 'Do you really want to delete this claim action?\nThis process can not be undone.',
+      icon: 'error',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'btn-danger text-white'
+      }, 
+      scrollbarPadding: false,
+      heightAuto: false
+    });
+    
+    if(!_result.isConfirmed)
+      return;
+    await deleteActionClaim(row.id);
+    onReload();
   };
 
 
@@ -93,7 +113,7 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
     },
     {
       name: 'Actions',
-      cell: (row) => (<ActionTable onDelete={() => _onDeleteRecord(row)} onEdit={() => _onEditRecord(row)}/>)
+      cell: (row) => (<ActionTable onDelete={async () => await _onDeleteRecord(row)} onEdit={() => _onEditRecord(row)}/>)
     }
   ]
 
