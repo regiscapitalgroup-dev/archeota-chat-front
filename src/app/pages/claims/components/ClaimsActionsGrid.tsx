@@ -53,6 +53,7 @@ type ClaimsActionsGridProps = {
 }
 
 const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, selectedUser, onReload}) => {
+  const [sending, setSending] = useState(false);
   const [filters, setFilters] = useState({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] } as Filter)
   const filteredData = useMemo(() => filterData(data, filters), [data, filters]);
   const history = useHistory();
@@ -75,7 +76,13 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
     
     if(!_result.isConfirmed)
       return;
-    await deleteActionsClaim(row.id);
+    try {
+      setSending(true);
+      await deleteActionsClaim(row.id);
+    }
+    finally {
+      setSending(false);
+    }
     onReload();
   };
 
@@ -108,8 +115,7 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
         ) : (
           <span className='badge badge-light-danger'>N/A</span>
         ),
-      ignoreRowClick: true,
-      allowOverflow: true,
+      ignoreRowClick: true
     },
     {
       name: 'Actions',
@@ -139,7 +145,7 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
         <DataTableComponent
           columns={columns}
           data={filteredData}
-          loading={loading}
+          loading={loading || sending}
           pagination
           paginationServer={false}
           totalRows={filteredData.length}

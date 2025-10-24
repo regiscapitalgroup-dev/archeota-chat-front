@@ -2,7 +2,7 @@ import { ErrorMessage, Field, FieldProps, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import * as Yup from 'yup';
-import { getActionsClaimsById } from "../../../../services/cliamsService";
+import { createActionsClaim, getActionsClaimsById, updateActionsClaim } from "../../../../services/cliamsService";
 import { RouteParamsModel } from "../../../shared/models/RouteParamsModel";
 import { ClaimsActionsCreateModel } from "../../models/ClaimsActionsCreateModel";
 import { ClaimsActionsModel } from "../../models/ClaimsActionsModel";
@@ -46,9 +46,11 @@ const ClaimsActionForm: React.FC = () => {
     const location = useLocation();
     const history = useHistory();
     const [loading, setLoading] = useState(false);
+    const [sending, setSending] = useState(false);
     const isEdited = location.pathname.includes('/edit');
     const { id: routeId} = useParams<RouteParamsModel>();
     const [formValues, setFormValues] = useState<ClaimsActionsCreateModel>(initialValues);
+
     useEffect(() => {
         const fetchRecord = async () => {
             if(isEdited && routeId) {
@@ -91,7 +93,19 @@ const ClaimsActionForm: React.FC = () => {
     }, [isEdited, routeId]);
 
     const handleSubmit = async (values: any) => {
-
+        if(sending)
+            return;
+        try {
+            setSending(true);
+            if(isEdited)
+                await updateActionsClaim(Number(routeId), values);
+            else
+                await createActionsClaim(values);
+        }
+        finally {
+            setSending(false);
+            history.push('/claims/actions');
+        }
     }
 
     return (
@@ -112,135 +126,136 @@ const ClaimsActionForm: React.FC = () => {
                             enableReinitialize
                             initialValues={formValues}
                             validationSchema={validationSchema}                    
-                            onSubmit={handleSubmit} 
+                            onSubmit={handleSubmit}
                         >
-                            {({setFieldValue}) => 
-                                <Form className="form">
-                                    <div className="card-body">
-                                        <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
-                                            <div className="col">
-                                                    <label className="required">Ticker Symbol</label>
-                                                    <Field name="tycker_symbol" className="form-control"/>
-                                                    <div className="text-danger">
-                                                        <ErrorMessage name="tycker_symbol"/>
-                                                    </div>
-                                            </div>
-                                            <div className="col">
-                                                    <label className="required">Company Name</label>
-                                                    <Field name="company_name" className="form-control"/>
-                                                    <div className="text-danger">
-                                                        <ErrorMessage name="company_name"/>
-                                                    </div>
-                                            </div>
-                                            <div className="col">
-                                                <label className="required">Exchange</label>
-                                                <Field name="exchange" className="form-control"/> 
+                            <Form className="form">
+                                <div className="card-body">
+                                    <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+                                        <div className="col">
+                                                <label className="required">Ticker Symbol</label>
+                                                <Field name="tycker_symbol" className="form-control"/>
                                                 <div className="text-danger">
-                                                    <ErrorMessage name="exchange"/>
+                                                    <ErrorMessage name="tycker_symbol"/>
                                                 </div>
-                                            </div>
-                                            <div className="col">
-                                                <label className="required">Lawsuit Type</label>
-                                                <Field name="lawsuit_type" className="form-control"/>
-                                                <div className="text-danger">
-                                                    <ErrorMessage name="lawsuit_type"/>
-                                                </div>
-                                            </div>
-                                        
-                                            <div className="col">
-                                                <label>Eligibility</label>
-                                                <Field name="eligibility" className="form-control"/>
-                                            </div>
-                                            <div className="col">
-                                                <label>Potencial Claim</label>
-                                                <Field name="potencial_claim" className="form-control"/>
-                                            </div>
-                                            <div className="col">
-                                                <label>Company Name</label>
+                                        </div>
+                                        <div className="col">
+                                                <label className="required">Company Name</label>
                                                 <Field name="company_name" className="form-control"/>
-                                            </div>
-                                            <div className="col">
-                                                <label>Total Settlement Fund</label>
-                                                <Field name="total_settlement_fund">
-                                                    {({field, form}: FieldProps) => (
-                                                        <NumericFormat
-                                                            className="form-control"
-                                                            thousandSeparator=','
-                                                            decimalSeparator="."
-                                                            prefix="$"
-                                                            decimalScale={2}
-                                                            fixedDecimalScale={true}
-                                                            allowNegative={false}
-                                                            value={field.value ?? 0}
-                                                            onValueChange={({value}) => form.setFieldValue(field.name, value??0)}
-                                                        />
-                                                    )}
-                                                </Field>
-                                            </div>
-
-                                            <div className="col">
-                                                <label>Filing Date</label>
-                                                <Field name="filing_date" className="form-control" type='date'/>
-                                            </div>
-                                            <div className="col">
-                                                <label>Claim Deadline</label>
-                                                <Field name="claim_deadline" className="form-control"/>
-                                            </div>
-                                            <div className="col">
-                                                <label>Law Firm Handing Case</label>
-                                                <Field name="law_firm_handing_case" className="form-control"/>
-                                            </div>
-                                            <div className="col">
-                                                <label>Case Docket Number</label>
-                                                <Field name="case_docket_number" className="form-control"/>
-                                            </div>
-                                        
-
-                                        
-                                            <div className="col">
-                                                <label>Jurisdiction</label>
-                                                <Field name="jurisdiction" className="form-control"/>
-                                            </div>
-                                            <div className="col">
-                                                <label>Claim Status</label>
-                                                <Field name="claim_status" >
-                                                    {({field, form}: FieldProps) => (
-                                                        <Select
-                                                            inputId='claim_status'
-                                                            options={claimStatus}
-                                                            value={{value:field.value,label:field.value}}
-                                                            onChange={({value}: Props) => form.setFieldValue(field.name, value)}
-                                                            classNamePrefix="react-select"
-                                                        />
-                                                    )}
-                                                </Field>
-                                            </div>
-                                            <div className="col">
-                                                <label>Official Claim Filing Link</label>
-                                                <Field name="official_claim_filing_link" className="form-control"/>
+                                                <div className="text-danger">
+                                                    <ErrorMessage name="company_name"/>
+                                                </div>
+                                        </div>
+                                        <div className="col">
+                                            <label className="required">Exchange</label>
+                                            <Field name="exchange" className="form-control"/> 
+                                            <div className="text-danger">
+                                                <ErrorMessage name="exchange"/>
                                             </div>
                                         </div>
+                                        <div className="col">
+                                            <label className="required">Lawsuit Type</label>
+                                            <Field name="lawsuit_type" className="form-control"/>
+                                            <div className="text-danger">
+                                                <ErrorMessage name="lawsuit_type"/>
+                                            </div>
+                                        </div>
+                                    
+                                        <div className="col">
+                                            <label>Eligibility</label>
+                                            <Field name="eligibility" className="form-control"/>
+                                        </div>
+                                        <div className="col">
+                                            <label>Potencial Claim</label>
+                                            <Field name="potencial_claim" className="form-control"/>
+                                        </div>
+                                        <div className="col">
+                                            <label>Total Settlement Fund</label>
+                                            <Field name="total_settlement_fund">
+                                                {({field, form}: FieldProps) => (
+                                                    <NumericFormat
+                                                        className="form-control"
+                                                        thousandSeparator=','
+                                                        decimalSeparator="."
+                                                        prefix="$"
+                                                        decimalScale={2}
+                                                        fixedDecimalScale={true}
+                                                        allowNegative={false}
+                                                        value={field.value ?? 0}
+                                                        onValueChange={({value}) => form.setFieldValue(field.name, value??0)}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </div>
+
+                                        <div className="col">
+                                            <label className="required">Filing Date</label>
+                                            <Field name="filing_date" className="form-control" type='date'/>
+                                            <div className="text-danger">
+                                                <ErrorMessage name="filing_date"/>
+                                            </div>
+                                        </div>
+                                        <div className="col">
+                                            <label>Claim Deadline</label>
+                                            <Field name="claim_deadline" className="form-control"/>
+                                        </div>
+                                        <div className="col">
+                                            <label>Law Firm Handing Case</label>
+                                            <Field name="law_firm_handing_case" className="form-control"/>
+                                        </div>
+                                        <div className="col">
+                                            <label>Case Docket Number</label>
+                                            <Field name="case_docket_number" className="form-control"/>
+                                        </div>
+                                    
+
+                                    
+                                        <div className="col">
+                                            <label>Jurisdiction</label>
+                                            <Field name="jurisdiction" className="form-control"/>
+                                        </div>
+                                        <div className="col">
+                                            <label>Claim Status</label>
+                                            <Field name="claim_status" >
+                                                {({field, form}: FieldProps) => (
+                                                    <Select
+                                                        inputId='claim_status'
+                                                        options={claimStatus}
+                                                        value={{value:field.value,label:field.value}}
+                                                        onChange={({value}: Props) => form.setFieldValue(field.name, value)}
+                                                        classNamePrefix="react-select"
+                                                    />
+                                                )}
+                                            </Field>
+                                        </div>
+                                        <div className="col">
+                                            <label>Official Claim Filing Link</label>
+                                            <Field name="official_claim_filing_link" className="form-control"/>
+                                        </div>
                                     </div>
-                                    <div className="card-footer d-flex gap-2">
-                                        <button
-                                            type='button'
-                                            className='btn btn-secondary flex-grow-1'
-                                            style={{minWidth: 0}}
-                                            onClick={() => history.push('/claims/actions')}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type='submit'
-                                            id='kt_sign_in_submit'
-                                            className='btn btn-dark flex-grow-1'
-                                            style={{minWidth: 0}}
-                                        >
-                                            Save
-                                        </button>
-                                    </div>
-                                </Form>
-                            }
+                                </div>
+                                <div className="card-footer d-flex gap-2">
+                                    <button
+                                        type='button'
+                                        className='btn btn-secondary flex-grow-1'
+                                        style={{minWidth: 0}}
+                                        onClick={() => history.push('/claims/actions')}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type='submit'
+                                        id='kt_sign_in_submit'
+                                        className='btn btn-dark flex-grow-1'
+                                        style={{minWidth: 0}}
+                                    >
+                                        {
+                                            !sending ? 
+                                            (<span className="indicator-label">Save</span>) 
+                                            : (<span>Saving... <span className="spinner-border spinner-border-sm align-middle ms-2"></span></span>)
+                                        }
+                                    </button>
+                                </div>
+                            </Form>
                         </Formik>)
                 }
             </div>
