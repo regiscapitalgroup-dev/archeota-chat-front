@@ -8,11 +8,14 @@ import {getISODate, toShortDateString} from '../../../helpers/FormatDate'
 import {ToolbarWithFilter} from './ToolbarWithFilter'
 import { KTSVG } from '../../../../_metronic/helpers'
 import ActionTable from './ActionTable'
+import Swal from 'sweetalert2'
+import { deleteTransactionsClaim } from '../../../services/cliamsService'
 
 type Props = {
   data: ClaimTransactionModel[]
   loading: boolean
   setPage: (page: number) => void
+  onReload: () => void
   totalCount: number
   page: number
   selectedUser?: any
@@ -22,12 +25,13 @@ const ClaimTransactionsTable: React.FC<Props> = ({
   data,
   loading,
   setPage,
+  onReload,
   totalCount,
   page,
   selectedUser,
 }) => {
   const history = useHistory()
-
+  const [sending, setSending] = useState(false);
   const [filters, setFilters] = useState({accountName: '', tradeDate: '', symbol: ''})
   const filteredItems = useMemo(
     () =>
@@ -49,8 +53,31 @@ const ClaimTransactionsTable: React.FC<Props> = ({
   )
 
   const _onEditRecord = (row: ClaimTransactionModel) => history.push(`/claims/transactions/edit/${row.id}`);
-  const _onDeleteRecord = (row: ClaimTransactionModel) => {
-
+  const _onDeleteRecord = async (row: ClaimTransactionModel) => {
+    const _result = await Swal.fire({
+      title: 'Delete claim action',
+      text: 'Do you really want to delete this claim action?\nThis process can not be undone.',
+      icon: 'error',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'btn-danger text-white'
+      }, 
+      scrollbarPadding: false,
+      heightAuto: false
+    });
+    
+    if(!_result.isConfirmed)
+      return;
+    try {
+      setSending(true);
+      await deleteTransactionsClaim(row.id);
+    }
+    finally {
+      setSending(false);
+    }
+    onReload();
   };
 
   const columns: TableColumn<ClaimTransactionModel>[] = [
@@ -74,7 +101,7 @@ const ClaimTransactionsTable: React.FC<Props> = ({
     },
     {
       name: 'Actions',
-      cell: (row) => (<ActionTable onDelete={() => _onDeleteRecord(row)} onEdit={() => _onEditRecord(row)}/>)
+      cell: (row) => (<ActionTable onDelete={async () => await _onDeleteRecord(row)} onEdit={() => _onEditRecord(row)}/>)
     }
   ]
   const handleReset = () => setFilters({accountName: '', tradeDate: '', symbol: ''})
@@ -115,7 +142,7 @@ const ClaimTransactionsTable: React.FC<Props> = ({
         <DataTableComponent
           columns={columns}
           data={filteredItems}
-          loading={loading}
+          loading={loading || sending}
           pagination
           paginationServer
           totalRows={totalCount}
