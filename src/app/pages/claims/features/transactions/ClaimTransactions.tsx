@@ -5,14 +5,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../setup";
 
 const ClaimTransactions: React.FC = () => {
-    const [reload, setReload] = useState<number>(Math.random() * 50)
     const {
         transactions,
         loading: loadingTrans,
         page,
         setPage,
+        loadData: reloadTransactions,
         count,
-    } = useTransactionsClaim(1, reload);
+    } = useTransactionsClaim(1, Math.random() * 50);
     const selectedUser = useSelector((state: RootState) => state.selectedUser?.current);
 
     return (
@@ -20,6 +20,7 @@ const ClaimTransactions: React.FC = () => {
         data={transactions}
         loading={loadingTrans}
         setPage={setPage}
+        onReload={reloadTransactions}
         totalCount={count}
         page={page}
         selectedUser={selectedUser}
