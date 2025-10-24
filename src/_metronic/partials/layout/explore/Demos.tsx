@@ -2,48 +2,48 @@ import React, {FC} from 'react'
 import {toAbsoluteUrl} from '../../../helpers'
 
 const Demos: FC = () => {
-  const demos = [
-    {
-      name: 'demo1',
-      available: true,
-    },
-    {
-      name: 'demo2',
-      available: true,
-    },
-    {
-      name: 'demo3',
-    },
-    {
-      name: 'demo4',
-    },
-    {
-      name: 'demo5',
-    },
-    {
-      name: 'demo6',
-    },
-    {
-      name: 'demo7',
-    },
-    {
-      name: 'demo8',
-    },
-    {
-      name: 'demo9',
-    },
-    {
-      name: 'demo10',
-    },
-    {
-      name: 'demo11',
-    },
-    {
-      name: 'demo12',
-    },
-    {
-      name: 'demo13',
-    },
+  const demos: any[] = [
+    // {
+    //   name: 'demo1',
+    //   available: true,
+    // },
+    // {
+    //   name: 'demo2',
+    //   available: true,
+    // },
+    // {
+    //   name: 'demo3',
+    // },
+    // {
+    //   name: 'demo4',
+    // },
+    // {
+    //   name: 'demo5',
+    // },
+    // {
+    //   name: 'demo6',
+    // },
+    // {
+    //   name: 'demo7',
+    // },
+    // {
+    //   name: 'demo8',
+    // },
+    // {
+    //   name: 'demo9',
+    // },
+    // {
+    //   name: 'demo10',
+    // },
+    // {
+    //   name: 'demo11',
+    // },
+    // {
+    //   name: 'demo12',
+    // },
+    // {
+    //   name: 'demo13',
+    // },
   ]
 
   return (
