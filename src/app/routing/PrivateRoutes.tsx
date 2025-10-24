@@ -42,7 +42,7 @@ export function PrivateRoutes() {
         <Route path='/builder' component={BuilderPageWrapper} />
         <Redirect from='/auth' to='/dashboard/claims' />
         <Redirect exact from='/' to='/dashboard/claims' />
-        <Redirect to='error/404' />
+        <Redirect to='/assets/chat' />
       </Switch>
     </Suspense>
   )
