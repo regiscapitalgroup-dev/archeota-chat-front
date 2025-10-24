@@ -46,19 +46,9 @@ export function AsideMenuMain() {
 
   return (
     <>
-      <div className='menu-item'>
-        <div className='menu-content pt-8 pb-2'>
-          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Dashboard</span>
-        </div>
-      </div>
+      
 
-      <AsideMenuItem
-        to='/dashboard/claims'
-        icon='/media/icons/duotune/general/gen011.svg'
-        title='Dashboard'
-        fontIcon='bi-layers'
-      />
-
+      
       {canAccessModule(Modules.USERS, user?.role || '') && (
         <>
           <div className='menu-item'>
@@ -105,6 +95,18 @@ export function AsideMenuMain() {
 
       { isClaims && (
         <>
+          <div className='menu-item'>
+            <div className='menu-content pt-8 pb-2'>
+              <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Dashboard</span>
+            </div>
+          </div>
+          <AsideMenuItem
+            to='/dashboard/claims'
+            icon='/media/icons/duotune/general/gen011.svg'
+            title='Dashboard'
+            fontIcon='bi-layers'
+          />
+
           <div className='menu-item'>
             <div className='menu-content pt-8 pb-2'>
               <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Claims</span>
