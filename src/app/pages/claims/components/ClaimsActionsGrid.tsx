@@ -9,7 +9,7 @@ import ActionTable from './ActionTable'
 import { ToolbarWithFilter } from './ToolbarWithFilter'
 import { KTSVG } from '../../../../_metronic/helpers';
 import Swal from 'sweetalert2';
-import { deleteActionClaim } from '../../../services/cliamsService';
+import { deleteActionsClaim } from '../../../services/cliamsService';
 
 const FilterProps: FilterProp[] = [
   {
@@ -75,7 +75,7 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
     
     if(!_result.isConfirmed)
       return;
-    await deleteActionClaim(row.id);
+    await deleteActionsClaim(row.id);
     onReload();
   };
 
