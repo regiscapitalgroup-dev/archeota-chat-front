@@ -1,0 +1,13 @@
+.topbar-menu {
+    animation: menu-sub-dropdown-animation-fade-in .3s ease 1, menu-sub-dropdown-animation-move-up .3s ease 1;
+    box-shadow: rgba(82, 63, 105, 0.1) 0px 0px 17px 5px;
+    translate: 0 1rem;   
+    border-radius: .475rem;
+}
+
+.topbar-menu-btn {
+    outline: 0;
+    border: 0;
+    background-color: auto;
+    padding: 0;
+}

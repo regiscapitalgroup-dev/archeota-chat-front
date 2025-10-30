@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getTransactionsClaims } from '../../services/cliamsService'
 import { ClaimTransactionModel } from '../../pages/claims/models/ClaimsTransactionsModel'
 
@@ -15,28 +15,34 @@ export const useTransactionsClaim = (pageSize = 10, reload: number, user?: strin
   const [error, setError] = useState<Error | null>(null)
   const [page, setPage] = useState<number>(1)
   const [count, setCount] = useState<number>(0)
+  const isMounted = useRef(true);
+  
+  useEffect(() => { 
+    isMounted.current = true;
+    return () =>{
+      isMounted.current = false 
+  }}, []);
 
-  useEffect(() => {
-    let isMounted = true
-    const fetch = async () => {
-      try {
-        setLoading(true)
-        const data: ApiResponse = await getTransactionsClaims(page, user)
-        if (isMounted) {
-          setTransactions(data.results)
-          setCount(data.count)
-        }
-      } catch (err) {
-        if (isMounted) setError(err as Error)
-      } finally {
-        if (isMounted) setLoading(false)
+  const loadData = async () => {
+    try {
+      setLoading(true)
+      const data: ApiResponse = await getTransactionsClaims(page, user)
+      if (isMounted.current) {
+        setTransactions(data.results)
+        setCount(data.count)
       }
     }
-    fetch()
-    return () => {
-      isMounted = false
+    catch (err) {
+      if (isMounted.current) setError(err as Error)
+    } 
+    finally {
+      if (isMounted.current) setLoading(false)
     }
-  }, [page, reload])
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [page, user])
 
   return {
     transactions,
@@ -44,6 +50,7 @@ export const useTransactionsClaim = (pageSize = 10, reload: number, user?: strin
     error,
     page,
     setPage,
+    loadData,
     count,
     pageSize,
   }

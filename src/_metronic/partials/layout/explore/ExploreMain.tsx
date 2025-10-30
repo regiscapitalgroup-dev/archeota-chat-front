@@ -76,7 +76,7 @@ export function ExploreMain() {
                       <i
                         className='text-gray-400 fas fa-exclamation-circle ms-1 fs-7'
                         data-bs-toggle='popover'
-                        data-bs-custom-className='popover-dark'
+                        data-bs-custom-classname='popover-dark'
                         data-bs-trigger='hover'
                         data-bs-placement='top'
                         data-bs-content='Use, by you or one client in a single end product which end users are not charged for.'
@@ -105,7 +105,7 @@ export function ExploreMain() {
                       <i
                         className='text-gray-400 fas fa-exclamation-circle ms-1 fs-7'
                         data-bs-toggle='popover'
-                        data-bs-custom-className='popover-dark'
+                        data-bs-custom-classname='popover-dark'
                         data-bs-trigger='hover'
                         data-bs-placement='top'
                         data-bs-content='Use, by you or one client, in a single end product which end users can be charged for.'

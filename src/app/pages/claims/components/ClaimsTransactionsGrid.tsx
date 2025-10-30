@@ -6,11 +6,37 @@ import DataTableComponent from '../../../components/DataTableComponent'
 import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
 import {getISODate, toShortDateString} from '../../../helpers/FormatDate'
 import {ToolbarWithFilter} from './ToolbarWithFilter'
+import { KTSVG } from '../../../../_metronic/helpers'
+import ActionTable from './ActionTable'
+import Swal from 'sweetalert2'
+import { deleteTransactionsClaim } from '../../../services/cliamsService'
+import { FilterProp } from '../models/FilterProp.Model'
+
+
+const FilterProps: FilterProp[] = [
+  {
+    key: 'accountName',
+    label: 'Account Name',
+    type: 'input'
+  },
+  {
+    key: 'tradeDate',
+    label: 'Trade Date',
+    type: 'date'
+  },
+  {
+    key: 'symbol',
+    label: 'Symbol',
+    type: 'input'
+  }
+];
+
 
 type Props = {
   data: ClaimTransactionModel[]
   loading: boolean
   setPage: (page: number) => void
+  onReload: () => void
   totalCount: number
   page: number
   selectedUser?: any
@@ -20,12 +46,13 @@ const ClaimTransactionsTable: React.FC<Props> = ({
   data,
   loading,
   setPage,
+  onReload,
   totalCount,
   page,
   selectedUser,
 }) => {
   const history = useHistory()
-
+  const [sending, setSending] = useState(false);
   const [filters, setFilters] = useState({accountName: '', tradeDate: '', symbol: ''})
   const filteredItems = useMemo(
     () =>
@@ -46,6 +73,34 @@ const ClaimTransactionsTable: React.FC<Props> = ({
     [data, filters]
   )
 
+  const _onEditRecord = (row: ClaimTransactionModel) => history.push(`/claims/transactions/edit/${row.id}`);
+  const _onDeleteRecord = async (row: ClaimTransactionModel) => {
+    const _result = await Swal.fire({
+      title: 'Delete claim action',
+      text: 'Do you really want to delete this claim action?\nThis process can not be undone.',
+      icon: 'error',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'btn-danger text-white'
+      }, 
+      scrollbarPadding: false,
+      heightAuto: false
+    });
+    
+    if(!_result.isConfirmed)
+      return;
+    try {
+      setSending(true);
+      await deleteTransactionsClaim(row.id);
+    }
+    finally {
+      setSending(false);
+    }
+    onReload();
+  };
+
   const columns: TableColumn<ClaimTransactionModel>[] = [
     {name: 'Account Name', selector: (row) => row.accountName, sortable: true},
     {name: 'Account Type', selector: (row) => row.accountType, sortable: true},
@@ -65,6 +120,10 @@ const ClaimTransactionsTable: React.FC<Props> = ({
       sortable: true,
       right: true,
     },
+    {
+      name: 'Actions',
+      cell: (row) => (<ActionTable onDelete={async () => await _onDeleteRecord(row)} onEdit={() => _onEditRecord(row)}/>)
+    }
   ]
   const handleReset = () => setFilters({accountName: '', tradeDate: '', symbol: ''})
 
@@ -76,14 +135,21 @@ const ClaimTransactionsTable: React.FC<Props> = ({
             <span className='fw-bolder text-dark fs-3'>
               Stock Transactions {selectedUser ? selectedUser?.name : ''}
             </span>
-            <span className='text-muted mt-1 fs-7'>List of movements</span>
+            <span className='text-muted mt-1 fs-7'>List of movements</span>
           </h3>
         </div>
         <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
           {data.length > 0 && (
-            <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} />
-          )}
-
+            <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} props={FilterProps} />
+          )} 
+          <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active' onClick={() => history.push('/claims/transactions/new')}>
+            <KTSVG
+              path="/media/icons/duotune/general/gen041.svg" 
+              className="svg-icon-5 svg-icon-gray-500 ms-1" 
+            />
+            New
+          </button>
+          
           <button
             className='btn btn-sm btn-dark'
             onClick={() => history.push('/claims/upload-transactions')}
@@ -97,7 +163,7 @@ const ClaimTransactionsTable: React.FC<Props> = ({
         <DataTableComponent
           columns={columns}
           data={filteredItems}
-          loading={loading}
+          loading={loading || sending}
           pagination
           paginationServer
           totalRows={totalCount}

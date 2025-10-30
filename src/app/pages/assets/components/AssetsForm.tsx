@@ -2,21 +2,16 @@ import React, {useEffect, useState} from 'react'
 import {Formik, Form, Field, ErrorMessage, FieldProps} from 'formik'
 import * as Yup from 'yup'
 import {AssetsCreateModel} from '../models/AssetsCreateModel'
-import {createAssets, updateAssets} from '../../../services/assetsService'
+import {createAssets, getAssetById, updateAssets} from '../../../services/assetsService'
 import {NumericFormat} from 'react-number-format'
 import LoadingSpinner from '../../../components/LoadingSpinner'
 import {CategoryAutocompleteField} from './AssetsCategoryField'
 import {DynamicAttributesFields} from './AssetsDynamicAttributesFields'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useLocation, useParams} from 'react-router-dom'
 import {useAssetDraft} from '../../../context/AssetDraftContext'
 import {useAssetsCategories} from '../../../hooks/assets/useAssetsCategories'
 import {normalizeKey} from '../../../helpers/NormalzeKey'
-interface AssetFormProps {
-  initialData?: any
-  isEdit: boolean
-  onSuccess: () => void
-  loadingInfo: boolean
-}
+import { RouteParamsModel } from '../../shared/models/RouteParamsModel'
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Asset name is required'),
@@ -26,33 +21,61 @@ const validationSchema = Yup.object({
   category: Yup.string().required('Category is required'),
 })
 
-const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, loadingInfo}) => {
+const initialValues: AssetsCreateModel = {
+  id: 0,
+  name: '',
+  acquisitionValue: 0,
+  estimatedValue: 0,
+  photo: '',
+  syntasisSummary: '',
+  fullConversationHistory: '',
+  category: 0,
+  attributes: {},
+  prefilledFromDraft: false,
+  highValue: 0,
+  lowValue: 0,
+  categoryDetails: {
+    attributes: null,
+    categoryName: '',
+    id: 0,
+  },
+}
+
+const AssetsForm: React.FC = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [collapse, setCollapse] = useState<boolean>(false)
-  const navigate = useHistory()
+  const navigate = useHistory();
+  const location = useLocation();
   const {draft, setDraft} = useAssetDraft()
   const {categories, loading: loadingCat, error} = useAssetsCategories()
-  const initialValues: AssetsCreateModel = {
-    id: 0,
-    name: '',
-    acquisitionValue: 0,
-    estimatedValue: 0,
-    photo: '',
-    syntasisSummary: '',
-    fullConversationHistory: '',
-    category: 0,
-    attributes: {},
-    prefilledFromDraft: false,
-    highValue: 0,
-    lowValue: 0,
-    categoryDetails: {
-      attributes: null,
-      categoryName: '',
-      id: 0,
-    },
-  }
+  const {id: routeId} = useParams<RouteParamsModel>()
   const [formValues, setFormValues] = useState<AssetsCreateModel>(initialValues)
+  const isEdit = (!location.pathname.endsWith("new"));
+
+  useEffect(() => {
+    const fetchAsset = async () => {
+      if(!!routeId && isEdit) {
+        try {
+          setLoading(true);
+          const asset = await getAssetById(Number(routeId));
+          setCollapse(true)
+          setFormValues({
+            ...asset,
+            category: asset.categoryDetails?.id ? Number(asset.categoryDetails.id) : 0,
+          })
+          setPreviewImage(asset.photo || null)
+        }
+        catch {
+          navigate.push('/assets')
+        }
+        finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchAsset();
+  }, [isEdit, routeId]);
 
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -81,24 +104,13 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
       } else {
         await createAssets(values)
       }
-      onSuccess()
     } catch (err) {
       console.error(err)
     } finally {
       setLoading(false)
+      navigate.push('/assets')
     }
   }
-
-  useEffect(() => {
-    if (isEdit && initialData) {
-      setCollapse(true)
-      setFormValues({
-        ...initialData,
-        category: initialData.categoryDetails?.id ? Number(initialData.categoryDetails.id) : 0,
-      })
-      setPreviewImage(initialData.photo || null)
-    }
-  }, [initialData, isEdit])
 
   useEffect(() => {
     if (!isEdit && draft && categories.length) {
@@ -152,7 +164,7 @@ const AssetsForm: React.FC<AssetFormProps> = ({initialData, isEdit, onSuccess, l
       <div className='card-header'>
         <h3 className='card-title'>{`${isEdit ? 'Edit Assets' : 'New Assets'}`}</h3>
       </div>
-      {loadingInfo ? (
+      {loading ? (
         <LoadingSpinner message='Loading asset...' />
       ) : (
         <Formik

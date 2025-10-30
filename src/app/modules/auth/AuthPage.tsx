@@ -1,13 +1,23 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, {useEffect} from 'react'
-import {Redirect, Route, Switch} from 'react-router-dom'
+import {Redirect, Route, Switch, useHistory} from 'react-router-dom'
 import {Registration} from './components/Registration'
 import {ForgotPassword} from './components/ForgotPassword'
 import {Login} from './components/Login'
 import {toAbsoluteUrl} from '../../../_metronic/helpers'
 import {ResetPassword} from './components/ResetPassword'
+import { shallowEqual, useSelector } from 'react-redux'
+import { RootState } from '../../../setup'
 
 export function AuthPage() {
+  const history = useHistory();
+  const user = useSelector((state: RootState) => state.auth.user, shallowEqual);
+  
+  useEffect(() => {
+    if(!!user)
+      history.push('/assets/chat/')
+  }, [user]);
+
   useEffect(() => {
     document.body.classList.add('bg-white')
     return () => {
