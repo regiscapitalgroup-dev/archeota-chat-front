@@ -26,7 +26,7 @@ const columns: TableColumn<CategoryAssets>[] = [
     name: 'Assets Count',
     selector: (row) => row.assets.length,
     sortable: true,
-    right: true,
+    right: true, //  <-- ** propierty have error **
   },
 ]
 

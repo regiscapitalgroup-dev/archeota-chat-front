@@ -7,10 +7,9 @@ import { RootState } from "../../../../../setup";
 
 const Assets = () => {
     const selectedUser = useSelector((state: RootState) => state.selectedUser?.current)
-      const selectedCategory = useSelector((state: RootState) => state.selectedCategory?.current)
-    const history = useHistory()
-    const [reload, setReload] = useState(Math.random() * 40)
-    const {data, loading: loadingAssets} = useAssetsByCategories(reload, selectedUser?.id)
+    const selectedCategory = useSelector((state: RootState) => state.selectedCategory?.current)
+    const history = useHistory();
+    const {data, loading: loadingAssets} = useAssetsByCategories(0, selectedUser?.id)
     const [filterData, setFilterData] = useState<any>([])
 
     const handleEdit = (assetId: number) => {

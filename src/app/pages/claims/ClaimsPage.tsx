@@ -1,5 +1,5 @@
-import { lazy } from 'react'
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { lazy } from 'react';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 
 const ClaimsPage = () => {
   const ClaimsAction = lazy(() => import('./features/actions/ClaimActions'));
@@ -18,7 +18,6 @@ const ClaimsPage = () => {
       <Route path={`${path}/transactions/new`} component={ClaimTransactionsForm}/>
       <Route path={`${path}/transactions/edit/:id`} component={ClaimTransactionsForm}/>
       <Route exact path={`${path}/upload-transactions`} component={ClaimUploadTransactions}/>
-      <Redirect to='/error/404' />
     </Switch>
   )
 }

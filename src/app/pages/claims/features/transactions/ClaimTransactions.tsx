@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { useTransactionsClaim } from "../../../../hooks/claims/useClaimTransactions";
-import ClaimTransactionsTable from "../../components/ClaimsTransactionsGrid";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../setup";
+import { useTransactionsClaim } from "../../../../hooks/claims/useClaimTransactions";
+import ClaimTransactionsTable from "../../components/ClaimsTransactionsGrid";
 
 const ClaimTransactions: React.FC = () => {
     const {
