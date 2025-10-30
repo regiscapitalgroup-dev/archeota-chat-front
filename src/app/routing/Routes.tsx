@@ -5,49 +5,37 @@
  * components (e.g: `src/app/modules/Auth/pages/AuthPage`, `src/app/BasePage`).
  */
 
-import React, {FC} from 'react'
-import {Redirect, Switch, Route} from 'react-router-dom'
-import {shallowEqual, useSelector} from 'react-redux'
-import {MasterLayout} from '../../_metronic/layout/MasterLayout'
-import {PrivateRoutes} from './PrivateRoutes'
-import {Logout, AuthPage} from '../modules/auth'
-import {ErrorsPage} from '../modules/errors/ErrorsPage'
-import {RootState} from '../../setup'
-import {ChatHistoryProvider} from '../context/ChatHistoryContext'
+import { FC } from 'react'
+import { shallowEqual, useSelector } from 'react-redux'
+import { Route, Switch } from 'react-router-dom'
+import { RootState } from '../../setup'
 import { AssetDraftProvider } from '../context/AssetDraftContext'
+import { ChatHistoryProvider } from '../context/ChatHistoryContext'
+import { ChatsListCtxProvider } from '../context/ChatsListContext'
+import { AuthPage } from '../modules/auth'
+import Layout from '../pages/layout/Layout'
+import { PrivateRoutes } from './PrivateRoutes'
+import { PublicRoutes } from './PublicRoutes'
 
 const Routes: FC = () => {
-  const isAuthorized = useSelector<RootState>(({auth}) => auth.user, shallowEqual)
-
+  const user = useSelector<RootState>(({auth}) => auth.user, shallowEqual)
   return (
     <Switch>
-      {!isAuthorized ? (
-        /*Render auth page when user at `/auth` and not authorized.*/
-        <Route>
-          <AuthPage />
-        </Route>
-      ) : (
-        /*Otherwise redirect to root page (`/`)*/
-        <Redirect from='/auth' to='/' />
-      )}
-
-      <Route path='/error' component={ErrorsPage} />
-      <Route path='/logout' component={Logout} />
-
-      {!isAuthorized ? (
-        /*Redirect to `/auth` when user is not authorized*/
-        <Redirect to='/auth/login' />
-      ) : (
+      <Route path='/auth/login' component={AuthPage}/>
+      <ChatsListCtxProvider>
         <ChatHistoryProvider>
           <AssetDraftProvider>
-            <MasterLayout>
-              <PrivateRoutes />
-            </MasterLayout>
+            <Layout>
+              {
+                user ? <PrivateRoutes/> : <PublicRoutes/>
+              }
+            </Layout>
           </AssetDraftProvider>
         </ChatHistoryProvider>
-      )}
+      </ChatsListCtxProvider>
     </Switch>
   )
 }
 
-export {Routes}
+export { Routes }
+

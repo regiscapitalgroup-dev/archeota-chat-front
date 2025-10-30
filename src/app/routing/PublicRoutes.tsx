@@ -1,12 +1,13 @@
-import React from 'react'
-import {Redirect, Route, Switch} from 'react-router-dom'
-import {AuthPage} from '../modules/auth'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import Chat from '../pages/chat/features/chat/Chat'
 
 export function PublicRoutes() {
   return (
-    <Switch>
-      <Route path='/auth' component={AuthPage} />
-      <Redirect to='/auth' />
-    </Switch>
+      <Switch>
+        <Route exact path='/assets/chat/:id?' component={Chat}/>
+        <Route path='*'>
+          <Redirect to='/assets/chat/'/>
+        </Route>
+      </Switch>
   )
 }
