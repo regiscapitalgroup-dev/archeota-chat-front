@@ -5,11 +5,13 @@ import { Logout } from '../modules/auth'
 import AssetsPageWrapper from '../pages/assets/AssetsWrapper'
 import ClaimsPageWrapper from '../pages/claims/ClaimsWrapper'
 import { DashboardCoreWrapper } from '../pages/dashboardCore/DashboardCoreWrapper'
+import ProfilePage from '../modules/profile/ProfilePage'
 
 export function PrivateRoutes() {
   return (
     <Suspense fallback={<FallbackView />}>
       <Switch>
+        <Route path='/crafted/pages/profile' component={ProfilePage} />
         <Route path='/dashboard/claims' component={DashboardCoreWrapper} />
         <Route path='/claims' component={ClaimsPageWrapper}/>
         <Route path='/assets' component={AssetsPageWrapper}/>
