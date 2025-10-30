@@ -1,0 +1,11 @@
+.react-select__control {
+    border: 1px solid #e4e6ef !important;
+    padding: 0.2rem 0 !important;
+    border-radius: 0.475rem !important;
+
+}
+
+.react-select__control--is-focused {
+    box-shadow: none !important;
+    border-color: #b5b5c3 !important;
+}
