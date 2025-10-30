@@ -1,35 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getAssetByCategories } from '../../services/assetsService';
-import { string } from 'yup';
 
 
 export const useAssetsByCategories = ( reload: number, user? :string) => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
+    const isMountedRef = useRef(false);
 
     useEffect(() => {
-        let isMounted = true;
+        isMountedRef.current = true;
         const fetch = async () => {
+            if(!isMountedRef.current)
+                return;
             try {
                 setLoading(true);
                 const data = await getAssetByCategories(user);
-                if (isMounted) {
-                    setData(data);
-                }
+                setData(data);
             } catch (err) {
-                if (isMounted) {
-                    setError(err as Error);
-                }
+                setError(err as Error);
             } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             }
         };
         fetch()
         return () => {
-            isMounted = false;
+            isMountedRef.current = false;
         };
     }, [reload, user]);
 
