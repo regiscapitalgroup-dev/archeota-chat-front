@@ -22,7 +22,7 @@ export const ToolbarWithFilter = <T, >({
   return (
     <div className='d-flex align-items-center py-1 position-relative'>
       {/* begin::Wrapper */}
-      <div className='me-4'>
+      <div>
         <button
           className='btn btn-sm btn-flex btn-light btn-active-dark fw-bolder'
           onClick={() => setShowDropdown(prev => !prev)}
