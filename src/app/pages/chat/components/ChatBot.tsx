@@ -149,6 +149,8 @@ const ChatBot: FC = () => {
         setMessages((prevs) => [...prevs, newMessage]);
         setLoading(true);
         try {
+            if(!isMountedRef.current)
+                return;
             const response = await sendMessageChat(_msg.trim(), chatSession);
             const { 
                 chatSessionId,
@@ -169,19 +171,22 @@ const ChatBot: FC = () => {
 
             setChatSession(chatSessionId);
             setMessages((prevs) => [...prevs, recvMessage]);
-            if(user)
+            if(user) {
                 loadChats(); // it can be optimized!!
+                setDraft({
+                    category: category,
+                    attributes: attributes,
+                    summary: summary
+                });
+            }
             setExtraInfo(additionalQuestions);
             setExtraQuestions(extraQuestions);
             setSummary(summary);
-            setDraft({
-                category: category,
-                attributes: attributes,
-                summary: summary
-            });
             history.push(`/assets/chat/${chatSessionId}`)
         }
         catch (error) {
+            if(!isMountedRef.current)
+                return;
             const errMessage: MessageModel = {
                 user: 0,
                 type: 'in',
@@ -194,6 +199,8 @@ const ChatBot: FC = () => {
             setSummary('');
         }
         finally {
+            if(!isMountedRef.current)
+                return;
             setLoading(false);
         }
 
