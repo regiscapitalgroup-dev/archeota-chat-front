@@ -131,7 +131,9 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
           <span className='text-muted mt-1 fs-7'>List of claims actions</span>
         </h3>
         <div className="d-flex gap-2 ms-auto align-items-center">
-          <ToolbarWithFilter props={FilterProps} filters={filters} setFilters={setFilters} onReset={() => setFilters({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] })} />
+          { data.length > 0 && 
+            <ToolbarWithFilter props={FilterProps} filters={filters} setFilters={setFilters} onReset={() => setFilters({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] })} />
+          }
           <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active' onClick={() => history.push('/claims/actions/new')}>
             <KTSVG
               path="/media/icons/duotune/general/gen041.svg" 
