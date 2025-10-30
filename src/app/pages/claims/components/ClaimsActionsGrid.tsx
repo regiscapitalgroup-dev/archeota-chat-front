@@ -1,15 +1,16 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react';
+import { TableColumn } from 'react-data-table-component';
 import { useHistory } from 'react-router';
-import { TableColumn } from 'react-data-table-component'
-import DataTableComponent from '../../../components/DataTableComponent'
-import { filterData } from '../../../services/utilsService'
-import { ClaimsActionsModel } from '../models/ClaimsActionsModel'
-import { FilterProp } from '../models/FilterProp.Model'
-import ActionTable from './ActionTable'
-import { ToolbarWithFilter } from './ToolbarWithFilter'
-import { KTSVG } from '../../../../_metronic/helpers';
 import Swal from 'sweetalert2';
+import { KTSVG } from '../../../../_metronic/helpers';
+import DataTableComponent from '../../../components/DataTableComponent';
+import { formatCurrency } from '../../../helpers/FormatCurrency';
 import { deleteActionsClaim } from '../../../services/cliamsService';
+import { filterData } from '../../../services/utilsService';
+import { ClaimsActionsModel } from '../models/ClaimsActionsModel';
+import { FilterProp } from '../models/FilterProp.Model';
+import ActionTable from './ActionTable';
+import { ToolbarWithFilter } from './ToolbarWithFilter';
 
 const FilterProps: FilterProp[] = [
   {
@@ -95,7 +96,7 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
     {
       name: 'Total Settlement Fund',
       selector: (row) => row.totalSettlementFund,
-      cell: (row) => row.totalSettlementFund || 'N/A',
+      cell: (row) => row.totalSettlementFund ? formatCurrency(row.totalSettlementFund) : 'N/A',
       sortable: true,
     },
     {name: 'Claim Status', selector: (row) => row.claimStatus, sortable: true},

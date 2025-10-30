@@ -13,3 +13,8 @@ export function formatCurrencyUSD(value: number) {
         currency: 'USD',
     }).format(value);
 }
+
+export const formatCurrency = (currency: string) => {
+    currency = currency.replace('$', '').replaceAll(',','');
+    return formatCurrencyUSD(Number(currency));
+}
