@@ -10,6 +10,27 @@ import { KTSVG } from '../../../../_metronic/helpers'
 import ActionTable from './ActionTable'
 import Swal from 'sweetalert2'
 import { deleteTransactionsClaim } from '../../../services/cliamsService'
+import { FilterProp } from '../models/FilterProp.Model'
+
+
+const FilterProps: FilterProp[] = [
+  {
+    key: 'accountName',
+    label: 'Account Name',
+    type: 'input'
+  },
+  {
+    key: 'tradeDate',
+    label: 'Trade Date',
+    type: 'date'
+  },
+  {
+    key: 'symbol',
+    label: 'Symbol',
+    type: 'input'
+  }
+];
+
 
 type Props = {
   data: ClaimTransactionModel[]
@@ -119,7 +140,7 @@ const ClaimTransactionsTable: React.FC<Props> = ({
         </div>
         <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
           {data.length > 0 && (
-            <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} props={[]} />
+            <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} props={FilterProps} />
           )} 
           <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active' onClick={() => history.push('/claims/transactions/new')}>
             <KTSVG
