@@ -28,7 +28,7 @@ export const waitAndFormatTimestamp = (timestamp: string): Promise<string> => {
 };
 
 export const toShortDateString = (dateStr: string, locale = 'en-GB') => {
-    const date = new Date(dateStr.replace(' ', 'T'))
+    const date = new Date(dateStr.replace(' ', 'T')+'T00:00:00')
     return date.toLocaleDateString(locale, {
         year: 'numeric',
         month: 'short',
