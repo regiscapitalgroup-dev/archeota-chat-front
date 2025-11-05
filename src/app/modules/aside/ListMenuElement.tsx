@@ -33,7 +33,7 @@ const ListMenuElement: React.FC<Props> = ({
         }
         else
             setStyles((prev) => ({ ...prev, height: '0px' }));
-    }, [show]);
+    }, [show, children]);
 
     return (
         <div className={clsx("menu-item menu-accordion", { 'here show' : show } )}>

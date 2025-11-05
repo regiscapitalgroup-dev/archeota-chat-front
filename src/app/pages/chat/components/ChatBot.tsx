@@ -179,8 +179,8 @@ const ChatBot: FC = () => {
                     summary: summary
                 });
             }
-            setExtraInfo(additionalQuestions);
-            setExtraQuestions(extraQuestions);
+            setExtraInfo(extraQuestions);
+            setExtraQuestions(additionalQuestions);
             setSummary(summary);
             history.push(`/assets/chat/${chatSessionId}`)
         }

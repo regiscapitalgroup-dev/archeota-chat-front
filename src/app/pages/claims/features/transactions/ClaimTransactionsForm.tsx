@@ -109,47 +109,70 @@ const ClaimTransactionsForm: React.FC = () => {
                             onSubmit={handleSubmit} 
                         > 
                             <Form className="form">
-                                <div className="card-body">
-                                    <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
-                                        <div className="col">
+                                <div className="card-body d-flex flex-column gap-3">
+                                    <div className="row gy-3">
+                                        <div className="col-12 col-md-6">
                                                 <label>Data For</label>
                                                 <Field name="data_for" className="form-control"/>
                                         </div>
-                                        <div className="col">
+                                        <div className="col-12 col-md-6">
                                                 <label>Trade Date</label>
                                                 <Field name="trade_date" className="form-control" type="date"/>
                                         </div>
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                             <label>Account</label>
                                             <Field name="account" className="form-control"/> 
                                         </div>
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                             <label>Account Name</label>
                                             <Field name="account_name" className="form-control"/>
                                         </div>
-                                    
-                                        <div className="col">
+                                    </div>
+
+                                    <div className="row gy-3">
+                                        <div className="col-12 col-md-6">
                                             <label>Account Type</label>
                                             <Field name="account_type" className="form-control"/>
                                         </div>
-                                        <div className="col">
+                                        <div className="col-12 col-md-6">
                                             <label>Account Number</label>
                                             <Field name="account_number" className="form-control"/>
                                         </div>
+                                    </div>
+
+                                    <div className="row gy-3">
                                         <div className="col">
                                             <label>Activity</label>
                                             <Field name="activity" className="form-control"/>
                                         </div>
+                                    </div>
 
+                                    <div className="row gy-3">
+                                        <div className="col-12 col-md-6">
+                                            <label>Symbol</label>
+                                            <Field name="symbol" className="form-control"/>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <label>Type</label>
+                                            <Field name="type" className="form-control"/>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                             <label>Description</label>
                                             <Field name="description" className="form-control"/>
                                         </div>
-                                        <div className="col">
-                                            <label>Symbol</label>
-                                            <Field name="symbol" className="form-control"/>
-                                        </div>
-                                        <div className="col">
+                                    </div>
+
+                                    <div className="row gy-3">
+                                        <div className="col-12 col-md-6">
                                             <label>Quantity</label>
                                             <Field name="quantity">
                                                 {({field, form}: FieldProps) => (
@@ -165,7 +188,7 @@ const ClaimTransactionsForm: React.FC = () => {
                                                 )}
                                             </Field>
                                         </div>
-                                        <div className="col">
+                                        <div className="col-12 col-md-6">
                                             <label>Amount</label>
                                             <Field name="amount">
                                                 {({field, form}: FieldProps) => (
@@ -183,17 +206,19 @@ const ClaimTransactionsForm: React.FC = () => {
                                                 )}
                                             </Field>
                                         </div>
-                                        <div className="col">
-                                            <label>Notes</label>
-                                            <Field name="notes" className="form-control" />
-                                        </div>
-                                        <div className="col">
-                                            <label>Type</label>
-                                            <Field name="type" className="form-control"/>
-                                        </div>
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                             <label>Company</label>
                                             <Field name="company" className="form-control"/>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col">
+                                            <label>Notes</label>
+                                            <Field name="notes" className="form-control" />
                                         </div>
                                     </div>
                                 </div>

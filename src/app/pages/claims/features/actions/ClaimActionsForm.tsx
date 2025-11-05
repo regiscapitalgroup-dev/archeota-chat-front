@@ -108,6 +108,7 @@ const ClaimsActionForm: React.FC = () => {
         }
     }
 
+    // set 'p-0 mb-3' [card-wrapper] && p-0 mt-3 - [card-body]
     return (
     <div className='card mb-10'>
         <div className='card-body'>
@@ -129,15 +130,25 @@ const ClaimsActionForm: React.FC = () => {
                             onSubmit={handleSubmit}
                         >
                             <Form className="form">
-                                <div className="card-body">
-                                    <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
-                                        <div className="col">
+                                <div className="card-body d-flex flex-column gap-3">
+                                    <div className="row gy-3">
+                                        <div className="col-12 col-md-6">
                                                 <label className="required">Ticker Symbol</label>
                                                 <Field name="tycker_symbol" className="form-control"/>
                                                 <div className="text-danger">
                                                     <ErrorMessage name="tycker_symbol"/>
                                                 </div>
                                         </div>
+                                        <div className="col-12 col-md-6">
+                                            <label className="required">Exchange</label>
+                                            <Field name="exchange" className="form-control"/> 
+                                            <div className="text-danger">
+                                                <ErrorMessage name="exchange"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                                 <label className="required">Company Name</label>
                                                 <Field name="company_name" className="form-control"/>
@@ -145,13 +156,9 @@ const ClaimsActionForm: React.FC = () => {
                                                     <ErrorMessage name="company_name"/>
                                                 </div>
                                         </div>
-                                        <div className="col">
-                                            <label className="required">Exchange</label>
-                                            <Field name="exchange" className="form-control"/> 
-                                            <div className="text-danger">
-                                                <ErrorMessage name="exchange"/>
-                                            </div>
-                                        </div>
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                             <label className="required">Lawsuit Type</label>
                                             <Field name="lawsuit_type" className="form-control"/>
@@ -159,16 +166,22 @@ const ClaimsActionForm: React.FC = () => {
                                                 <ErrorMessage name="lawsuit_type"/>
                                             </div>
                                         </div>
-                                    
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                             <label>Eligibility</label>
                                             <Field name="eligibility" className="form-control"/>
                                         </div>
-                                        <div className="col">
+                                    </div>
+
+                                    <div className="row gy-3">
+                                        <div className="col-12 col-md-6">
                                             <label>Potencial Claim</label>
                                             <Field name="potencial_claim" className="form-control"/>
                                         </div>
-                                        <div className="col">
+
+                                        <div className="col-12 col-md-6">
                                             <label>Total Settlement Fund</label>
                                             <Field name="total_settlement_fund">
                                                 {({field, form}: FieldProps) => (
@@ -186,34 +199,52 @@ const ClaimsActionForm: React.FC = () => {
                                                 )}
                                             </Field>
                                         </div>
+                                    </div>
 
-                                        <div className="col">
+                                    <div className="row gy-3">
+                                        <div className="col-12 col-md-6">
                                             <label className="required">Filing Date</label>
                                             <Field name="filing_date" className="form-control" type='date'/>
                                             <div className="text-danger">
                                                 <ErrorMessage name="filing_date"/>
                                             </div>
                                         </div>
-                                        <div className="col">
+                                        <div className="col-12 col-md-6">
                                             <label>Claim Deadline</label>
-                                            <Field name="claim_deadline" className="form-control"/>
+                                            <Field name="claim_deadline" className="form-control" type='date'/>
                                         </div>
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                             <label>Law Firm Handing Case</label>
                                             <Field name="law_firm_handing_case" className="form-control"/>
                                         </div>
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
                                             <label>Case Docket Number</label>
                                             <Field name="case_docket_number" className="form-control"/>
                                         </div>
-                                    
+                                    </div>
 
-                                    
+                                    <div className="row">
                                         <div className="col">
                                             <label>Jurisdiction</label>
                                             <Field name="jurisdiction" className="form-control"/>
-                                        </div>
+                                        </div>  
+                                    </div>
+
+                                    <div className="row">
                                         <div className="col">
+                                            <label>Official Claim Filing Link</label>
+                                            <Field name="official_claim_filing_link" className="form-control"/>
+                                        </div>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="col-12 col-md-6">
                                             <label>Claim Status</label>
                                             <Field name="claim_status" >
                                                 {({field, form}: FieldProps) => (
@@ -226,10 +257,6 @@ const ClaimsActionForm: React.FC = () => {
                                                     />
                                                 )}
                                             </Field>
-                                        </div>
-                                        <div className="col">
-                                            <label>Official Claim Filing Link</label>
-                                            <Field name="official_claim_filing_link" className="form-control"/>
                                         </div>
                                     </div>
                                 </div>
