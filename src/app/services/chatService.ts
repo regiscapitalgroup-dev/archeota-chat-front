@@ -41,3 +41,16 @@ export const getChatDetail = async (chatId: string) => {
         throw error;
     }
 };
+
+export const associateChats = async (chatId: string) => {
+    try {
+        const response = await apiClient.post(`chat/sessions/associate/`, {
+            anonymous_session_id: chatId
+        });
+        return response.data;
+    }
+    catch (error) {
+        console.error('Error fetching:', error);
+        throw error;
+    }
+}
