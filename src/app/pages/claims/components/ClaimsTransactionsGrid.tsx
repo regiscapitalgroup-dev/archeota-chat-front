@@ -7,17 +7,17 @@ import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
 import {getISODate, toShortDateString} from '../../../helpers/FormatDate'
 import {ToolbarWithFilter} from './ToolbarWithFilter'
 import { KTSVG } from '../../../../_metronic/helpers'
-import ActionTable from './ActionTable'
+import ActionTable from '../../../components/ActionTable'
 import Swal from 'sweetalert2'
 import { deleteTransactionsClaim } from '../../../services/cliamsService'
-import { FilterProp } from '../models/FilterProp.Model'
+import { FilterProp } from '../../../components/molecules/models/FilterProp.Model'
 
 
 const FilterProps: FilterProp[] = [
   {
     key: 'accountName',
     label: 'Account Name',
-    type: 'input'
+    type: 'text'
   },
   {
     key: 'tradeDate',
@@ -27,7 +27,7 @@ const FilterProps: FilterProp[] = [
   {
     key: 'symbol',
     label: 'Symbol',
-    type: 'input'
+    type: 'text'
   }
 ];
 
@@ -130,14 +130,12 @@ const ClaimTransactionsTable: React.FC<Props> = ({
   return (
     <div className='card shadow-sm mb-10'>
       <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center position-relative'>
-        <div>
           <h3 className='card-title align-items-start flex-column'>
             <span className='fw-bolder text-dark fs-3'>
               Stock Transactions {selectedUser ? selectedUser?.name : ''}
             </span>
             <span className='text-muted mt-1 fs-7'>List of movements</span>
           </h3>
-        </div>
         <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
           {data.length > 0 && (
             <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} props={FilterProps} />

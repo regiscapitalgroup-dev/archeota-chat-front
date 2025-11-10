@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { getUsersRoles } from '../../services/usersService';
+import { RoleModel } from './models/RoleModel';
 
 export const useUserRoles = () => {
-    const [roles, setRoles] = useState<any | null>(null);
+    const [roles, setRoles] = useState<RoleModel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 

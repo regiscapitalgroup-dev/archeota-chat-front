@@ -1,0 +1,85 @@
+.classifier {
+    &.pallet { 
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        &.selected {
+            i {
+                display: block;
+            }
+        }
+        &:not(.selected) {
+            i {
+                display: none;
+            }
+        }
+    }
+    &.classifier-1 {
+        background-color: rgb(230, 230, 230); 
+        color: rgb(61, 61, 61);
+    }
+    &.classifier-2 {
+        background-color: rgb(255, 207, 201);
+        color: rgb(177, 2, 2);
+    }
+    &.classifier-3 {
+        background-color: rgb(255, 200, 170);
+        color: rgb(117, 56, 0);
+    }
+    &.classifier-4 {
+        background-color: rgb(255, 229, 160);
+        color: rgb(71, 56, 33);
+    }
+    &.classifier-5 {
+        background-color: rgb(212, 237, 188);
+        color: rgb(17, 115, 75);
+    }
+    &.classifier-6 {
+        background-color: rgb(191, 225, 246);
+        color: rgb(10, 83, 168);
+    }
+    &.classifier-7 {
+        background-color: rgb(198, 219, 225);
+        color: rgb(33, 90, 108);
+    }
+    &.classifier-8 {
+        background-color: rgb(230, 207, 242);
+        color: rgb(90, 50, 134);
+    }
+    &.classifier-9 {
+        background-color: rgb(61, 61, 61);   
+        color: rgb(229, 229, 229);
+    }
+    &.classifier-10 {
+        background-color: rgb(177, 2, 2);    
+        color: rgb(255, 207, 201);
+    }
+    &.classifier-11 {
+        background-color: rgb(117, 56, 0);   
+        color: rgb(255, 200, 170);
+    }
+    &.classifier-12 {
+        background-color: rgb(71, 56, 34);   
+        color: rgb(255, 229, 160);
+    }
+    &.classifier-13 {
+        background-color: rgb(17, 115, 75);  
+        color: rgb(212, 237, 188);
+    }
+    &.classifier-14 {
+        background-color: rgb(10, 83, 168);  
+        color: rgb(191, 224, 246);
+    }
+    &.classifier-15 {
+        background-color: rgb(33, 90, 108);  
+        color: rgb(198, 219, 225);
+    }
+    &.classifier-16 {
+        background-color: rgb(90, 50, 134);  
+        color: rgb(229, 207, 242);
+    }
+}

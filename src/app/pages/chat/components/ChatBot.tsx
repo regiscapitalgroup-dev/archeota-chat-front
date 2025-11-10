@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { FC, useCallback, useEffect, useRef, useState } from 'react'
-import { shallowEqual, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { MessageModel } from '../../../../_metronic/helpers'
@@ -8,6 +8,7 @@ import { RootState } from '../../../../setup'
 import { useAssetDraft } from '../../../context/AssetDraftContext'
 import { useChatsList } from '../../../context/ChatsListContext'
 import { getCurrentDateText, getCurrentTime, waitAndFormatTimestamp } from '../../../helpers/FormatDate'
+import { addChatSession, clearSessions } from '../../../modules/chats'
 import { getChatDetail, sendMessageChat } from '../../../services/chatService'
 import { RouteParamsModel } from '../../shared/models/RouteParamsModel'
 import { IQuestion } from '../models/QuestionModel'
@@ -32,7 +33,9 @@ const ChatBot: FC = () => {
     const { setOnClearRequested, loadChats } = useChatsList(); 
     const { id: currentSessionId } = useParams<RouteParamsModel>()
     const history = useHistory();
+    const dispatch = useDispatch();
     const isMountedRef = useRef(true);
+    const selector = useSelector((state: RootState) => state.chatSessions);
 
     const clearChat = useCallback(async () => {
         const clearInputs = async () => {
@@ -43,6 +46,8 @@ const ChatBot: FC = () => {
             setExtraInfo([]);
             setExtraQuestions([]);
             setSummary('');
+            if(!user)
+                dispatch(clearSessions());
         }
         if(!userRef.current && messagesRef.current.length > 0) {
             try {
@@ -88,9 +93,25 @@ const ChatBot: FC = () => {
         setOnClearRequested(clearChat);
     }, [setOnClearRequested])
 
+
     useEffect(() => {
-        if(!user || !currentSessionId || currentSessionId === chatSession)
+        if(!user) {
+            const _localSession = selector.session;
+            if(_localSession) {
+                setChatSession(_localSession.chatSessionId);
+                setMessages(_localSession.messages);
+                setExtraInfo(_localSession.extraQuestions);
+                setExtraQuestions(_localSession.additionalQuestions);
+                setSummary(_localSession.summary);
+                history.push(`/assets/chat/${_localSession.chatSessionId}`)
+                scrollToBottom();
+            }
             return;
+        }
+
+        if(!currentSessionId || currentSessionId === chatSession)
+            return;
+
 
         setChatSession(currentSessionId);
         const fetchChatDetail = async () => {
@@ -178,6 +199,17 @@ const ChatBot: FC = () => {
                     attributes: attributes,
                     summary: summary
                 });
+            }
+            else {
+                dispatch(addChatSession({
+                    messages: [newMessage, recvMessage],
+                    summary,
+                    extraQuestions,
+                    category,
+                    attributes,
+                    additionalQuestions,
+                    chatSessionId
+                }))
             }
             setExtraInfo(extraQuestions);
             setExtraQuestions(additionalQuestions);

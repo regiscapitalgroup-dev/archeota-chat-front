@@ -5,9 +5,10 @@ import { createPortal } from "react-dom";
 type ActionTableProps = {
     onEdit: () => void;
     onDelete: () => void;
+    onDetails?: () => void;
 };
 
-const ActionTable = ({ onEdit, onDelete }: ActionTableProps) => {
+const ActionTable = ({ onEdit, onDelete, onDetails }: ActionTableProps) => {
   let [show, setShow] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -67,12 +68,22 @@ const ActionTable = ({ onEdit, onDelete }: ActionTableProps) => {
           <div tabIndex={0} ref={dropdownRef} className='card shadow-lg rounded-4 action-wrapper' style={popUpStyle}>
               <div className="card-body action-body">
                   <ul>
+                    { !!onDetails && (
+                      <li>
+                        <button className="btn btn-light" onClick={() => {
+                          setShow(false);
+                          onDetails();
+                        }}>
+                          Details
+                        </button>
+                      </li>
+                    )}
                     <li> 
                       <button className="btn btn-light" onClick={() => {
                         setShow(false);
                         onEdit();
                       }}> 
-                      Edit 
+                        Edit 
                       </button> 
                     </li>
                     <li> 

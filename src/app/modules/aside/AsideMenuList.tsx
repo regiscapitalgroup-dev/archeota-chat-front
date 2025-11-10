@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { HistoryChatModel } from "../../../_metronic/layout/components/aside/models/HistoryChatModel";
@@ -9,6 +9,7 @@ import { useCategories } from "../../hooks/categories/useCategories";
 import { clearSelectedCategory, setSelectedCategory } from "../categories";
 import AsideMenuElement from "./AsideMenuElement";
 import ListMenuElement from "./ListMenuElement";
+import { isClaimsSection } from "../../helpers/asideSection";
 
 export const AsideMenuList: React.FC = () => {
     const location = useLocation();
@@ -17,9 +18,9 @@ export const AsideMenuList: React.FC = () => {
     const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.auth.user, shallowEqual);
     const {categories} = useCategories(user);
-    const isClaims = location.pathname.startsWith('/claims') || location.pathname.startsWith('/dashboard');
-    const isAssets = location.pathname.startsWith('/assets') || location.pathname.includes('/profile');
+    const isClaims = isClaimsSection(location.pathname);
     const { chats, triggerClear, loadChats } = useChatsList();
+    const [userManagement, setUserManagement] = useState(false);
 
     const handleNewChat = () => {
         const _empty = async () => {
@@ -32,16 +33,13 @@ export const AsideMenuList: React.FC = () => {
     }
 
     const handleLogin = () => {
-        const _empty = async () => {
-            if(await triggerClear())
-                history.push('/auth/login/');
-        }
-        _empty();
+        history.push('/auth/login/');
     }
 
     useEffect(() => {
         if(!user)
             return;
+        setUserManagement(user.role == 'COMPANY_ADMIN' || user.role == 'COMPANY_MANAGER')
         loadChats();
     }, [user]);
 
@@ -96,11 +94,33 @@ export const AsideMenuList: React.FC = () => {
                     title='Transactions'
                     fontIcon='bi-layers'
                 />
+                { userManagement && 
+                    <AsideMenuElement
+                        to='/users'
+                        icon='/media/icons/duotune/communication/com006.svg'
+                        title='Users Management'
+                        fontIcon='bi-layers'
+                    />
+                }
+                {/* <ListMenuElement
+                    title='Users Management'
+                    to='/users'
+                    strict={false}
+                    fontIcon='bi-layers'
+                    icon='/media/icons/duotune/communication/com006.svg'
+                >
+                    <AsideMenuElement
+                        to='/users/assign'
+                        title='Users Assignment'
+                        fontIcon='bi-layers'
+                        hasBullet={true}
+                    /> 
+                </ListMenuElement> */}
                 <div className='separator my-5'></div>
             </>
         )}
 
-        { user && isAssets && (
+        { user && !isClaims && (
             <>
                 <div className='menu-item'>
                     <div className='menu-content pt-8 pb-2'>
@@ -133,8 +153,8 @@ export const AsideMenuList: React.FC = () => {
                                 onClick={() => { 
                                     dispatch(
                                         setSelectedCategory({
-                                        id: cat.id,
-                                        name: cat.categoryName,
+                                            id: cat.id,
+                                            name: cat.categoryName,
                                         })
                                     )
                                     history.push(`/assets`)
@@ -146,7 +166,7 @@ export const AsideMenuList: React.FC = () => {
             </>
         )}
         
-        { user && isAssets && draft && draft.category && (
+        { user && !isClaims && draft && draft.category && (
             <>
                 <ListMenuElement
                     title={`${draft.category.name || draft.category}`}
@@ -173,7 +193,7 @@ export const AsideMenuList: React.FC = () => {
         )}
 
         <div>
-            {isAssets && (
+            {!isClaims && (
                 <>
                     <div className='menu-item'>
                         <div className='menu-content pt-8 pb-2'>
@@ -190,7 +210,7 @@ export const AsideMenuList: React.FC = () => {
                     />
                 </>
             )}
-            { isAssets && chats.length > 0 && (
+            { !isClaims && chats.length > 0 && (
                 <>
                     {chats.map((item: HistoryChatModel) => (
                         <AsideMenuElement
