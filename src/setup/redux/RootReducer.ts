@@ -3,11 +3,13 @@ import { combineReducers } from 'redux'
 import * as auth from '../../app/modules/auth'
 import * as selectedUser from "../../app/modules/users";
 import * as selectedCategory from "../../app/modules/categories";
+import * as chatSessions from '../../app/modules/chats';
 
 export const rootReducer = combineReducers({
   auth: auth.reducer,
   selectedUser: selectedUser.reducer,
-  selectedCategory: selectedCategory.reducer
+  selectedCategory: selectedCategory.reducer,
+  chatSessions: chatSessions.reducer
 })
 
 export type RootState = ReturnType<typeof rootReducer>
