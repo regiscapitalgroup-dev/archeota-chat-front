@@ -1,0 +1,1 @@
+export const isClaimsSection = (path: string) => (path.startsWith('/claims') || path.startsWith('/dashboard') || path.startsWith('/users'));
