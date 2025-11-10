@@ -8,25 +8,25 @@ import { formatCurrency } from '../../../helpers/FormatCurrency';
 import { deleteActionsClaim } from '../../../services/cliamsService';
 import { filterData } from '../../../services/utilsService';
 import { ClaimsActionsModel } from '../models/ClaimsActionsModel';
-import { FilterProp } from '../models/FilterProp.Model';
-import ActionTable from './ActionTable';
+import { FilterProp } from '../../../components/molecules/models/FilterProp.Model';
+import ActionTable from '../../../components/ActionTable';
 import { ToolbarWithFilter } from './ToolbarWithFilter';
 
 const FilterProps: FilterProp[] = [
   {
     key: 'companyName',
     label: 'Company Name',
-    type: 'input'
+    type: 'text'
   },
   {
     key: 'lawsuitType',
     label: 'Lawsuit Type',
-    type: 'input'
+    type: 'text'
   },
   {
     key: 'tyckerSymbol',
     label: 'Ticket Symbol',
-    type: 'input'
+    type: 'text'
   },
   {
     key: 'claimStatus',

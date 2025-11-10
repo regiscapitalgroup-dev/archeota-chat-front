@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react'
-import { FilterProp } from '../models/FilterProp.Model'
+import { FilterProp } from './models/FilterProp.Model'
 
 type Props<T> = {
   show: boolean;
@@ -61,7 +61,7 @@ export const FilterOptionsPopup = <T,>({
               <div key={i} className="mb-3">
                 <label className="form-label">{p.label}</label>
                 {
-                  p.type==="input" ? 
+                  p.type==="text" ? 
                     <input type="text" className="form-control" value={(filters as Record<string, string>)[p.key]} onChange={(e) => setFilters({...filters, [p.key]: e.target.value})}/> 
                   : p.type==="date" ? 
                     <input type="date" className="form-control" value={(filters as Record<string, string>)[p.key]} onChange={(e) => setFilters({...filters, [p.key]: e.target.value})}/>
@@ -70,7 +70,7 @@ export const FilterOptionsPopup = <T,>({
                       <div key={i+box} className="form-check form-check-custom form-check-solid mb-3">
                           <input className="form-check-input" 
                             type="checkbox" 
-                            checked={(filters as Record<string, string[]>)[p.key].includes(box)} id={`${box}_cbox`}
+                            checked={(filters as Record<string, string[]>)[p.key]?.includes(box)} id={`${box}_cbox`}
                             onChange={() => 
                               setFilters({
                                 ...filters, 

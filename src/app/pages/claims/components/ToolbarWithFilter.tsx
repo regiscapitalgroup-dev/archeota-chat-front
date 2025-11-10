@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { KTSVG } from '../../../../_metronic/helpers'
-import { FilterProp } from '../models/FilterProp.Model'
-import { FilterOptionsPopup } from './FilterOptionsPopup'
+import { FilterProp } from '../../../components/molecules/models/FilterProp.Model'
+import { FilterOptionsPopup } from '../../../components/molecules/FilterOptionsPopup'
 
 interface ToolbarWithFilterProps<T> {
   filters: T,
