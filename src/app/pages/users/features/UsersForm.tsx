@@ -1,5 +1,5 @@
 import { ErrorMessage, Field, FieldProps, Form, Formik, FormikProps } from "formik"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import Select from "react-select"
 import * as Yup from 'yup'
@@ -10,9 +10,10 @@ import { RouteParamsModel } from "../../shared/models/RouteParamsModel"
 import { Classifiers } from "../mock/classifiers.mock"
 import { UserCreateModel } from "../models/UsersCreateModel"
 import clsx from "clsx"
+import { _UserListMock } from "../mock/user_list.mock"
+import { UserListModel } from "../models/UserListModel"
 
-const _countriesOptions = countries.map(c => ({ ...c, value: c.country, label: c.country }))
-const _classifiersOptions = Classifiers.map(c => ({ value: c.id, label: c.name, color: c.color }));
+const _countriesOptions = countries.map(c => ({  value: c.country, label: c.country, ...c }))
 
 const initialValues: UserCreateModel = {
   first_name: '',
@@ -21,7 +22,6 @@ const initialValues: UserCreateModel = {
   password: '',
   role: '',
   active: true,
-  is_staff: false,
   address: '',
   national_id: '',
   country: '',
@@ -51,10 +51,11 @@ const UsersForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [countryCode, setCountryCode] = useState<string | null>(null);
-
   const isEdited = location.pathname.includes('/edit');
   const { id: routeId } = useParams<RouteParamsModel>();
   const { roles, loading: loadingRoles } = useUserRoles();
+  const [formValues, setFormValues] = useState<UserCreateModel>(initialValues);
+  const _classifiersOptions = Classifiers.map(c => ({ value: c.id, label: c.name, color: c.color }));
 
   const handleSubmit = (values: any) => {
     history.push('/users')
@@ -75,6 +76,47 @@ const UsersForm: React.FC = () => {
     form.setFieldValue(name, value.value)
   }
 
+  useEffect(() => {
+    const fetchRecord = async () => {
+      if(!isEdited || !routeId) {
+        setFormValues(initialValues);
+      }
+      else {
+        try {
+          setLoading(true);
+          const _user = await new Promise<UserListModel | undefined>((res) => setTimeout(() => res(_UserListMock.find(u => u.id === Number(routeId))), 1000));
+          if(!_user) {
+            history.push('/users');
+            return;
+          }
+          setFormValues({
+            id: _user.id,
+            active: _user.isActive,
+            address: '',
+            country: _user.country,
+            email: _user.email,
+            first_name: _user.firstName,
+            last_name: _user.lastName,
+            national_id: '',
+            password: '',
+            phone_number: _user.phoneNumber??'',
+            role: _user.role,
+            classifier_id: _user.classifier_id
+          });          
+        }
+        catch (error) {
+          console.error(error);
+          history.push('/users');
+        }
+        finally {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchRecord();
+  }, [isEdited, routeId]);
+
 
   return (
     <div className='card mb-10'>
@@ -87,7 +129,7 @@ const UsersForm: React.FC = () => {
         </div>
         <div className="card-body">
           { loading ? <LoadingSpinner message="Loading..."/> : (
-            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+            <Formik initialValues={formValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
               <Form className="form">
                 <div className="d-flex flex-column gap-3">
 
@@ -195,6 +237,7 @@ const UsersForm: React.FC = () => {
                                 placeholder='Select a country'
                                 classNamePrefix="react-select"
                                 options={_countriesOptions}
+                                value={_countriesOptions.find(opt => opt.value === field.value)}
                                 onChange={(value: any) => handleSelectCountry(value, field.name, form)}
                                 formatOptionLabel={(option: any) => (
                                   <div className="d-inline-flex flex-row gap-3 align-items-center">
@@ -226,6 +269,7 @@ const UsersForm: React.FC = () => {
                                   placeholder='Select a classifier'
                                   classNamePrefix="react-select"
                                   options={_classifiersOptions}
+                                  value={_classifiersOptions.find(opt => opt.value === field.value)}
                                   onChange={(value: any) => form.setFieldValue(field.name, value)}
                                   formatOptionLabel={(option: any) => (
                                     <span className={clsx('badge fw-bolder text-uppercase fs-9 px-2 py-1 text-truncate classifier', option.color)}>
@@ -239,7 +283,11 @@ const UsersForm: React.FC = () => {
                           { isEdited &&
                             <div className="col-12 col-md-6 d-flex align-items-center">
                               <div className="form-check">
-                                <input className="form-check-input" type="checkbox" value="" id="editActive" />
+                                <Field name="active">
+                                  {({field, form}: FieldProps)=> (
+                                    <input className="form-check-input" type="checkbox" id="editActive" checked={!!field.value} onChange={(e) => form.setFieldValue(field.name, e.target.checked)}/>
+                                  )}
+                                </Field>
                                 <label className="form-check-label" htmlFor="editActive">Active</label>
                               </div>
                             </div>

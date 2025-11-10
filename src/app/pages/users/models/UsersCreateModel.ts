@@ -5,7 +5,6 @@ export interface UserCreateModel {
     email: string;
     role:string;
     password:string;
-    is_staff: boolean;
     active: boolean;
     address: string;
     country: string;
