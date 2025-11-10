@@ -1,10 +1,29 @@
+import { ClassifierModel } from "./ClassifierModel";
+
 export interface UserListModel {
-    id?: number,
-    role: string,
-    role_code: string,
-    company_name: string,
-    phone_number: string,
-    email: string,
-    national_id: string,
-    digital_signature: string,
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber?: string;
+    role: string;
+    usersAssigned: number;
+    isStaff: boolean;
+    isActive: boolean;
+    country: string;
+    classifier_id?: number;
+}
+
+export interface UserCompleteModel {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber?: string;
+    role: string;
+    usersAssigned: number;
+    isStaff: boolean;
+    isActive: boolean;
+    country: string;
+    classifier?: string;
 }

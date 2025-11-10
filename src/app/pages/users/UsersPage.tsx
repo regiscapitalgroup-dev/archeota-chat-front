@@ -1,66 +1,23 @@
-import React, { useState }  from 'react'
-import {useHistory, useLocation, useParams} from 'react-router-dom'
-import {RouteParamsModel} from '../shared/models/RouteParamsModel'
-import UserForm from './components/UserForm'
-import UsersGrid from './components/UserGrid'
-import {useUserById} from '../../hooks/users/useUserById'
-import {useUsers} from '../../hooks/users/useUsers'
+import React, { lazy } from 'react'
+import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
 
 const UsersPage: React.FC = () => {
-  const history = useHistory()
-  const location = useLocation()
-  const isEditMode = location.pathname.includes('/users/edit')
-  const isNewMode = location.pathname.includes('/users/new')
-  const {id: routeId} = useParams<RouteParamsModel>()
-  const userId = routeId ? Number(routeId) : undefined;
-  const [realod, setRealod] = useState<number>(Math.random() *20);
-  const {
-    user: selectedUser,
-    loading: loadingUserData,
-    error: userError,
-  } = useUserById(isEditMode && userId ? userId : 0)
-
-  const {users, loading: loadingAllUsers, error: ErrorList} = useUsers(realod)
-
-
-  const handleEdit = (userId: number) => {
-    history.push(`/users/edit/${userId}`)
-  }
-
-  const handleSuccess = () => {
-    history.push('/users')
-    setRealod(Math.random() * 50)
-  }
-
-  const handleDetail = (userId: number) => {
-    history.push(`/users/detail/${userId}`)
-  }
-
-  
-
+  const { path } = useRouteMatch();
+  const UsersList = lazy(() => import('./features/UsersList'));
+  const UsersForm = lazy(() => import('./features/UsersForm'));
+  const UsersDetails = lazy(() => import('./features/UsersDetails'));
+  const UsersAssignment = lazy(() => import('./features/UsersAssignment'));
   return (
-    <div className='card mb-10'>
-      <div className='card-body'>
-        {isEditMode || isNewMode ? (
-          <>
-            <UserForm
-              isEdit={isEditMode}
-              initialData={selectedUser || undefined}
-              onSuccess={handleSuccess}
-              loadingInfo={loadingUserData}
-            />
-          </>
-        ) : (
-          <UsersGrid
-            users={users ?? []}
-            onEdit={handleEdit}
-            onDetail={handleDetail}
-            loading={loadingAllUsers}
-          />
-        )}
-      </div>
-    </div>
+    <Switch>
+      <Route exact path={`${path}`} component={UsersList}/>
+      <Route exact path={`${path}/edit/:id`} component={UsersForm}/>
+      <Route exact path={`${path}/details/:id`} component={UsersDetails}/>
+      <Route exact path={`${path}/new`} component={UsersForm}/>
+      <Route exact path={`${path}/assign`} component={UsersAssignment}/>
+      <Redirect to='/assets/chat'/>
+    </Switch>
   )
 }
 
-export {UsersPage}
+export { UsersPage }
+
