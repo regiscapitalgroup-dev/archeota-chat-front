@@ -26,18 +26,14 @@ const UsersDetails = () => {
             history.push('/users')
             return;
         }
-
         const _country = countries.find(c => c.country === _user.country);
         if(!!_country) {
             setCountry(_country);
         }
-
         const _classifier = Classifiers.find(c => _user?.classifier_id === c.id);
         if(!!_classifier){
             setClassifier(_classifier);
         }
-        console.log(_classifier);
-        
         setUser(_user);
         setLoading(false);
     }, [routeId]);

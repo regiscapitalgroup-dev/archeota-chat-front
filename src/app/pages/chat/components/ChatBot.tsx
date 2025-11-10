@@ -97,8 +97,6 @@ const ChatBot: FC = () => {
     useEffect(() => {
         if(!user) {
             const _localSession = selector.session;
-            console.log(_localSession);
-            
             if(_localSession) {
                 setChatSession(_localSession.chatSessionId);
                 setMessages(_localSession.messages);

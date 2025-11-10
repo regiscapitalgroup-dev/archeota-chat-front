@@ -71,7 +71,6 @@ const UsersForm: React.FC = () => {
   }
 
   const handleSelectCountry = (value: {value: string, phoneCode: string}, name: string, form: FormikProps<any>) => {
-    console.log(value);
     setCountryCode(!!value.phoneCode ? (value.phoneCode.startsWith('+') ?value.phoneCode:`+${value.phoneCode}`).trim() : null);
     form.setFieldValue(name, value.value)
   }
