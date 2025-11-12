@@ -34,17 +34,13 @@ const UsersList: React.FC = () => {
   }, []);
 
   return (
-    <div className='card mb-10'>
-      <div className='card-body'>
-        <UsersGrid
-          onClassifierUpdate={() => loadUsers(false)}
-          users={users ?? []}
-          onEdit={() => {}}
-          onDetail={() => {}}
-          loading={loading}
-        />
-      </div>
-    </div>
+    <UsersGrid
+      onClassifierUpdate={() => loadUsers(false)}
+      users={users ?? []}
+      onEdit={() => {}}
+      onDetail={() => {}}
+      loading={loading}
+    />
   )
 }
 
