@@ -8,7 +8,7 @@ export default [
   {
     code: "AX",
     country: "Aland Islands",
-    phoneCode: "+358-18",
+    phoneCode: "358-18",
     flag: "https://flagcdn.com/w320/ax.png",
   },
   {
@@ -26,7 +26,7 @@ export default [
   {
     code: "AS",
     country: "American Samoa",
-    phoneCode: "+1-684",
+    phoneCode: "1-684",
     flag: "https://flagcdn.com/w320/as.png",
   },
   {
@@ -44,19 +44,19 @@ export default [
   {
     code: "AI",
     country: "Anguilla",
-    phoneCode: "+1-264",
+    phoneCode: "1-264",
     flag: "https://flagcdn.com/w320/ai.png",
   },
   {
     code: "AQ",
     country: "Antarctica",
-    phoneCode: "",
+    phoneCode: "672",
     flag: "https://flagcdn.com/w320/aq.png",
   },
   {
     code: "AG",
     country: "Antigua and Barbuda",
-    phoneCode: "+1-268",
+    phoneCode: "1-268",
     flag: "https://flagcdn.com/w320/ag.png",
   },
   {
@@ -98,7 +98,7 @@ export default [
   {
     code: "BS",
     country: "Bahamas",
-    phoneCode: "+1-242",
+    phoneCode: "1-242",
     flag: "https://flagcdn.com/w320/bs.png",
   },
   {
@@ -116,7 +116,7 @@ export default [
   {
     code: "BB",
     country: "Barbados",
-    phoneCode: "+1-246",
+    phoneCode: "1-246",
     flag: "https://flagcdn.com/w320/bb.png",
   },
   {
@@ -146,7 +146,7 @@ export default [
   {
     code: "BM",
     country: "Bermuda",
-    phoneCode: "+1-441",
+    phoneCode: "1-441",
     flag: "https://flagcdn.com/w320/bm.png",
   },
   {
@@ -182,7 +182,7 @@ export default [
   {
     code: "BV",
     country: "Bouvet Island",
-    phoneCode: "",
+    phoneCode: "47",
     flag: "https://flagcdn.com/w320/bv.png",
   },
   {
@@ -200,7 +200,7 @@ export default [
   {
     code: "VG",
     country: "British Virgin Islands",
-    phoneCode: "+1-284",
+    phoneCode: "1-284",
     flag: "https://flagcdn.com/w320/vg.png",
   },
   {
@@ -254,7 +254,7 @@ export default [
   {
     code: "KY",
     country: "Cayman Islands",
-    phoneCode: "+1-345",
+    phoneCode: "1-345",
     flag: "https://flagcdn.com/w320/ky.png",
   },
   {
@@ -368,13 +368,13 @@ export default [
   {
     code: "DM",
     country: "Dominica",
-    phoneCode: "+1-767",
+    phoneCode: "1-767",
     flag: "https://flagcdn.com/w320/dm.png",
   },
   {
     code: "DO",
     country: "Dominican Republic",
-    phoneCode: "+1-809 and 1-829",
+    phoneCode: "1-809 and 1-829",
     flag: "https://flagcdn.com/w320/do.png",
   },
   {
@@ -470,7 +470,7 @@ export default [
   {
     code: "TF",
     country: "French Southern Territories",
-    phoneCode: "",
+    phoneCode: "262",
     flag: "https://flagcdn.com/w320/tf.png",
   },
   {
@@ -524,7 +524,7 @@ export default [
   {
     code: "GD",
     country: "Grenada",
-    phoneCode: "+1-473",
+    phoneCode: "1-473",
     flag: "https://flagcdn.com/w320/gd.png",
   },
   {
@@ -536,7 +536,7 @@ export default [
   {
     code: "GU",
     country: "Guam",
-    phoneCode: "+1-671",
+    phoneCode: "1-671",
     flag: "https://flagcdn.com/w320/gu.png",
   },
   {
@@ -548,7 +548,7 @@ export default [
   {
     code: "GG",
     country: "Guernsey",
-    phoneCode: "+44-1481",
+    phoneCode: "44-1481",
     flag: "https://flagcdn.com/w320/gg.png",
   },
   {
@@ -578,7 +578,7 @@ export default [
   {
     code: "HM",
     country: "Heard Island and McDonald Islands",
-    phoneCode: " ",
+    phoneCode: "672",
     flag: "https://flagcdn.com/w320/hm.png",
   },
   {
@@ -638,7 +638,7 @@ export default [
   {
     code: "IM",
     country: "Isle of Man",
-    phoneCode: "+44-1624",
+    phoneCode: "44-1624",
     flag: "https://flagcdn.com/w320/im.png",
   },
   {
@@ -662,7 +662,7 @@ export default [
   {
     code: "JM",
     country: "Jamaica",
-    phoneCode: "+1-876",
+    phoneCode: "1-876",
     flag: "https://flagcdn.com/w320/jm.png",
   },
   {
@@ -674,7 +674,7 @@ export default [
   {
     code: "JE",
     country: "Jersey",
-    phoneCode: "+44-1534",
+    phoneCode: "44-1534",
     flag: "https://flagcdn.com/w320/je.png",
   },
   {
@@ -704,7 +704,7 @@ export default [
   {
     code: "XK",
     country: "Kosovo",
-    phoneCode: "",
+    phoneCode: "383",
     flag: "https://flagcdn.com/w320/xk.png",
   },
   {
@@ -890,7 +890,7 @@ export default [
   {
     code: "MS",
     country: "Montserrat",
-    phoneCode: "+1-664",
+    phoneCode: "1-664",
     flag: "https://flagcdn.com/w320/ms.png",
   },
   {
@@ -986,7 +986,7 @@ export default [
   {
     code: "MP",
     country: "Northern Mariana Islands",
-    phoneCode: "+1-670",
+    phoneCode: "1-670",
     flag: "https://flagcdn.com/w320/mp.png",
   },
   {
@@ -1070,7 +1070,7 @@ export default [
   {
     code: "PR",
     country: "Puerto Rico",
-    phoneCode: "+1-787 and 1-939",
+    phoneCode: "1-787 and 1-939",
     flag: "https://flagcdn.com/w320/pr.png",
   },
   {
@@ -1124,13 +1124,13 @@ export default [
   {
     code: "KN",
     country: "Saint Kitts and Nevis",
-    phoneCode: "+1-869",
+    phoneCode: "1-869",
     flag: "https://flagcdn.com/w320/kn.png",
   },
   {
     code: "LC",
     country: "Saint Lucia",
-    phoneCode: "+1-758",
+    phoneCode: "1-758",
     flag: "https://flagcdn.com/w320/lc.png",
   },
   {
@@ -1148,7 +1148,7 @@ export default [
   {
     code: "VC",
     country: "Saint Vincent and the Grenadines",
-    phoneCode: "+1-784",
+    phoneCode: "1-784",
     flag: "https://flagcdn.com/w320/vc.png",
   },
   {
@@ -1244,7 +1244,7 @@ export default [
   {
     code: "GS",
     country: "South Georgia and the South Sandwich Islands",
-    phoneCode: "",
+    phoneCode: "500",
     flag: "https://flagcdn.com/w320/gs.png",
   },
   {
@@ -1358,7 +1358,7 @@ export default [
   {
     code: "TT",
     country: "Trinidad and Tobago",
-    phoneCode: "+1-868",
+    phoneCode: "1-868",
     flag: "https://flagcdn.com/w320/tt.png",
   },
   {
@@ -1382,7 +1382,7 @@ export default [
   {
     code: "TC",
     country: "Turks and Caicos Islands",
-    phoneCode: "+1-649",
+    phoneCode: "1-649",
     flag: "https://flagcdn.com/w320/tc.png",
   },
   {
@@ -1394,7 +1394,7 @@ export default [
   {
     code: "VI",
     country: "U.S. Virgin Islands",
-    phoneCode: "+1-340",
+    phoneCode: "1-340",
     flag: "https://flagcdn.com/w320/vi.png",
   },
   {
