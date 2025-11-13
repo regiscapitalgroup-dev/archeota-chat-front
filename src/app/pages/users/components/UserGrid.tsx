@@ -218,7 +218,14 @@ const UsersGrid: React.FC<UsersGridProps> = ({users, onClassifierUpdate, loading
         </h3>
         <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
           {users.length > 0 && 
-            <UsersToolbar onChangeClassifier={_handleChangeClasifier} classifiers={Classifiers} filters={filters} setFilters={setFilters} onReset={handleResetFilter} props={filterProps} />  
+            <UsersToolbar
+              props={filterProps}
+              classifiers={Classifiers}
+              filters={filters}
+              onChangeClassifier={_handleChangeClasifier}
+              onResetFilters={handleResetFilter}
+              setFilters={setFilters} 
+            />  
           }
           <button className='btn btn-sm btn-dark' onClick={handleCreateNew}>
             <KTSVG
