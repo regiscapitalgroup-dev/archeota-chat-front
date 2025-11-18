@@ -8,16 +8,12 @@ const ClaimsAction: React.FC = () => {
     const { actions, loading: loadingAct, reload: reloadClaims } = useActionsClaim(selectedUser?.id)
     
     return (
-    <div className='card mb-10'>
-        <div className='card-body'>
-            <ClaimsActionsGrid 
-                data={actions || []} 
-                loading={loadingAct} 
-                selectedUser={selectedUser} 
-                onReload={reloadClaims}
-            />
-        </div>
-    </div>
+        <ClaimsActionsGrid 
+            data={actions || []} 
+            loading={loadingAct} 
+            selectedUser={selectedUser} 
+            onReload={reloadClaims}
+        />
     );
 };
 
