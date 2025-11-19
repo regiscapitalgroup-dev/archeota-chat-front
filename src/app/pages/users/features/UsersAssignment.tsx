@@ -203,11 +203,16 @@ const UsersAssignemt = () => {
                 </h3>
             </div>
             <div className="card-body py-3 d-flex flex-column gap-2 align-items-center">
-                <div className="w-50">
-                    <Select 
-                        options={users.map(u => ({ value: u, label: `${u.firstName} ${u.lastName}`}))}
-                        onChange={_handleUserSelect}
-                    />
+                <div className="w-50 d-flex flex-row align-items-center justify-content-center">
+                    <div className="form-control border-0">
+                        <span className="fs-4 fw-bolder">Account manager</span>
+                        <Select 
+                            placeholder='Select an account manager'
+                            options={users.map(u => ({ value: u, label: `${u.firstName} ${u.lastName}`}))}
+                            onChange={_handleUserSelect}
+                        />
+
+                    </div>
                 </div>
                 { userSelected && (
                     <>
