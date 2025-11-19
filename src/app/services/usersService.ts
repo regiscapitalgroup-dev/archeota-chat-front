@@ -1,5 +1,5 @@
 import apiClient from "../helpers/apiClient";
-import { UserCreateModel } from "../pages/users/models/UsersCreateModel";
+import { UserCreateModel } from "../pages/users/models/UserCreateModel";
 
 
 export const createUser = async (body: UserCreateModel) => {

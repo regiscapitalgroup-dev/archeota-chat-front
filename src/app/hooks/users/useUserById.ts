@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getUserById } from '../../services/usersService';
-import { UserCreateModel } from '../../pages/users/models/UsersCreateModel';
+import { UserCreateModel } from '../../pages/users/models/UserCreateModel';
 
 export const useUserById = (userId: number) => {
     const [user, setUser] = useState<UserCreateModel | null>(null);
