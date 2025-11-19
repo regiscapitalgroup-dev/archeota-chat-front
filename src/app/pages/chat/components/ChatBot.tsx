@@ -56,7 +56,7 @@ const ChatBot: FC = () => {
                     title: 'Are you sure?',
                     text: 'The conversation will be deleted',
                     showCancelButton: true,
-                    confirmButtonText: 'Ok',
+                    confirmButtonText: 'Yes, delete',
                     cancelButtonText: 'Cancel',
                     customClass: {
                         confirmButton: 'btn-danger text-white'

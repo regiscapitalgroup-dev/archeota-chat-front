@@ -1,8 +1,11 @@
 import React, { lazy } from 'react'
+import { shallowEqual, useSelector } from 'react-redux';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { RootState } from '../../../setup';
 
 const UsersPage: React.FC = () => {
   const { path } = useRouteMatch();
+  const user = useSelector((state: RootState) => state.auth.user, shallowEqual);
   const UsersList = lazy(() => import('./features/UsersList'));
   const UsersForm = lazy(() => import('./features/UsersForm'));
   const UsersDetails = lazy(() => import('./features/UsersDetails'));
@@ -13,7 +16,9 @@ const UsersPage: React.FC = () => {
       <Route exact path={`${path}/edit/:id`} component={UsersForm}/>
       <Route exact path={`${path}/details/:id`} component={UsersDetails}/>
       <Route exact path={`${path}/new`} component={UsersForm}/>
-      <Route exact path={`${path}/assign`} component={UsersAssignment}/>
+      { user && user.role === 'COMPANY_ADMIN' &&
+        <Route exact path={`${path}/assign`} component={UsersAssignment}/>
+      } 
       <Redirect to='/assets/chat'/>
     </Switch>
   )

@@ -1,4 +1,8 @@
 .classifier {
+    &.border-selected {
+        outline: 1px solid #111111;
+        border: 1px solid #ffffff;
+    }
     &.pallet { 
         width: 2rem;
         height: 2rem;

@@ -1,0 +1,12 @@
+.btn-outline-primary {
+    color: var(--bs-primary);
+    &>* {
+        color: var(--bs-primary) !important;
+    }
+    &:hover {
+        color: white !important;
+        &>* {
+            color: white !important;
+        }
+    }
+}

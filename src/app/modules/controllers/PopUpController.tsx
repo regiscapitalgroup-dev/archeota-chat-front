@@ -20,6 +20,18 @@ const PopUpController: React.FC<Props> = ({ children, className }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
 
+    const injectCloseCb = (element: React.ReactElement) => {
+        if(!element?.props?.children)
+            return element;
+        const children = React.Children.toArray(element.props.children);
+        const injectedChildren = children.map((child) => {
+            if (React.isValidElement(child) && child.props["data-popup-action"] === "close")
+                return React.cloneElement(child, { closePopup: setOff });
+            return child;
+        });
+        return React.cloneElement(element, { children: injectedChildren });
+    };
+
     const setOff = useCallback(() => {
         const menu = wrapperRef.current?.querySelector<HTMLElement>('[data-popup-role="drop"]'); 
         const button = wrapperRef.current?.querySelector<HTMLElement>('[data-popup-role="button"]');
@@ -73,10 +85,6 @@ const PopUpController: React.FC<Props> = ({ children, className }) => {
             });
         };
         
-        const off = () => {
-            status(false);
-        }
-
         updatePosition();
         button.addEventListener('click', toggle);
         window.addEventListener('scroll', updatePosition);
@@ -95,7 +103,7 @@ const PopUpController: React.FC<Props> = ({ children, className }) => {
             {buttonElement}
             {(    
                 <div className="topbar-menu" style={dropStyles}>
-                    {dropElement}
+                    {injectCloseCb(dropElement as React.ReactElement)}
                 </div>
             )}
         </div>

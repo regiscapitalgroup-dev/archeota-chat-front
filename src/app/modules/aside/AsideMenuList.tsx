@@ -32,10 +32,6 @@ export const AsideMenuList: React.FC = () => {
         _empty();
     }
 
-    const handleLogin = () => {
-        history.push('/auth/login/');
-    }
-
     useEffect(() => {
         if(!user)
             return;
@@ -57,7 +53,7 @@ export const AsideMenuList: React.FC = () => {
                     icon='/media/icons/duotune/communication/com006.svg'
                     title='Login'
                     fontIcon='bi-layers'
-                    onClick={handleLogin}
+                    onClick={() => history.push('/auth/login/')}
                 />
             </>
         )}
@@ -95,27 +91,23 @@ export const AsideMenuList: React.FC = () => {
                     fontIcon='bi-layers'
                 />
                 { userManagement && 
-                    <AsideMenuElement
-                        to='/users'
-                        icon='/media/icons/duotune/communication/com006.svg'
-                        title='Users Management'
-                        fontIcon='bi-layers'
-                    />
+                    <>
+                        <AsideMenuElement
+                            to='/users'
+                            strict={true}
+                            icon='/media/icons/duotune/communication/com006.svg'
+                            title='Users Management'
+                            fontIcon='bi-layers'
+                        />
+                        <AsideMenuElement
+                            to='/users/assign'
+                            strict={true}
+                            icon='/media/icons/duotune/communication/com005.svg'
+                            title='Users Assignment'
+                            fontIcon='bi-layers'
+                        />
+                    </>
                 }
-                {/* <ListMenuElement
-                    title='Users Management'
-                    to='/users'
-                    strict={false}
-                    fontIcon='bi-layers'
-                    icon='/media/icons/duotune/communication/com006.svg'
-                >
-                    <AsideMenuElement
-                        to='/users/assign'
-                        title='Users Assignment'
-                        fontIcon='bi-layers'
-                        hasBullet={true}
-                    /> 
-                </ListMenuElement> */}
                 <div className='separator my-5'></div>
             </>
         )}

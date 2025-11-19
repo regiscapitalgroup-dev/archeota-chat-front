@@ -24,7 +24,7 @@ export const _UserListMock: UserListModel[] = [
     isStaff: true,
     phoneNumber: '(+52)9991234455',
     usersAssigned: 1,
-    country: 'United States of America',
+    country: 'United States',
     classifier_id: 1
   },
   {
@@ -76,7 +76,7 @@ export const _UserListMock: UserListModel[] = [
     isStaff: true,
     phoneNumber: '(+52)9991234455',
     usersAssigned: 1,
-    country: 'United States of America',
+    country: 'United States',
     classifier_id: 1
   },
   {
