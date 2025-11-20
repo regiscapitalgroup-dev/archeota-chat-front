@@ -314,12 +314,12 @@ const UsersAssignemt = () => {
                         <div className="card-footer d-flex flex-row gap-2 justify-content-center w-100">
                             <button className="ms-1 btn btn-primary" onClick={_assign}>
                                 <i className="bi bi-arrow-right-circle-fill"></i>
-                                Asignar seleccionados
+                                Assign selected
                             </button>
                             
                             <button className="btn btn-outline-primary border border-1 border-primary" onClick={_unassign}>
                                 <i className="bi bi-arrow-left-circle-fill"></i>
-                                Desasignar seleccionados
+                                Unassign selected
                             </button>
                         </div>
                     </>

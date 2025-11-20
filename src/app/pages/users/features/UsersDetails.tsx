@@ -225,7 +225,7 @@ const UsersDetails = () => {
                             </div>
                             <div className="separator mt-5 mb-5"></div>
                             <div>
-                                <span className='fw-bolder text-dark'>Users assigned</span>
+                                <span className='fw-bolder text-dark'>Accounts assigned</span>
                                 <div>
                                     <DataTableComponent 
                                         columns={_columnsAssigned}
