@@ -64,7 +64,7 @@ const HeaderTopbar: React.FC = () => {
                             </div>
                         </div>
                         <div className='separator my-2'></div>
-                        { user && (
+                        { !!user ? (
                             <>
                                 <div className='menu-item px-5'>
                                     <Link to={'/crafted/pages/profile'} className='menu-link px-5'>
@@ -88,7 +88,16 @@ const HeaderTopbar: React.FC = () => {
                                     </Link>
                                 </div>
                             </>
-                        )}
+                            ) : (
+                            <>
+                                <div className='menu-item px-5'>
+                                    <Link to={'/auth/login'} className='menu-link px-5'>
+                                        Log In
+                                    </Link>
+                                </div>
+                            </>
+                            )
+                        }
                     </div>
                 </PopUpController>
             </div>

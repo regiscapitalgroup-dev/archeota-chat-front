@@ -41,22 +41,6 @@ export const AsideMenuList: React.FC = () => {
 
     return(
         <>
-        { !user && (
-            <>
-                <div className="menu-item">
-                    <div className="menu-content pt-8 pb-2">
-                        <span className="menu-section text-muted text-uppercase fs-8 ls-1">Profile</span>
-                    </div>
-                </div>
-                <AsideMenuElement 
-                    to=''
-                    icon='/media/icons/duotune/communication/com006.svg'
-                    title='Login'
-                    fontIcon='bi-layers'
-                    onClick={() => history.push('/auth/login/')}
-                />
-            </>
-        )}
 
         { user && isClaims && (
             <>
