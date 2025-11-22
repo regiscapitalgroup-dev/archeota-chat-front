@@ -9,13 +9,7 @@ type Props = {
 
 const AccordionGroup = ({ items }: Props) => {
     const [indexSelected, setIndexSelected] = useState<number | null>(null);
-
-    const openItem = (index: number) => {
-        
-        setIndexSelected(indexSelected === index ? null : index);
-        console.log(index);
-    };
-
+    const openItem = (index: number) => setIndexSelected(indexSelected === index ? null : index);
     return (
         <div className="accordion-group">
             {items.map((item, idx) => (

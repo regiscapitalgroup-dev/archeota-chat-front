@@ -41,7 +41,7 @@ const FilterOptions = <T,>({ filters, props, setFilters, onReset, closePopup } :
                                                 setFilters({
                                                     ...filters, 
                                                     [p.key]: 
-                                                    ((filters as Record<string, string[]>)[p.key].includes(cbox) ? 
+                                                    ((filters as Record<string, string[]>)[p.key]?.includes(cbox) ? 
                                                         (filters as Record<string, string[]>)[p.key].filter(v => v !== cbox)
                                                         : [...((filters as Record<string, string[]>)[p.key] || []), cbox]
                                                     )})
