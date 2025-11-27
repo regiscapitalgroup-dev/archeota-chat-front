@@ -2,10 +2,34 @@
     border: 1px solid #e4e6ef !important;
     padding: 0.2rem 0 !important;
     border-radius: 0.475rem !important;
+}
 
+.form-control-solid__control {
+    border: 0 !important;
+    padding: 0.35rem 0 !important;
+    border-radius: 0.475rem !important;
+    background-color: #eef3f7 !important;
+    color: #5e6278 !important;
+    font-size: 1.15rem !important;
+    font-weight: 500 !important;
+    border: 1px solid #eef3f7 !important;
+    &:active {
+        background-color: #f5f8fa !important;
+    }
+
+    .text-solid {
+        color: #5e6278 !important;
+        font-size: 1.15rem !important;
+        font-weight: 500 !important;
+    }
 }
 
 .react-select__control--is-focused {
     box-shadow: none !important;
     border-color: #b5b5c3 !important;
+}
+
+.form-control-solid__control--is-focused {
+    box-shadow: none !important;
+    border: 0;
 }
