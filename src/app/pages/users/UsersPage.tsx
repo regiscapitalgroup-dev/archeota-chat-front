@@ -2,6 +2,7 @@ import React, { lazy } from 'react'
 import { shallowEqual, useSelector } from 'react-redux';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { RootState } from '../../../setup';
+import { UserRoles } from '../../enums/userRoles';
 
 const UsersPage: React.FC = () => {
   const { path } = useRouteMatch();
@@ -16,7 +17,7 @@ const UsersPage: React.FC = () => {
       <Route exact path={`${path}/edit/:id`} component={UsersForm}/>
       <Route exact path={`${path}/details/:id`} component={UsersDetails}/>
       <Route exact path={`${path}/new`} component={UsersForm}/>
-      { user && user.role === 'COMPANY_ADMIN' &&
+      { user && (user.role === UserRoles.COMPANY_ADMIN || user.role === UserRoles.SUPER_ADMIN) &&
         <Route exact path={`${path}/assign`} component={UsersAssignment}/>
       } 
       <Redirect to='/assets/chat'/>
