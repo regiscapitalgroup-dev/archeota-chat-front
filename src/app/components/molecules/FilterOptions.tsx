@@ -18,9 +18,9 @@ const FilterOptions = <T,>({ filters, props, setFilters, onReset, closePopup } :
                     <div key={i} className="mb-3">
                         <label className="form-label"> {p.label} </label>
                         { p.type == "text" ?
-                            <input type="text" className="form-control" value={(filters as Record<string, string>)[p.key]} onChange={(e) => setFilters({...filters, [p.key]: e.target.value})}/>
+                            <input type="text" className="form-control" value={(filters as Record<string, string>)[p.key] ?? ''} onChange={(e) => setFilters({...filters, [p.key]: e.target.value})}/>
                             :
-                            <input type="date" className="form-control" value={(filters as Record<string, string>)[p.key]} onChange={(e) => setFilters({...filters, [p.key]: e.target.value})}/>
+                            <input type="date" className="form-control" value={(filters as Record<string, string>)[p.key] ?? ''} onChange={(e) => setFilters({...filters, [p.key]: e.target.value})}/>
                         }
                     </div>
                 ))}
@@ -36,7 +36,7 @@ const FilterOptions = <T,>({ filters, props, setFilters, onReset, closePopup } :
                                             type="checkbox" 
                                             className="form-check-input" 
                                             id={`${cbox}_cbox`}
-                                            checked={(filters as Record<string, string[]>)[p.key]?.includes(cbox)}
+                                            checked={((filters as Record<string, string[]>)[p.key] ?? []).includes(cbox)}
                                             onChange={() => 
                                                 setFilters({
                                                     ...filters, 
