@@ -1428,12 +1428,6 @@ export default [
     flag: "/media/country-flags/us.png",
   },
   {
-    code: "UM",
-    country: "United States Minor Outlying Islands",
-    phoneCode: "1",
-    flag: "/media/country-flags/um.png",
-  },
-  {
     code: "UY",
     country: "Uruguay",
     phoneCode: "598",

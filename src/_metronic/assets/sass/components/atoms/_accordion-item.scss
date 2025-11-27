@@ -1,0 +1,38 @@
+.custom-accordion-item {
+    &.opened {
+        .accordion-item-header {
+            // background-color: var(--bs-gray-100);
+            .accordion-item-icon {
+                transform: rotate(90deg);
+            }
+        }
+        // .accordion-item-content {
+        //     height: 100% !important;
+        // }
+    }
+
+    .accordion-item-header {
+        background: none;
+        width: 100%;
+        display: inline-flex;
+        flex-direction: row;
+        outline: none;
+        border: 0;
+        padding: 0.5rem;
+        .accordion-item-icon {
+            transition: 0.3s;
+            transform: rotate(0);
+        }
+        .accordion-item-title {
+            margin-left: 1rem;
+            margin-bottom: 0;
+        }
+    }
+
+    .accordion-item-content {
+        margin-top: 0.5rem;
+        transition: 0.2s;
+        overflow: hidden;
+        height: 0px;
+    }
+}

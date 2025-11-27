@@ -7,5 +7,17 @@ export interface UserModel {
   pic?:string,
   role?: string,
   roleDescription?: string,
-  profile: any
+  profile: {
+    company: number,
+    companyId: number,
+    companyName: string,
+    phoneNumber: number,
+    getProfilePicture: string | null,
+    taxId: string | null,
+    nationalId: string,
+    digitalSignature: any,
+    classification: number | null,
+    address: string,
+    country: string
+  };
 }

@@ -1,5 +1,5 @@
-import { Redirect, Route, Switch } from 'react-router-dom'
-import Chat from '../pages/chat/features/chat/Chat'
+import { Redirect, Route, Switch } from 'react-router-dom';
+import Chat from '../pages/chat/features/chat/Chat';
 
 export function PublicRoutes() {
   return (

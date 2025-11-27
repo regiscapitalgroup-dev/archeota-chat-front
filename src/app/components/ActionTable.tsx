@@ -1,104 +1,43 @@
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-
+import PopUpController from "../modules/controllers/PopUpController";
 
 type ActionTableProps = {
-    onEdit: () => void;
-    onDelete: () => void;
+    onEdit?: () => void;
+    onDelete?: () => void;
     onDetails?: () => void;
 };
 
 const ActionTable = ({ onEdit, onDelete, onDetails }: ActionTableProps) => {
-  let [show, setShow] = useState(false);
-  const [position, setPosition] = useState({ top: 0, left: 0 });
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const btn = useRef<HTMLButtonElement>(null);
-
-  const updatePosition = () => {
-    const _btn = btn.current;
-    if(_btn) {
-      const rect = btn.current.getBoundingClientRect();
-      setPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-      });
-    }
-  };
-
-  useEffect(() => {
-    if(!show)
-      return;
-    updatePosition();
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        !btn.current?.contains(event.target as Node)
-      ) {
-        setShow(false);
-      }
-    }
-
-    function handleAction() {
-      setShow(false);
-    }
-
-    window.addEventListener('resize', handleAction);
-    window.addEventListener('scroll', handleAction);
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      window.removeEventListener('resize', handleAction);
-      window.removeEventListener('scroll', handleAction);
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [show, btn])
-
-  let popUpStyle: React.CSSProperties = {
-    zIndex: 25,
-    maxWidth: '96vw',
-    position: 'absolute',
-    top: position.top,
-    left: position.left
-  }
   return (
-    <>
-      <button ref={btn} className="btn btn-light action-table-btn" onClick={() => setShow(prev => !prev)}>...</button>
-      {
-        show && createPortal(
-          <div tabIndex={0} ref={dropdownRef} className='card shadow-lg rounded-4 action-wrapper' style={popUpStyle}>
-              <div className="card-body action-body">
-                  <ul>
-                    { !!onDetails && (
-                      <li>
-                        <button className="btn btn-light" onClick={() => {
-                          setShow(false);
-                          onDetails();
-                        }}>
-                          Details
-                        </button>
-                      </li>
-                    )}
-                    <li> 
-                      <button className="btn btn-light" onClick={() => {
-                        setShow(false);
-                        onEdit();
-                      }}> 
-                        Edit 
-                      </button> 
-                    </li>
-                    <li> 
-                      <button className="btn btn-light-danger" onClick={() => {
-                        setShow(false);
-                        onDelete();
-                      }}> 
-                        Delete 
-                      </button> 
-                    </li>
-                  </ul>
-              </div>
-          </div>, document.body)
-      }
-    </>
+    <PopUpController>
+      <button data-popup-role='button' className="btn btn-light action-table-btn">...</button>
+      <div data-popup-role='drop' tabIndex={0} className="card shadow-lg w-100px rounded-4 action-wrapper">
+        <div className="card-body action-body">
+          <ul>
+            { !!onDetails && (
+              <li>
+                <button className="btn btn-light" onClick={onDetails}>
+                  Details
+                </button>
+              </li>
+            )}
+            { !!onEdit && (
+              <li> 
+                <button className="btn btn-light" onClick={onEdit}> 
+                  Edit 
+                </button> 
+              </li>
+            )}
+            { !!onDelete && (
+              <li> 
+                <button className="btn btn-light-danger" onClick={onDelete}> 
+                  Delete 
+                </button> 
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </PopUpController>
   );
 };
 
