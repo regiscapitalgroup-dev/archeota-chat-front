@@ -10,6 +10,7 @@ import { clearSelectedCategory, setSelectedCategory } from "../categories";
 import AsideMenuElement from "./AsideMenuElement";
 import ListMenuElement from "./ListMenuElement";
 import { isClaimsSection } from "../../helpers/asideSection";
+import { UserRoles } from "../../enums/userRoles";
 
 export const AsideMenuList: React.FC = () => {
     const location = useLocation();
@@ -20,7 +21,6 @@ export const AsideMenuList: React.FC = () => {
     const {categories} = useCategories(user);
     const isClaims = isClaimsSection(location.pathname);
     const { chats, triggerClear, loadChats } = useChatsList();
-    const [userManagement, setUserManagement] = useState(false);
 
     const handleNewChat = () => {
         const _empty = async () => {
@@ -31,13 +31,6 @@ export const AsideMenuList: React.FC = () => {
         }
         _empty();
     }
-
-    useEffect(() => {
-        if(!user)
-            return;
-        setUserManagement(user.role == 'COMPANY_ADMIN' || user.role == 'COMPANY_MANAGER')
-        loadChats();
-    }, [user]);
 
     return(
         <>
@@ -74,8 +67,7 @@ export const AsideMenuList: React.FC = () => {
                     title='Transactions'
                     fontIcon='bi-layers'
                 />
-                { userManagement && 
-                    <>
+                { user && (user.role === UserRoles.COMPANY_ADMIN || user.role === UserRoles.COMPANY_MANAGER || user.role === UserRoles.SUPER_ADMIN) && (
                         <AsideMenuElement
                             to='/users'
                             strict={true}
@@ -83,6 +75,8 @@ export const AsideMenuList: React.FC = () => {
                             title='Users Management'
                             fontIcon='bi-layers'
                         />
+                )}
+                { user && (user.role === UserRoles.COMPANY_ADMIN || user.role === UserRoles.SUPER_ADMIN) && 
                         <AsideMenuElement
                             to='/users/assign'
                             strict={true}
@@ -90,7 +84,6 @@ export const AsideMenuList: React.FC = () => {
                             title='Users Assignment'
                             fontIcon='bi-layers'
                         />
-                    </>
                 }
                 <div className='separator my-5'></div>
             </>
