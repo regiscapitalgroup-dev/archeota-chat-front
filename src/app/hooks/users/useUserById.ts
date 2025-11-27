@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getUserById } from '../../services/usersService';
-import { UserCreateModel } from '../../pages/users/models/UserCreateModel';
+import { UserDetails } from './models/UserDetails';
 
 export const useUserById = (userId: number) => {
-    const [user, setUser] = useState<UserCreateModel | null>(null);
+    const [user, setUser] = useState<UserDetails | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
