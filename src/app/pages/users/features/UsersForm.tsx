@@ -1,391 +1,107 @@
-import clsx from "clsx"
-import { ErrorMessage, Field, FieldProps, Form, Formik, FormikProps } from "formik"
-import { ChangeEvent, useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
-import Select from "react-select"
-import * as Yup from 'yup'
-import LoadingSpinner from "../../../components/LoadingSpinner"
-import countries from "../../../constants/countries"
+import { useUserById } from "../../../hooks/users/useUserById"
 import { useUserRoles } from "../../../hooks/users/useUserRoles"
 import { RouteParamsModel } from "../../shared/models/RouteParamsModel"
-import { Classifiers } from "../mock/classifiers.mock"
-import { _UserListMock } from "../mock/user_list.mock"
-import { UserCreateModel } from "../models/UserCreateModel"
-import { UserListModel } from "../models/UserListModel"
-import AnticompleteAtom from "../../../components/atoms/AnticompleteAtom"
-import { toAbsoluteUrl } from "../../../../_metronic/helpers"
-
-const _countriesOptions = countries.map(c => ({  value: c.country, label: c.country, ...c }))
-
-const initialValues: UserCreateModel = {
-  first_name: '',
-  last_name: '',
-  email: '',
-  password: '',
-  role: '',
-  active: true,
-  address: '',
-  national_id: '',
-  country: '',
-  phone_number: '',
-  classifier_id: undefined
-};
-
-const validationSchema = Yup.object().shape({
-  first_name: Yup.string().required('First name is required'),
-  last_name: Yup.string().required('Last name is required'),
-  email: Yup.string().email('Wrong email format').min(4, 'Minimum 4 characters').required('Email is required'),
-  // password: Yup.string().min(3, 'Minimum 3 characters').required('Password is required'),
-  role: Yup.string().required('Role is required'),
-  phone_number: Yup.string().required('Phone number is required'),
-  address: Yup.string().required('Address is required'),
-  country: Yup.string().required('Country is required'),
-  national_id: Yup.string().required('ID is required')
-})
-
+import UserManagementForm from "../components/pages/UserManagementForm"
+import { UserFormModel } from "../models/UserFormModel"
+import { useUserCompanies } from "../../../hooks/company/useUserCompanies"
+import { createUser, updateUser, userImage } from "../../../services/usersService"
+import { getURLImage } from "../../../services/utilsService"
+import { shallowEqual, useSelector } from "react-redux"
+import { RootState } from "../../../../setup"
+import { UserRoles } from "../../../enums/userRoles"
 
 const UsersForm: React.FC = () => {
+  const { user } = useSelector((state: RootState) => state.auth, shallowEqual)
   const history = useHistory();
   const location = useLocation();
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [countryCode, setCountryCode] = useState<string | null>(null);
   const isEdited = location.pathname.includes('/edit');
+  const isMountedRef = useRef(false);
+  const [ formValues, setFormValues ] = useState<UserFormModel | null>(null);
+  const [sending, setSending] = useState(false);
   const { id: routeId } = useParams<RouteParamsModel>();
+  const { user: userdata, loading: LoadingUser } = useUserById(Number(routeId));
   const { roles, loading: loadingRoles } = useUserRoles();
-  const [formValues, setFormValues] = useState<UserCreateModel>(initialValues);
-  const _classifiersOptions = Classifiers.map(c => ({ value: c.id, label: c.name, color: c.color }));
-
-  const handleSubmit = (values: any) => {
-    setSending(true);
-    setTimeout(() => history.push('/users'), 1000);
-  }
-
-  const _handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    const _file = e.currentTarget.files?.[0];
-    if(!_file) return;
-    setPreviewImage(URL.createObjectURL(_file));
-  };
-
-  const _handleRemoveImage = () => setPreviewImage(null);
-
-  const handleSelectCountry = (value: {value: string, phoneCode: string}, name: string, form: FormikProps<any>) => {
-    setCountryCode(value.phoneCode? `+${value.phoneCode}`.trim() : null);
-    form.setFieldValue(name, value.value)
-  }
+  const { companies, loading: loadingCompanies } = useUserCompanies();
+  
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchRecord = async () => {
-      if(!isEdited || !routeId) {
-        setFormValues(initialValues);
-      }
-      else {
-        try {
-          setLoading(true);
-          const _user = await new Promise<UserListModel | undefined>((res) => setTimeout(() => res(_UserListMock.find(u => u.id === Number(routeId))), 1000));
-          if(!_user) {
-            history.push('/users');
-            return;
-          }
-          const _country = countries.find(c => c.country === _user.country);
-          if(_country) 
-            setCountryCode(`+${_country.phoneCode}`);  
-          setFormValues({
-            id: _user.id,
-            active: _user.isActive,
-            address: '',
-            country: _user.country,
-            email: _user.email,
-            first_name: _user.firstName,
-            last_name: _user.lastName,
-            national_id: '',
-            password: '',
-            phone_number: _user.phoneNumber??'',
-            role: _user.role,
-            classifier_id: _user.classifier_id
-          });
-        }
-        catch (error) {
-          console.error(error);
-          history.push('/users');
-        }
-        finally {
-          setLoading(false);
-        }
-      }
+    if(!userdata) {
+      setFormValues(null);
+      return;
     }
-    fetchRecord();
-  }, [isEdited, routeId]);
+    setFormValues({
+      id: userdata.id,
+      first_name: userdata.firstName,
+      last_name: userdata.lastName,
+      email: userdata.email,
+      role: userdata.role,
+      country: userdata.country ?? '',
+      company: userdata.companyId,
+      classification: Number(userdata.classificationId) ?? null,
+      address: userdata.address ?? '',
+      phone_number: userdata.phoneNumber,
+      national_id: userdata.nationalId,
+      active: userdata.isActive
+    });
+  }, [userdata]);
 
+
+  const _handleOnSend = async (value: UserFormModel, image: File|null, setStatus: (status: string) => void) => {
+    if(!isMountedRef.current)
+      return;
+    setSending(true);
+    try {
+      let _userId: number | null = null;
+      if(isEdited && !!userdata) {
+        _userId = userdata.id;
+        await updateUser(_userId, value);
+      } 
+      else  {
+        const _created = await createUser(value);
+        _userId = _created.id;
+      }
+      if(!!image && !!_userId)
+        await userImage(_userId, image);
+      history.push('/users');
+    }
+    catch (error) {
+      setStatus((error as any)?.response?.data?.email?.[0] ?? "There was an error while saving the information. Please try again.")
+    }
+    finally {
+      if(isMountedRef.current)
+        setSending(false);
+    }
+  };
 
   return (
     <div className='card mb-10'>
-      <div className='card-body'>
-        <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center'>
-            <h3 className="card-title align-items-start flex-column">
+      <div className="card-header border-0 pt-5 d-flex justify-content-between align-items-center">
+          <h3 className="card-title align-items-start flex-column">
                 <span className='fw-bolder text-dark fs-3'>Users</span>
                 <span className='text-muted mt-1 fs-7'>{ isEdited ? 'Edit your user': 'Create an user'  }</span>
-            </h3>
-        </div>
-        <div className="card-body">
-          { loading ? <LoadingSpinner message="Loading..."/> : (
-            <Formik initialValues={formValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-              {({isValid, dirty}) => (
-                <Form className="form" autoComplete="off">
-                  <AnticompleteAtom fields={[{type: 'text', autoComplete: "username"}, { type: 'password', autoComplete: 'new-password' }]}/>
-                  <div className="d-flex flex-column gap-3">
-
-                    <div className="d-flex flex-wrap gap-3">
-                      <div className="flex-grow-1 d-inline-flex flex-column align-items-center">
-                        <span>Image</span>
-                        <div 
-                          className="image-input-outline image-input-wrapper rounded border" 
-                          style={{
-                            width: '15rem',
-                            height: '15rem',
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            boxShadow: '0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075)',
-                            backgroundImage: (previewImage ? `url(${previewImage})`: 'url("/media/avatars/user_default.jpg")')
-                          }}
-                          ></div>
-
-                          <div className="d-inline-flex flex-row gap-3 mt-3">
-                            <label className="btn btn-sm btn-light font-weight-bold">
-                              <i className="fa fa-pen"></i> { previewImage? 'Change image': 'Upload image' }
-                              <input type="file" accept=".png,.jpg,.jpeg" hidden onChange={_handleImageUpload} />
-                            </label>
-                          {previewImage &&
-                              <button type="button" className="btn btn-sm btn-light-danger font-weight-bold" onClick={_handleRemoveImage}>
-                                <i className='fa fa-times'></i> Remove
-                              </button>
-                          }
-                          </div>
-                      </div>
-
-                      <div className="flex-grow-1 d-inline-flex flex-column gap-4">
-                        <div className="row gy-3">
-                          <div className="col-12 col-md-6">
-                            <label className="required">First Name</label>
-                            <Field name="first_name" className="form-control"/>
-                            <div className="text-danger">
-                              <ErrorMessage name="first_name"/>
-                            </div>
-                          </div>
-
-                          <div className="col-12 col-md-6">
-                            <label className="required">Last Name</label>
-                            <Field name="last_name" className="form-control"/>
-                            <div className="text-danger">
-                              <ErrorMessage name="last_name"/>
-                            </div>
-                          </div>
-
-                        </div>
-
-                        <div className="row gy-3">
-                          <div className="col-12 col-md-6">
-                            <label className="required">Email</label>
-                            <Field name="email" className="form-control" type='email' autoComplete="off"/>
-                            <div className="text-danger">
-                              <ErrorMessage name="email"/>
-                            </div>
-                          </div>
-
-                          <div className="col-12 col-md-6">
-                            { isEdited ? 
-                              <>
-                                <label>New Password</label>
-                                <div className="input-group">
-                                  <Field name="password" className="form-control" type={showPassword ? 'text': 'password'} autoComplete="off"/>
-                                  <span className="input-group-text cursor-pointer" onClick={() => setShowPassword((prev) => !prev)}> 
-                                    { showPassword ? 
-                                      <i className="bi bi-eye-slash-fill"></i> 
-                                      :
-                                      <i className="bi bi-eye-fill"></i> 
-                                    }
-                                  </span>
-                                </div>
-                              </>
-                              :
-                              <>
-                                <label className="required">Password</label>
-                                <div className="input-group">
-                                  <Field name="password" className="form-control" type={showPassword ? 'text': 'password'} autoComplete="off"/>
-                                  <span className="input-group-text cursor-pointer" onClick={() => setShowPassword((prev) => !prev)}> 
-                                    { showPassword ? 
-                                      <i className="bi bi-eye-slash-fill"></i> 
-                                      :
-                                      <i className="bi bi-eye-fill"></i> 
-                                    }
-                                  </span>
-                                </div>
-                                <div className="text-danger">
-                                  <ErrorMessage name="password"/>
-                                </div>
-                              </>
-                            }
-                          </div>
-                        </div>
-
-                        <div className="row">
-                          <div className="col-12 col-md-6">
-                            <label className="required">Role</label>
-                            <Field name='role'>
-                              {({field, form}: FieldProps) => {
-                                const selected = roles ? roles.find(r => r.code === field.value) : null;
-                                const options = roles.map(r => ({value: r.code, label: r.code}));
-                                return <Select
-                                  isLoading={loadingRoles}
-                                  inputId='role'
-                                  placeholder='Select a role'
-                                  value={selected ? {value: selected.code, label: selected.code} : null}
-                                  options={options}
-                                  classNamePrefix="react-select"
-                                  onChange={(value: any) => form.setFieldValue(field.name, value.value)}
-                                />
-                              }}
-                            </Field>
-                            <div className="text-danger">
-                              <ErrorMessage name="role"/>
-                            </div>
-                          </div>
-
-                          <div className="col-12 col-md-6">
-                            <label className="required">Country</label>
-                            <Field name="country">
-                              {({field, form}: FieldProps) => (
-                                <Select
-                                  inputId='country'
-                                  placeholder='Select a country'
-                                  classNamePrefix="react-select"
-                                  options={_countriesOptions}
-                                  value={_countriesOptions.find(opt => opt.value === field.value)}
-                                  onChange={(value: any) => handleSelectCountry(value, field.name, form)}
-                                  formatOptionLabel={(option: any) => (
-                                    <div className="d-inline-flex flex-row gap-3 align-items-center">
-                                      <img
-                                        src={toAbsoluteUrl(option.flag)}
-                                        alt={option.label}
-                                        style={{ width: "20px", height: "15px", objectFit: "cover" }}
-                                      />
-                                      <span>{option.label}</span>
-                                    </div>
-                                  )}
-                                />
-                              )}
-                            </Field>
-
-                            <div className="text-danger">
-                              <ErrorMessage name="country"/>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="row gy-3">
-                            <div className="col-12 col-md-6">
-                              <label>Classification</label>
-                              <Field name="classifier_id">
-                                {({field, form}: FieldProps) => (
-                                  <Select
-                                    isClearable 
-                                    autofocus='off'
-                                    inputId='classifier_id'
-                                    placeholder='Select a classifier'
-                                    classNamePrefix="react-select"
-                                    options={_classifiersOptions}
-                                    value={_classifiersOptions.find(opt => opt.value === field.value)}
-                                    onChange={(value: any) => form.setFieldValue(field.name, value)}
-                                    formatOptionLabel={(option: any) => (
-                                      <span className={clsx('badge fw-bolder text-uppercase fs-9 px-2 py-1 text-truncate classifier', option.color)}>
-                                        {option.label}
-                                      </span>
-                                    )}
-                                  />
-                                )}
-                              </Field>
-                            </div>
-                            { isEdited &&
-                              <div className="col-12 col-md-6 d-flex align-items-center">
-                                <div className="form-check">
-                                  <Field name="active">
-                                    {({field, form}: FieldProps)=> (
-                                      <input className="form-check-input" type="checkbox" id="editActive" checked={!!field.value} onChange={(e) => form.setFieldValue(field.name, e.target.checked)}/>
-                                    )}
-                                  </Field>
-                                  <label className="form-check-label" htmlFor="editActive">Active</label>
-                                </div>
-                              </div>
-                            }
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <div className="separator mt-4 mb-3"></div>
-                    <div className="col">
-                      <label className="required">Address</label>
-                      <Field name="address" className="form-control"/>
-                      <div className="text-danger">
-                        <ErrorMessage name="address"/>
-                      </div>
-                    </div>
-
-                    <div className="row gy-3">
-                      <div className="col-12 col-md-6">
-                        <label className="required">Phone number</label>
-                        <div className="input-group">
-                          { countryCode && 
-                            <span className="input-group-text">{ countryCode }</span>
-                          }
-                          <Field name="phone_number" className="form-control"/>
-                        </div>
-                        <div className="text-danger">
-                          <ErrorMessage name="phone_number"/>
-                        </div>
-                      </div>
-                      <div className="col-12 col-md-6">
-                        <label className="required">National ID</label>
-                        <Field name="national_id" className="form-control"/>
-                        <div className="text-danger">
-                          <ErrorMessage name="national_id"/>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                  <div className="card-footer d-flex justify-content-end gap-4 mt-3 p-4 ps-0 pe-0">
-                    <button
-                      type='button'
-                      className='btn btn-secondary'
-                      style={{width: '20rem'}}
-                      onClick={() => history.push('/users')}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type='submit'
-                      id='kt_sign_in_submit'
-                      className='btn btn-dark'
-                      style={{width: '20rem'}}
-                      disabled={!isValid || !dirty || sending}
-                    >
-                        {
-                            !sending ? 
-                            (<span className="indicator-label">Save</span>) 
-                            : (<span>Saving... <span className="spinner-border spinner-border-sm align-middle ms-2"></span></span>)
-                        }
-                    </button>
-
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          )}
-        </div>
+          </h3>
       </div>
+      <UserManagementForm
+        roles={roles}
+        loadingRoles={loadingRoles}
+        isEdited={isEdited}
+        initialValues={formValues ?? undefined}
+        loadingForm={LoadingUser}
+        companies={companies}
+        loadingCompanies={loadingCompanies}
+        sending={sending}
+        onSubmit={_handleOnSend}
+        imagePreview={userdata?.profilePicture ? getURLImage(userdata.profilePicture): undefined}
+        onCancel={() => history.push('/users')}
+      />
     </div>
   )
 }
