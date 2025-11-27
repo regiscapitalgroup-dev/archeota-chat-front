@@ -60,13 +60,22 @@ const PopUpController: React.FC<Props> = ({ children, className }) => {
         };
 
         const updatePosition = () => {
+            if(!button || !wrapperRef.current) 
+                return; 
             const wrapperWidth = wrapperRef.current?.offsetWidth;
             const rect = button.getBoundingClientRect();
+            const viewWidth = window.innerWidth;
+            let leftPosition = Math.max(rect.right - wrapperWidth, 0); 
+            const marginRight = 20;
+            if(leftPosition + wrapperWidth + marginRight > viewWidth)
+                leftPosition = viewWidth - wrapperWidth - marginRight;
+            if(leftPosition < 0)
+                leftPosition = 0;
             setDropStyles((prev) => ({ 
                 ...prev, 
                 position: 'fixed',
                 top: rect.bottom,
-                left: Math.max(rect.right - wrapperWidth!, 0),
+                left: leftPosition,
                 transform: `translateX(calc(-100% + ${Math.round(button.offsetWidth)}px))` 
             }));
         };
@@ -78,6 +87,7 @@ const PopUpController: React.FC<Props> = ({ children, className }) => {
         };
 
         const toggle = () => {
+            updatePosition();
             setDropStyles((prev) => {
                 if(prev.display === 'none')
                     return { ...prev, display: 'block' };
