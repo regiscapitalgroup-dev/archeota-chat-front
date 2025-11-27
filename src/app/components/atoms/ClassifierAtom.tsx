@@ -7,9 +7,9 @@ type Props = {
     onClick?: Function;
 }
 
-export const ClassifierAtom = ({ name, color, className }: Props) => {
+export const ClassifierAtom = ({ name, color, className, onClick }: Props) => {
     return (
-        <div className={clsx('badge fw-bolder text-uppercase text-truncate text-nowrap classifier', color, className)}>
+        <div className={clsx('badge fw-bolder text-uppercase text-truncate text-nowrap classifier d-inline-flex align-items-center', color, className)} onClick={() => onClick?.()}>
             {name}
         </div>
     )
