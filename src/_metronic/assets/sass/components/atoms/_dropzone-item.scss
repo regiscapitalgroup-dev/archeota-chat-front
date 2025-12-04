@@ -1,0 +1,10 @@
+.dropzone-item {
+    border-color: '#3699FF';
+    &.disabled  {
+        cursor: auto !important;
+        border-color: var(--bs-gray-500) !important;
+        .info {
+            color: var(--bs-gray-500) !important;
+        } 
+    }
+}
