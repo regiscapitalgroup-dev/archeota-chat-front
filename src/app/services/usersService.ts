@@ -89,3 +89,13 @@ export const getUsersManagers = async (company_id: number) => {
         throw error;
     }
 };  
+
+export const getClients = async (company_id: number | null) => {
+    try {
+        const response = await apiClient.get(`auth/users/clients/?company_id=${company_id??''}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users roles:', error);
+        throw error;
+    }
+}
