@@ -1,12 +1,22 @@
 import { Field, FieldProps, Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { NumericFormat } from "react-number-format";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import LoadingSpinner from "../../../../components/LoadingSpinner";
-import { ClaimsTransactionsCreateModel } from "../../models/ClaimsTransactionsCreateModel";
+import { useClaimTransactionById } from "../../../../hooks/claims/useClaimTransactionById";
+import { createTransactionsClaim, updateTransactionsClaim } from "../../../../services/claimsService";
 import { RouteParamsModel } from "../../../shared/models/RouteParamsModel";
-import { createTransactionsClaim, getTransactionsClaimById, updateTransactionsClaim } from "../../../../services/cliamsService";
-import { NumericFormat } from "react-number-format";
-import { ClaimTransactionModel } from "../../models/ClaimsTransactionsModel";
+import { ClaimsTransactionsCreateModel } from "../../models/ClaimsTransactionsCreateModel";
+import { shallowEqual, useSelector } from "react-redux";
+import { RootState } from "../../../../../setup";
+import { UserRoles } from "../../../../enums/userRoles";
+import { useUserCompanies } from "../../../../hooks/company/useUserCompanies";
+import CompanyField from "../../components/atoms/CompanyField";
+import { CompanyOptions } from "../../components/atoms/models/CompanyOptions";
+import { CompanyModel } from "../../../users/models/CompanyModel";
+import { useClients } from "../../../../hooks/users/useClients";
+import { UsersField } from "../../components/atoms/UsersField";
+import { UserListModel } from "../../../users/models/UserListModel";
 
 const initialValues: ClaimsTransactionsCreateModel = {
     data_for: '',
@@ -25,54 +35,80 @@ const initialValues: ClaimsTransactionsCreateModel = {
     company: '',
 };
 
-
 const ClaimTransactionsForm: React.FC = () => {
+    const { user } = useSelector((root: RootState) => root.auth, shallowEqual);
     const location = useLocation();
     const history = useHistory();
-    const [loading, setLoading] = useState(false);
+    const isMountedRef = useRef(false);
     const [sending, setSending] = useState(false);
     const isEdited = location.pathname.includes('/edit');
     const { id: routeId } = useParams<RouteParamsModel>();
     const [formValues, setFormValues] = useState<ClaimsTransactionsCreateModel>(initialValues);
+    const { transaction, loading, getTransactionById } = useClaimTransactionById();
+    const { companies, loading: isLoadingCompanies } = useUserCompanies();
+    const [companySelected, setCompanySelected] = useState<CompanyModel|null>(null);
+    const { users, loading: isLoadingUsers, loadUsers } = useClients()
+    const [userSelected, setUserSelected] = useState<UserListModel|null>(null);
 
     useEffect(() => {
-        const fetchRecord = async () => {
-            if(isEdited && routeId) {
-                try {
-                    setLoading(true);
-                    const _claim: ClaimTransactionModel = await getTransactionsClaimById(Number(routeId));
-                    setFormValues({
-                        account: _claim.account,
-                        account_name: _claim.accountName,
-                        account_number: _claim.accountNumber,
-                        account_type: _claim.accountType,
-                        activity: _claim.activity,
-                        amount: _claim.amount,
-                        company: _claim.company,
-                        data_for: _claim.dataFor,
-                        description: _claim.description,
-                        notes: _claim.notes,
-                        quantity: _claim.quantity,
-                        symbol: _claim.symbol,
-                        trade_date: _claim.tradeDate,
-                        type: _claim.type
-                    })
-                }
-                catch {
-                    setFormValues(initialValues);
-                    history.push('/claims/transactions')
-                }
-                finally {
-                    setLoading(false);
-                }
-            }
-            else
-                setFormValues(initialValues);
-        };
-        fetchRecord();
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+        }
+    }, [])
+
+    useEffect(() => {
+        if(!user || !user.role)
+            return;
+        if(user.role === UserRoles.FINAL_USER || user.role === UserRoles.CLIENT)
+            setUserSelected({ id: user.pk } as UserListModel)
+    }, [user]);
+
+    useEffect(() => {
+        if(!transaction) {
+            setFormValues(initialValues);
+            return;
+        }
+        setFormValues({
+            account: transaction.account,
+            account_name: transaction.accountName,
+            account_number: transaction.accountNumber,
+            account_type: transaction.accountType,
+            activity: transaction.activity,
+            amount: transaction.amount,
+            company: transaction.company,
+            data_for: transaction.dataFor,
+            description: transaction.description,
+            notes: transaction.notes,
+            quantity: transaction.quantity,
+            symbol: transaction.symbol,
+            trade_date: transaction.tradeDate,
+            type: transaction.type
+        });
+    }, [transaction]);
+
+    useEffect(() => {
+        if(!isEdited||!routeId)
+            return;
+        getTransactionById(Number(routeId))
     }, [isEdited, routeId]);
 
-    const handleSubmit = async (value: ClaimsTransactionsCreateModel) => {
+    useEffect(() => {
+        if(companies.length === 1)
+            setCompanySelected(companies[0]);
+    }, [companies]);
+
+    useEffect(() => {
+        if(!!user && user?.role !== UserRoles.CLIENT && user?.role !== UserRoles.FINAL_USER)
+            loadUsers(companySelected ? companySelected.id : null );
+    }, [companySelected]);
+
+    const _handleSelectCompany = (value: CompanyOptions | null) => {
+        setCompanySelected(value?.value??null);
+        setUserSelected(null);
+    }
+
+    const _handleSubmit = async (value: ClaimsTransactionsCreateModel) => {
         if(sending)
             return;
         try {
@@ -81,11 +117,13 @@ const ClaimTransactionsForm: React.FC = () => {
                 await updateTransactionsClaim(Number(routeId), value);
             }
             else
-                await createTransactionsClaim(value);
+                await createTransactionsClaim(value, userSelected?.id);
         }
         finally {
-            setSending(false);
-            history.push('/claims/transactions');
+            if(isMountedRef.current) {
+                setSending(false);
+                history.push('/claims/transactions');
+            }
         }
     };
 
@@ -94,8 +132,8 @@ const ClaimTransactionsForm: React.FC = () => {
         <div className='card-body'>
             <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center'>
                 <h3 className="card-title align-items-start flex-column">
-                    <span className='fw-bolder text-dark fs-3'>Stock Transactions</span>
-                    <span className='text-muted mt-1 fs-7'>{ isEdited ? 'Edit your stock transaction': 'Create a stock transaction'  }</span>
+                    <span className='fw-bolder text-dark fs-3'>Transactional Brokerage</span>
+                    <span className='text-muted mt-1 fs-7'>{ isEdited ? 'Edit transaction brokerage': 'Create transaction brokerage'  }</span>
                 </h3>
             </div>
             <div className="card-body">
@@ -106,10 +144,32 @@ const ClaimTransactionsForm: React.FC = () => {
                         <Formik
                             enableReinitialize
                             initialValues={formValues}                    
-                            onSubmit={handleSubmit} 
+                            onSubmit={_handleSubmit} 
                         > 
+                        {({ isValid, dirty }) => (
                             <Form className="form">
                                 <div className="card-body d-flex flex-column gap-3">
+                                    { !!user && user.role !== UserRoles.CLIENT && user.role !== UserRoles.FINAL_USER && (
+                                        <div className="row gy-3">
+                                            <CompanyField
+                                                disabled={isEdited || companies.length<=1}
+                                                companies={companies}
+                                                isLoading={isLoadingCompanies}
+                                                companySelected={companySelected}
+                                                onChange={_handleSelectCompany}
+                                                className="col-12 col-md-6"
+                                            />
+                                            <UsersField
+                                                disabled={isEdited}
+                                                isLoading={isLoadingUsers}
+                                                users={users}
+                                                userSelected={userSelected}
+                                                onChange={(v) => setUserSelected(v?.value ?? null)}
+                                                className="col-12 col-md-6"
+                                            />
+                                        </div>
+                                    )}
+
                                     <div className="row gy-3">
                                         <div className="col-12 col-md-6">
                                                 <label>Data For</label>
@@ -235,6 +295,7 @@ const ClaimTransactionsForm: React.FC = () => {
                                         type='submit'
                                         className='btn btn-dark flex-grow-1'
                                         style={{minWidth: 0}}
+                                        disabled={sending || !isValid || !dirty || !userSelected}
                                     >
                                         {
                                             !sending ? 
@@ -244,6 +305,7 @@ const ClaimTransactionsForm: React.FC = () => {
                                     </button>
                                 </div>
                             </Form>
+                        )}
                         </Formik>)
                 }
             </div>
