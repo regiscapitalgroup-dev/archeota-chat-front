@@ -22,6 +22,7 @@ export const useUserCompanies = (loadOnInit: boolean = true) => {
         if(!isMountedRef.current)
             return;
         setLoading(true);
+        setCompanies([])
         try {
             if(!user || !user.role)
                 return;
