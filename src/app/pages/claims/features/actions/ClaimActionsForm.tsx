@@ -2,7 +2,7 @@ import { ErrorMessage, Field, FieldProps, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import * as Yup from 'yup';
-import { createActionsClaim, getActionsClaimsById, updateActionsClaim } from "../../../../services/cliamsService";
+import { createActionsClaim, getActionsClaimsById, updateActionsClaim } from "../../../../services/claimsService";
 import { RouteParamsModel } from "../../../shared/models/RouteParamsModel";
 import { ClaimsActionsCreateModel } from "../../models/ClaimsActionsCreateModel";
 import { ClaimsActionsModel } from "../../models/ClaimsActionsModel";

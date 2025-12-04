@@ -9,7 +9,7 @@ import {ToolbarWithFilter} from './ToolbarWithFilter'
 import { KTSVG } from '../../../../_metronic/helpers'
 import ActionTable from '../../../components/ActionTable'
 import Swal from 'sweetalert2'
-import { deleteTransactionsClaim } from '../../../services/cliamsService'
+import { deleteTransactionsClaim } from '../../../services/claimsService'
 import { FilterProp } from '../../../components/molecules/models/FilterProp.Model'
 
 
@@ -110,6 +110,8 @@ const ClaimTransactionsTable: React.FC<Props> = ({
       name: 'Trade Date',
       selector: (row) => row.tradeDate,
       cell: (row) => {
+        if(!row.tradeDate)
+          return <></>
         return <div>{toShortDateString(row.tradeDate)}</div>
       },
       sortable: true,
@@ -132,7 +134,7 @@ const ClaimTransactionsTable: React.FC<Props> = ({
       <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center position-relative'>
           <h3 className='card-title align-items-start flex-column'>
             <span className='fw-bolder text-dark fs-3'>
-              Stock Transactions {selectedUser ? selectedUser?.name : ''}
+              Transactional Brokerage {selectedUser ? selectedUser?.name : ''}
             </span>
             <span className='text-muted mt-1 fs-7'>List of movements</span>
           </h3>

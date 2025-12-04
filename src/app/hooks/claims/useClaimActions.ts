@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getActionsClaims } from '../../services/cliamsService';
+import { getActionsClaims } from '../../services/claimsService';
 import { ClaimsActionsModel } from '../../pages/claims/models/ClaimsActionsModel';
 
 export const useActionsClaim = (id?: string) => {

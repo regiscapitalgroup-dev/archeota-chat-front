@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { getTransactionsClaims } from '../../services/cliamsService'
+import { getTransactionsClaims } from '../../services/claimsService'
 import { ClaimTransactionModel } from '../../pages/claims/models/ClaimsTransactionsModel'
 
 type ApiResponse = {

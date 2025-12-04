@@ -1,12 +1,17 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {useDropzone} from 'react-dropzone'
-import {createClaims} from '../../../services/cliamsService'
+import {createClaims} from '../../../services/claimsService'
 import {useTransactionsLogs} from '../../../hooks/claims/useClaimTransactionsLogs'
 import ErrorLogsTimeline from './ClaimsTransactionsErrorLogsTimeline'
+import { UserListModel } from '../../users/models/UserListModel'
+import { shallowEqual, useSelector } from 'react-redux'
+import { RootState } from '../../../../setup'
+import { UserRoles } from '../../../enums/userRoles'
+import clsx from 'clsx'
 
 type Props = {
   onUploadSuccess?: (value: number) => void
-  user?: any
+  user: UserListModel | null;
 }
 
 const dropzoneStyle: React.CSSProperties = {
@@ -21,6 +26,8 @@ const dropzoneStyle: React.CSSProperties = {
 }
 
 const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) => {
+  const auth = useSelector((root: RootState) => root.auth.user, shallowEqual);
+  const [enabledInput, setEnabledInput] = useState(true);
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [uploading, setUploading] = useState<boolean>(false)
   const [processing, setProcessing] = useState<boolean>(false)
@@ -29,17 +36,27 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) 
   const [guidUpload, setGuidUpload] = useState<string>('')
   const {logs} = useTransactionsLogs(guidUpload)
 
+  useEffect(() => {
+    if(!auth || !auth.role)
+      return;
+    let _enabled = false;
+    if(auth.role === UserRoles.FINAL_USER || auth.role === UserRoles.CLIENT)
+      _enabled = true;
+    else if(!!user && (user.roleCode === UserRoles.FINAL_USER || user.roleCode === UserRoles.CLIENT))
+      _enabled = true;
+    setEnabledInput(_enabled);
+  }, [auth, user])
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       if (!acceptedFiles.length) return
-
       const file = acceptedFiles[0]
       setFileName(file.name)
       setUploadProgress(0)
       setUploading(true)
       setUploadSuccess(null)
       setProcessing(false)
-      createClaims(file, user?.value, (progressEvent) => {
+      createClaims(file, user?.id, (progressEvent) => {
         if (progressEvent.total) {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           setUploadProgress(percent)
@@ -77,7 +94,7 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) 
   })
 
   return (
-    <div className='card card-flush py-5 '>
+    <div className='card card-flush py-5'>
       <div
         {...getRootProps()}
         style={{
@@ -85,12 +102,12 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) 
           borderColor: isDragActive ? '#0abb87' : '#3699FF',
           background: isDragActive ? '#e8fff3' : '#f1faff',
         }}
-        className='mb-4'
+        className={clsx('mb-4 dropzone-item', { 'disabled': !enabledInput })}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} disabled={!enabledInput}/>
         <i className='ki-duotone ki-upload fs-1 mb-3'></i>
-        <p className='fs-5 fw-bold'>
-          {isDragActive ? 'Drop the file here…' : 'Drag and drop your Excel file here'}
+        <p className='fs-5 fw-bold info'>
+          Drag and drop your Excel file here
         </p>
         <p className='text-gray-500 fs-7'>
           Only files <span className='fw-bold'>.xlsx</span> and{' '}

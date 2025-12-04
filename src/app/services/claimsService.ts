@@ -13,7 +13,7 @@ export const createClaims = async (
     formData.append('file', file);
     formData.append('target_user_id', user && user > 0 ? user.toString() : '');
 
-    const response = await apiClient.post('assets/transactions/import-data/', formData, {
+    const response = await apiClient.post('claims/transactions/import-data/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       onUploadProgress,
     });
@@ -103,9 +103,9 @@ export const getTransactionsClaimById = async (id: number) => {
   }
 };
 
-export const createTransactionsClaim = async (data: ClaimsTransactionsCreateModel) => {
+export const createTransactionsClaim = async (data: ClaimsTransactionsCreateModel, user_id?: number) => {
   try {
-    const response = await apiClient.post(`/claims/claim-transactions/`, data);
+    const response = await apiClient.post(`/claims/claim-transactions/?user=${user_id??''}`, data);
     return response.data;
   }
   catch (error) {
@@ -138,7 +138,7 @@ export const deleteTransactionsClaim = async (id: number) => {
 
 export const getTransactionsLogs = async (guid: string) => {
   try {
-    const response = await apiClient.get(`assets/import-logs/${guid}/`);
+    const response = await apiClient.get(`claims/import-logs/${guid}/`);
 
     return response.data;
   } catch (error) {
