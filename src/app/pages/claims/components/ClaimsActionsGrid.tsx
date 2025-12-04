@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { KTSVG } from '../../../../_metronic/helpers';
 import DataTableComponent from '../../../components/DataTableComponent';
 import { formatCurrency } from '../../../helpers/FormatCurrency';
-import { deleteActionsClaim } from '../../../services/cliamsService';
+import { deleteActionsClaim } from '../../../services/claimsService';
 import { filterData } from '../../../services/utilsService';
 import { ClaimsActionsModel } from '../models/ClaimsActionsModel';
 import { FilterProp } from '../../../components/molecules/models/FilterProp.Model';

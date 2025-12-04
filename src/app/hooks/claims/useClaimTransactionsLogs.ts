@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getTransactionsLogs } from '../../services/cliamsService'
+import { getTransactionsLogs } from '../../services/claimsService'
 import { ImportJobLog } from '../../pages/claims/models/ClaimsTransactionsErrorLogModel'
 
 

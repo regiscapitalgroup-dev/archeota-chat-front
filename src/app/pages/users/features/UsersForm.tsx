@@ -1,19 +1,15 @@
 import { useEffect, useRef, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useUserCompanies } from "../../../hooks/company/useUserCompanies"
 import { useUserById } from "../../../hooks/users/useUserById"
 import { useUserRoles } from "../../../hooks/users/useUserRoles"
+import { createUser, updateUser, userImage } from "../../../services/usersService"
+import { getURLImage } from "../../../services/utilsService"
 import { RouteParamsModel } from "../../shared/models/RouteParamsModel"
 import UserManagementForm from "../components/pages/UserManagementForm"
 import { UserFormModel } from "../models/UserFormModel"
-import { useUserCompanies } from "../../../hooks/company/useUserCompanies"
-import { createUser, updateUser, userImage } from "../../../services/usersService"
-import { getURLImage } from "../../../services/utilsService"
-import { shallowEqual, useSelector } from "react-redux"
-import { RootState } from "../../../../setup"
-import { UserRoles } from "../../../enums/userRoles"
 
 const UsersForm: React.FC = () => {
-  const { user } = useSelector((state: RootState) => state.auth, shallowEqual)
   const history = useHistory();
   const location = useLocation();
   const isEdited = location.pathname.includes('/edit');

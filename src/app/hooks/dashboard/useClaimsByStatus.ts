@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getClaimsByStatus } from '../../services/cliamsService';
+import { getClaimsByStatus } from '../../services/claimsService';
 
 export const useClaimsByStatus = (user?:string) => {
     const [data, setData] = useState<any | null>(null);
