@@ -1,16 +1,18 @@
-import React, {useMemo, useState} from 'react'
-import {TableColumn} from 'react-data-table-component'
-import {ClaimTransactionModel} from '../models/ClaimsTransactionsModel'
-import {useHistory} from 'react-router-dom'
-import DataTableComponent from '../../../components/DataTableComponent'
-import {formatCurrencyUSD} from '../../../helpers/FormatCurrency'
-import {getISODate, toShortDateString} from '../../../helpers/FormatDate'
-import {ToolbarWithFilter} from './ToolbarWithFilter'
+import React, { useMemo, useState } from 'react'
+import { TableColumn } from 'react-data-table-component'
+import { useHistory } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import { KTSVG } from '../../../../_metronic/helpers'
 import ActionTable from '../../../components/ActionTable'
-import Swal from 'sweetalert2'
-import { deleteTransactionsClaim } from '../../../services/claimsService'
+import DataTableComponent from '../../../components/DataTableComponent'
 import { FilterProp } from '../../../components/molecules/models/FilterProp.Model'
+import { formatCurrencyUSD } from '../../../helpers/FormatCurrency'
+import { getISODate, toShortDateString } from '../../../helpers/FormatDate'
+import { deleteTransactionsClaim } from '../../../services/claimsService'
+import { UserListModel } from '../../users/models/UserListModel'
+import { ClaimTransactionModel } from '../models/ClaimsTransactionsModel'
+import UserSelectorTool from './molecules/UserSelectorTool'
+import { ToolbarWithFilter } from './ToolbarWithFilter'
 
 
 const FilterProps: FilterProp[] = [
@@ -33,13 +35,14 @@ const FilterProps: FilterProp[] = [
 
 
 type Props = {
-  data: ClaimTransactionModel[]
-  loading: boolean
-  setPage: (page: number) => void
-  onReload: () => void
-  totalCount: number
-  page: number
-  selectedUser?: any
+  data: ClaimTransactionModel[];
+  loading: boolean;
+  setPage: (page: number) => void;
+  onReload: () => void;
+  totalCount: number;
+  page: number;
+  userSelected: UserListModel | null;
+  setUserSelected: (user: UserListModel | null) => void;
 }
 
 const ClaimTransactionsTable: React.FC<Props> = ({
@@ -49,29 +52,27 @@ const ClaimTransactionsTable: React.FC<Props> = ({
   onReload,
   totalCount,
   page,
-  selectedUser,
+  userSelected,
+  setUserSelected
 }) => {
-  const history = useHistory()
+  const history = useHistory();
   const [sending, setSending] = useState(false);
   const [filters, setFilters] = useState({accountName: '', tradeDate: '', symbol: ''})
-  const filteredItems = useMemo(
-    () =>
-      data.filter((item) => {
-        const accountMatch =
-          !filters.accountName ||
-          (item.accountName &&
-            item.accountName.toLowerCase().includes(filters.accountName.toLowerCase()))
-        const dateMatch =
-          !filters.tradeDate ||
-          (item.tradeDate && getISODate(item.tradeDate) === getISODate(filters.tradeDate))
+  const filteredItems = useMemo(() =>
+    data.filter((item) => {
+      const accountMatch =
+        !filters.accountName ||
+        (item.accountName &&
+          item.accountName.toLowerCase().includes(filters.accountName.toLowerCase()))
+      const dateMatch =
+        !filters.tradeDate ||
+        (item.tradeDate && getISODate(item.tradeDate) === getISODate(filters.tradeDate))
 
-        const symbolMatch =
-          !filters.symbol ||
-          (item.symbol && item.symbol.toLowerCase().includes(filters.symbol.toLowerCase()))
-        return accountMatch && dateMatch && symbolMatch
-      }),
-    [data, filters]
-  )
+      const symbolMatch =
+        !filters.symbol ||
+        (item.symbol && item.symbol.toLowerCase().includes(filters.symbol.toLowerCase()))
+      return accountMatch && dateMatch && symbolMatch
+    }),[data, filters]);
 
   const _onEditRecord = (row: ClaimTransactionModel) => history.push(`/claims/transactions/edit/${row.id}`);
   const _onDeleteRecord = async (row: ClaimTransactionModel) => {
@@ -124,9 +125,21 @@ const ClaimTransactionsTable: React.FC<Props> = ({
     },
     {
       name: 'Actions',
-      cell: (row) => (<ActionTable onDelete={async () => await _onDeleteRecord(row)} onEdit={() => _onEditRecord(row)}/>)
+      cell: (row) => <ActionTable props={[
+          {
+            label: 'Edit',
+            cb: () => _onEditRecord(row)
+          },
+          {
+            label: 'Delete',
+            cb: () => _onDeleteRecord(row),
+            className: 'btn-light-danger'
+          }
+        ]}
+      />
     }
   ]
+
   const handleReset = () => setFilters({accountName: '', tradeDate: '', symbol: ''})
 
   return (
@@ -134,13 +147,16 @@ const ClaimTransactionsTable: React.FC<Props> = ({
       <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center position-relative'>
           <h3 className='card-title align-items-start flex-column'>
             <span className='fw-bolder text-dark fs-3'>
-              Transactional Brokerage {selectedUser ? selectedUser?.name : ''}
+              Transactional Brokerage {userSelected ? `- ${userSelected?.firstName} ${userSelected?.lastName}` : ''}
             </span>
             <span className='text-muted mt-1 fs-7'>List of movements</span>
           </h3>
         <div className='d-flex gap-2 ms-auto align-items-center position-relative'>
+          <UserSelectorTool onSelectUser={setUserSelected} />
           {data.length > 0 && (
-            <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} props={FilterProps} />
+            <>
+              <ToolbarWithFilter filters={filters} setFilters={setFilters} onReset={handleReset} props={FilterProps} />
+            </>
           )} 
           <button className='btn btn-sm btn-flex btn-active-dark fw-bolder active' onClick={() => history.push('/claims/transactions/new')}>
             <KTSVG

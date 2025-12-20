@@ -72,16 +72,26 @@ const UserList = ({ data, loading, showCompany, onEdit, onDetail, onDelete }: Pr
         {
             name: 'Actions',
             cell: (row) => (
-                <ActionTable 
-                    onEdit={() => onEdit(row.id)} 
-                    onDelete={() => onDelete(row.id)} 
-                    onDetails={() => onDetail(row.id)}
-                /> 
+                <ActionTable props={[
+                    {
+                        label: 'Edit',
+                        cb: () => onEdit(row.id)                        
+                    },
+                    {
+                        label: 'Details',
+                        cb: () => onDetail(row.id)
+                    },
+                    {
+                        label: 'Delete',
+                        cb: () => onDelete(row.id),
+                        className: 'btn-light-danger'
+                    }
+                ]}/> 
             ),
             sortable: true
         },
     ];
-
+    
     return (
         <DataTableComponent<UserListModel>
           columns={_columns}

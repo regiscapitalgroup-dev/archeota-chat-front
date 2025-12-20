@@ -11,6 +11,10 @@ import { ClaimsActionsModel } from '../models/ClaimsActionsModel';
 import { FilterProp } from '../../../components/molecules/models/FilterProp.Model';
 import ActionTable from '../../../components/ActionTable';
 import { ToolbarWithFilter } from './ToolbarWithFilter';
+import ClaimsActionTable from './molecules/ClaimsActionTable';
+import CompanySelectorTool from './molecules/CompanySelectorTool';
+import { CompanyModel } from '../../users/models/CompanyModel';
+import { CompanyOptions } from './atoms/models/CompanyOptions';
 
 const FilterProps: FilterProp[] = [
   {
@@ -49,18 +53,22 @@ type Filter = {
 type ClaimsActionsGridProps = {
   data: ClaimsActionsModel[];
   loading: boolean;
-  selectedUser?: any;
+  companies: CompanyModel[];
+  loadingCompanies: boolean;
+  companySelected: CompanyModel | null;
+  canClaim: boolean;
+  onCompanySelect: (company: CompanyOptions | null) => void;
   onReload: () => void;
+  onClaim: (id: number) => void;
 }
 
-const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, selectedUser, onReload}) => {
+const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, companies, loadingCompanies, companySelected, canClaim, onCompanySelect, onReload, onClaim}) => {
   const [sending, setSending] = useState(false);
   const [filters, setFilters] = useState({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] } as Filter)
   const filteredData = useMemo(() => filterData(data, filters), [data, filters]);
   const history = useHistory();
 
-  const _onEditRecord = (row: ClaimsActionsModel) => history.push(`/claims/actions/edit/${row.id}`);
-  const _onDeleteRecord = async (row: ClaimsActionsModel) => {
+  const _onDeleteRecord = async (id: number) => {
     const _result = await Swal.fire({
       title: 'Delete claim action',
       text: 'Do you really want to delete this claim action?\nThis process can not be undone.',
@@ -79,7 +87,7 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
       return;
     try {
       setSending(true);
-      await deleteActionsClaim(row.id);
+      await deleteActionsClaim(id);
     }
     finally {
       setSending(false);
@@ -87,51 +95,23 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
     onReload();
   };
 
-
-  let columns: TableColumn<ClaimsActionsModel>[] = [
-    {name: 'Ticker Symbol', selector: (row) => row.tyckerSymbol, sortable: true},
-    {name: 'Company Name', selector: (row) => row.companyName, sortable: true},
-    {name: 'Lawsuit Type', selector: (row) => row.lawsuitType, sortable: true},
-    {name: 'Eligibility', selector: (row) => row.eligibility, sortable: true},
-    {
-      name: 'Total Settlement Fund',
-      selector: (row) => row.totalSettlementFund,
-      cell: (row) => row.totalSettlementFund ? formatCurrency(row.totalSettlementFund) : 'N/A',
-      sortable: true,
-    },
-    {name: 'Claim Status', selector: (row) => row.claimStatus, sortable: true},
-    {
-      name: 'More Info',
-      selector: (row) => row.officialClaimFilingLink || '',
-      cell: (row) =>
-        row.officialClaimFilingLink ? (
-          <a
-            href={row.officialClaimFilingLink}
-            target='_blank'
-            rel='noopener noreferrer'
-            style={{color: '#009EF7', textDecoration: 'underline'}}
-          >
-            View Link
-          </a>
-        ) : (
-          <span className='badge badge-light-danger'>N/A</span>
-        ),
-      ignoreRowClick: true
-    },
-    {
-      name: 'Actions',
-      cell: (row) => (<ActionTable onDelete={async () => await _onDeleteRecord(row)} onEdit={() => _onEditRecord(row)}/>)
-    }
-  ]
-
   return (
     <div className='card shadow-sm mb-10'>
       <div className='card-header border-0 pt-5 d-flex justify-content-between align-items-center'>
         <h3 className='card-title align-items-start flex-column'>
-          <span className='fw-bolder text-dark fs-3'>Claims Actions {selectedUser?  selectedUser?.name : ""}</span>
+          <span className='fw-bolder text-dark fs-3'>Claims Actions {companySelected && (`- ${companySelected.name}`)}</span>
           <span className='text-muted mt-1 fs-7'>List of claims actions</span>
         </h3>
         <div className="d-flex gap-2 ms-auto align-items-center">
+          {
+            companies.length > 1 && (
+              <CompanySelectorTool 
+                companies={companies}
+                isLoading={loadingCompanies}
+                companySelected={companySelected}
+                onSelect={onCompanySelect}
+              />
+          )}
           { data.length > 0 && 
             <ToolbarWithFilter props={FilterProps} filters={filters} setFilters={setFilters} onReset={() => setFilters({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] })} />
           }
@@ -145,15 +125,14 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, sel
         </div>
       </div>
       <div className='card-body py-3'>
-        <DataTableComponent
-          columns={columns}
+        <ClaimsActionTable 
           data={filteredData}
-          loading={loading || sending}
-          pagination
-          paginationServer={false}
-          totalRows={filteredData.length}
-          customTitle={null}
-          highlightOnHover
+          isLoading={loading || sending}
+          onEdit={(id) => history.push(`/claims/actions/edit/${id}`)}
+          onDelete={_onDeleteRecord}
+          canClaim={canClaim}
+          onClaim={onClaim}
+          onDetails={(id) => history.push(`/claims/actions/details/${id}`)}
         />
       </div>
     </div>
