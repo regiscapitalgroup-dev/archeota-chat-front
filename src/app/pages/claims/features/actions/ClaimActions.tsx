@@ -1,19 +1,43 @@
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import { RootState } from "../../../../../setup";
+import { UserRoles } from "../../../../enums/userRoles";
 import { useActionsClaim } from "../../../../hooks/claims/useClaimActions";
-import ClaimsActionsGrid from "../../components/ClaimsActionsGrid";
+import { CompanyModel } from "../../../users/models/CompanyModel";
+import ClaimActionAdmin from "../../components/templates/ClaimActionAdmin";
+import ClaimActionClients from "../../components/templates/ClaimActionClients";
+import { generateClaim } from "../../../../services/claimsService";
 
 const ClaimsAction: React.FC = () => {
-    const selectedUser = useSelector((state: RootState) => state.selectedUser?.current);
-    const { actions, loading: loadingAct, reload: reloadClaims } = useActionsClaim(selectedUser?.id)
-    
+    const { user } = useSelector((root: RootState) => root.auth, shallowEqual);
+    const [ companySelected, setCompanySelected] = useState<CompanyModel | null>(null);
+    const { actions, loading: loadingAct, reload: reloadClaims } = useActionsClaim(companySelected?.id)
+    const _handleOnClaim = async (id: number) => {
+        await generateClaim(id);
+        await reloadClaims();
+    }
+
     return (
-        <ClaimsActionsGrid 
-            data={actions || []} 
-            loading={loadingAct} 
-            selectedUser={selectedUser} 
-            onReload={reloadClaims}
-        />
+        <>
+            { user?.role === UserRoles.FINAL_USER || user?.role === UserRoles.CLIENT ? (
+                <ClaimActionClients 
+                    claims={actions}
+                    isLoadingClaims={loadingAct}
+                    canClaim={user?.role === UserRoles.FINAL_USER}
+                    onClaim={_handleOnClaim}
+                    onReloadClaims={reloadClaims}
+                />
+            ) : (
+                <ClaimActionAdmin
+                    onClaim={_handleOnClaim}
+                    claims={actions}
+                    isLoadingClaims={loadingAct}
+                    onReloadClaims={reloadClaims}
+                    setCompanySelected={setCompanySelected}
+                    companySelected={companySelected}
+                />
+            )}
+        </>
     );
 };
 

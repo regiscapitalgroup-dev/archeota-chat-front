@@ -1,39 +1,25 @@
+import clsx from "clsx";
 import PopUpController from "../modules/controllers/PopUpController";
+import { ActionProp } from "./models/ActionProp.model";
 
 type ActionTableProps = {
-    onEdit?: () => void;
-    onDelete?: () => void;
-    onDetails?: () => void;
+    props: ActionProp[];
 };
 
-const ActionTable = ({ onEdit, onDelete, onDetails }: ActionTableProps) => {
+const ActionTable = ({ props }: ActionTableProps) => {
   return (
     <PopUpController>
       <button data-popup-role='button' className="btn btn-light action-table-btn">...</button>
-      <div data-popup-role='drop' tabIndex={0} className="card shadow-lg w-100px rounded-4 action-wrapper">
+      <div data-popup-role='drop' tabIndex={0} className="card shadow-lg rounded-4 action-wrapper" style={{ minWidth: '100px' }}>
         <div className="card-body action-body">
           <ul>
-            { !!onDetails && (
-              <li>
-                <button className="btn btn-light" onClick={onDetails}>
-                  Details
+            { props.map((p, i) => (
+              <li key={i}>
+                <button className={clsx("btn btn-light", p.className)} onClick={p.cb}>
+                  { p.label }
                 </button>
               </li>
-            )}
-            { !!onEdit && (
-              <li> 
-                <button className="btn btn-light" onClick={onEdit}> 
-                  Edit 
-                </button> 
-              </li>
-            )}
-            { !!onDelete && (
-              <li> 
-                <button className="btn btn-light-danger" onClick={onDelete}> 
-                  Delete 
-                </button> 
-              </li>
-            )}
+            ))}
           </ul>
         </div>
       </div>

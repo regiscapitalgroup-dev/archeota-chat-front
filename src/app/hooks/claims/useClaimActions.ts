@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { getActionsClaims } from '../../services/claimsService';
 import { ClaimsActionsModel } from '../../pages/claims/models/ClaimsActionsModel';
 
-export const useActionsClaim = (id?: string) => {
+export const useActionsClaim = (companyId?: number) => {
     const [actions, setActions] = useState<ClaimsActionsModel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -14,11 +14,10 @@ export const useActionsClaim = (id?: string) => {
         isMounted.current = false 
     }}, []);
 
-    const loadActions = async () => {
+    const loadActions = useCallback(async () => {
         try {
             setLoading(true);
-            let userId = id ? id : ''
-            const data = await getActionsClaims(userId);
+            const data = await getActionsClaims(companyId);
             if (isMounted.current) {
                 setActions(data);
             }
@@ -31,11 +30,11 @@ export const useActionsClaim = (id?: string) => {
                 setLoading(false);
             }
         }
-    };
+    }, [companyId]);
 
     useEffect(() => {
         loadActions();
-    }, [id]);
+    }, [loadActions]);
 
     return { actions, loading, error, reload: loadActions };
 };

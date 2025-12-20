@@ -4,6 +4,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 const ClaimsPage = () => {
   const ClaimsAction = lazy(() => import('./features/actions/ClaimActions'));
   const ClaimsActionForm = lazy(() => import('./features/actions/ClaimActionsForm'));
+  const ClaimsActionDetails = lazy(() => import('./features/actions/ClaimActionsDetails'));
   const ClaimTransactions = lazy(() => import('./features/transactions/ClaimTransactions'));
   const ClaimTransactionsForm = lazy(() => import('./features/transactions/ClaimTransactionsForm'));
   const ClaimUploadTransactions = lazy(() => import('./features/transactions/ClaimUploadTransactions'));
@@ -14,6 +15,9 @@ const ClaimsPage = () => {
       <Route exact path={`${path}/actions`} component={ClaimsAction}/>
       <Route path={`${path}/actions/new`} component={ClaimsActionForm}/>
       <Route path={`${path}/actions/edit/:id`} component={ClaimsActionForm}/>
+      <Route path={`${path}/actions/details/:id`} component={ClaimsActionDetails}/>
+      {/* <Route path={`${path}/lawsuit/new`} component={ClassLawsuitForm}/>
+      <Route path={`${path}/lawsuit/edit/:id`} component={ClassLawsuitForm}/> */}
       <Route exact path={`${path}/transactions`} component={ClaimTransactions}/>
       <Route path={`${path}/transactions/new`} component={ClaimTransactionsForm}/>
       <Route path={`${path}/transactions/edit/:id`} component={ClaimTransactionsForm}/>

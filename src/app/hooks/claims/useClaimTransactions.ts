@@ -9,12 +9,13 @@ type ApiResponse = {
   results: ClaimTransactionModel[]
 }
 
-export const useTransactionsClaim = (pageSize = 10, reload: number, user?: string) => {
+export const useTransactionsClaim = (pageSize = 10) => {
   const [transactions, setTransactions] = useState<ClaimTransactionModel[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
   const [page, setPage] = useState<number>(1)
   const [count, setCount] = useState<number>(0)
+  const [user, setUser] = useState<number | undefined>(undefined)
   const isMounted = useRef(true);
   
   useEffect(() => { 
@@ -50,6 +51,7 @@ export const useTransactionsClaim = (pageSize = 10, reload: number, user?: strin
     error,
     page,
     setPage,
+    setUser,
     loadData,
     count,
     pageSize,

@@ -34,6 +34,7 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) 
   const [uploadSuccess, setUploadSuccess] = useState<boolean | null>(null)
   const [fileName, setFileName] = useState<string>('')
   const [guidUpload, setGuidUpload] = useState<string>('')
+  const [warnings, setWarnings] = useState<string[]>([]);
   const {logs} = useTransactionsLogs(guidUpload)
 
   useEffect(() => {
@@ -56,6 +57,7 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) 
       setUploading(true)
       setUploadSuccess(null)
       setProcessing(false)
+      setWarnings([])
       createClaims(file, user?.id, (progressEvent) => {
         if (progressEvent.total) {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -64,7 +66,15 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) 
         }
       })
         .then((data) => {
-          const {importJobId, successfulImports} = data
+          const {importJobId, successfulImports, warningsImports } = data
+
+          const _warnings = Object.keys(warningsImports)
+          if(_warnings.length > 0) {
+            setWarnings(_warnings.map(w => `${w}: ${warningsImports[w]}`))
+          }
+          else {
+            setWarnings([]);
+          }
 
           if (successfulImports) {
             setUploadSuccess(true)
@@ -149,6 +159,18 @@ const UploadClaimsTransactionsFile: React.FC<Props> = ({onUploadSuccess, user}) 
         <div className='mt-5'>
           <ErrorLogsTimeline logs={logs} />
         </div>
+      )}
+      { warnings.length > 0 && (
+        <>
+          <div className='separator mb-2 p-0'></div>
+          <div className='mh-100px overflow-auto'>
+            {warnings.map(w => (
+              <div className="alert alert-warning mb-2 p-2">
+                {w}
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

@@ -1,4 +1,4 @@
-import { Field, FieldProps, Form, Formik } from "formik";
+import { ErrorMessage, Field, FieldProps, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -17,6 +17,7 @@ import { CompanyModel } from "../../../users/models/CompanyModel";
 import { useClients } from "../../../../hooks/users/useClients";
 import { UsersField } from "../../components/atoms/UsersField";
 import { UserListModel } from "../../../users/models/UserListModel";
+import * as Yup from 'yup';
 
 const initialValues: ClaimsTransactionsCreateModel = {
     data_for: '',
@@ -34,6 +35,14 @@ const initialValues: ClaimsTransactionsCreateModel = {
     type: '',
     company: '',
 };
+
+const validationSchema = Yup.object({
+    trade_date: Yup.date().required('Trade date is required'),
+    activity: Yup.string().required('Activity is required'),
+    symbol: Yup.string().required('Symbol is required'),
+    quantity: Yup.number().typeError('Quantity must be a number').required('Quantity is required').integer('Quantity must be an integer').min(1, 'Quantity must be at least 1'),
+    amount: Yup.number().typeError('Amount must be a number').required('Amount is required').moreThan(0, 'Amount must be greater than 0'),
+});
 
 const ClaimTransactionsForm: React.FC = () => {
     const { user } = useSelector((root: RootState) => root.auth, shallowEqual);
@@ -106,23 +115,26 @@ const ClaimTransactionsForm: React.FC = () => {
     const _handleSelectCompany = (value: CompanyOptions | null) => {
         setCompanySelected(value?.value??null);
         setUserSelected(null);
-    }
+    };
 
-    const _handleSubmit = async (value: ClaimsTransactionsCreateModel) => {
+    const _handleSubmit = async (value: ClaimsTransactionsCreateModel, setStatus: (status: string) => void) => {
         if(sending)
             return;
         try {
             setSending(true);    
-            if(isEdited) {
-                await updateTransactionsClaim(Number(routeId), value);
-            }
-            else
-                await createTransactionsClaim(value, userSelected?.id);
+            // if(isEdited) {
+            //     await updateTransactionsClaim(Number(routeId), value);
+            // }
+            // else
+            await createTransactionsClaim(value, userSelected?.id);
+            history.push('/claims/transactions');
+        }
+        catch {
+            setStatus("There was an error while saving the information. Please try again.")
         }
         finally {
             if(isMountedRef.current) {
                 setSending(false);
-                history.push('/claims/transactions');
             }
         }
     };
@@ -144,12 +156,18 @@ const ClaimTransactionsForm: React.FC = () => {
                         <Formik
                             enableReinitialize
                             initialValues={formValues}                    
-                            onSubmit={_handleSubmit} 
+                            onSubmit={(v, { setStatus }) => _handleSubmit(v, setStatus)} 
+                            validationSchema={validationSchema}
                         > 
-                        {({ isValid, dirty }) => (
+                        {({ isValid, dirty, status }) => (
                             <Form className="form">
                                 <div className="card-body d-flex flex-column gap-3">
-                                    { !!user && user.role !== UserRoles.CLIENT && user.role !== UserRoles.FINAL_USER && (
+                                    { !!status && (
+                                        <div className='mb-5 alert alert-danger'>
+                                            <div className='alert-text font-weight-bold'>{status}</div>
+                                        </div>
+                                    )}
+                                    { !isEdited && !!user && user.role !== UserRoles.CLIENT && user.role !== UserRoles.FINAL_USER && (
                                         <div className="row gy-3">
                                             <CompanyField
                                                 disabled={isEdited || companies.length<=1}
@@ -176,8 +194,11 @@ const ClaimTransactionsForm: React.FC = () => {
                                                 <Field name="data_for" className="form-control"/>
                                         </div>
                                         <div className="col-12 col-md-6">
-                                                <label>Trade Date</label>
+                                                <label className="required">Trade Date</label>
                                                 <Field name="trade_date" className="form-control" type="date"/>
+                                                <div className="text-danger">
+                                                    <ErrorMessage name='trade_date' />
+                                                </div>
                                         </div>
                                     </div>
 
@@ -208,15 +229,21 @@ const ClaimTransactionsForm: React.FC = () => {
 
                                     <div className="row gy-3">
                                         <div className="col">
-                                            <label>Activity</label>
+                                            <label className="required">Activity</label>
                                             <Field name="activity" className="form-control"/>
+                                            <div className="text-danger">
+                                                <ErrorMessage name='activity' />
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div className="row gy-3">
                                         <div className="col-12 col-md-6">
-                                            <label>Symbol</label>
+                                            <label className="required">Symbol</label>
                                             <Field name="symbol" className="form-control"/>
+                                            <div className="text-danger">
+                                                <ErrorMessage name='symbol' />
+                                            </div>
                                         </div>
                                         <div className="col-12 col-md-6">
                                             <label>Type</label>
@@ -233,7 +260,7 @@ const ClaimTransactionsForm: React.FC = () => {
 
                                     <div className="row gy-3">
                                         <div className="col-12 col-md-6">
-                                            <label>Quantity</label>
+                                            <label className="required">Quantity</label>
                                             <Field name="quantity">
                                                 {({field, form}: FieldProps) => (
                                                     <NumericFormat
@@ -244,12 +271,16 @@ const ClaimTransactionsForm: React.FC = () => {
                                                         allowNegative={false}
                                                         value={field.value ?? 0}
                                                         onValueChange={({value}) => form.setFieldValue(field.name, value??0)}
+                                                        onBlur={() => form.setFieldTouched(field.name, true)}
                                                     />
                                                 )}
                                             </Field>
+                                            <div className="text-danger">
+                                                <ErrorMessage name='quantity' />
+                                            </div>
                                         </div>
                                         <div className="col-12 col-md-6">
-                                            <label>Amount</label>
+                                            <label className="required">Amount</label>
                                             <Field name="amount">
                                                 {({field, form}: FieldProps) => (
                                                     <NumericFormat 
@@ -262,9 +293,13 @@ const ClaimTransactionsForm: React.FC = () => {
                                                         allowNegative={false}
                                                         value={field.value ?? 0}
                                                         onValueChange={({value}) => form.setFieldValue(field.name, value??0)}
+                                                        onBlur={() => form.setFieldTouched(field.name, true)}
                                                     />
                                                 )}
                                             </Field>
+                                            <div className="text-danger">
+                                                <ErrorMessage name='amount' />
+                                            </div>
                                         </div>
                                     </div>
 

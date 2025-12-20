@@ -2,6 +2,7 @@
 import apiClient from "../helpers/apiClient";
 import { ClaimsActionsCreateModel } from "../pages/claims/models/ClaimsActionsCreateModel";
 import { ClaimsTransactionsCreateModel } from "../pages/claims/models/ClaimsTransactionsCreateModel";
+import { ClassLawsuitCreateModel } from "../pages/claims/models/ClassLawsuitCreateModel";
 
 export const createClaims = async (
   file: File,
@@ -24,10 +25,10 @@ export const createClaims = async (
   }
 };
 
-export const getActionsClaims = async (user_id?: string) => {
+export const getActionsClaims = async (company_id?: number) => {
   try {
-    const user = user_id ? `?user_id=${Number(user_id)}` : '';
-    const response = await apiClient.get(`claims/claim-actions/${user}`);
+    const company = company_id ? `?company_id=${company_id}` : '';
+    const response = await apiClient.get(`claims/claim-actions/${company}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching claims actions:', error);
@@ -79,9 +80,9 @@ export const deleteActionsClaim = async (id: number) => {
   }
 }
 
-export const getTransactionsClaims = async (page: number, user_id?: string) => {
+export const getTransactionsClaims = async (page: number, user_id?: number) => {
   try {
-    const user = user_id ? `&user_id=${Number(user_id)}` : '';
+    const user = user_id ? `&user_id=${user_id}` : '';
     const response = await apiClient.get(`claims/claim-transactions/?page=${page}${user}`);
 
     return response.data;
@@ -149,13 +150,84 @@ export const getTransactionsLogs = async (guid: string) => {
 
 export const getClaimsByStatus = async (user_id?: string) => {
   try {
-
     const user = user_id ? `?user_id=${Number(user_id)}` : '';
     const response = await apiClient.get(`claims/claim-actions/dashboard/${user}`);
-
     return response.data;
   } catch (error) {
     console.error('Error fetching claims by status:', error);
     throw error;
   }
 };
+
+export const getClassLawsuits = async (company_id?: number) => {
+  try {
+    const company = company_id ? `?company_id=${company_id}` : ''
+    const response = await apiClient.get(`claims/class-actions/${company}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching claims by status:', error);
+    throw error;
+  }
+}
+
+export const getClassLawsuitDetails = async (id: number) => {
+  try {
+    const response = await apiClient.get(`claims/class-actions/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching claims by status:', error);
+    throw error;
+  }
+}
+
+export const deleteClassLawsuit = async (id: number) => {
+  try {
+    const response = await apiClient.delete(`claims/class-actions/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching claims by status:', error);
+    throw error;
+  }
+}
+
+export const createClassLawsuit = async (values: ClassLawsuitCreateModel) => {
+  try {
+    const response = await apiClient.post(`claims/class-actions/`, values);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching claims by status:', error);
+    throw error;
+  }
+}
+
+export const updateClassLawsuit = async (id: number, values: ClassLawsuitCreateModel) => {
+  try {
+    const response = await apiClient.put(`claims/class-actions/${id}`, values);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching claims by status:', error);
+    throw error;
+  }
+}
+
+export const generateClaim = async (id: number) => {
+  try {
+    const response = await apiClient.get(`claims/claim-actions/generate-claim/${id}/`);
+    return response.data;
+  }
+  catch (error) {
+    console.error('Error creating claim:', error);
+    throw error;
+  }
+}
+
+export const getClaimDetails = async (id: number) => {
+  try {
+    const response = await apiClient.get(`claims/claim-actions/details/${id}/`);
+    return response.data;
+  }
+  catch (error) {
+    console.error('Error creating claim:', error);
+    throw error;
+  }
+}
