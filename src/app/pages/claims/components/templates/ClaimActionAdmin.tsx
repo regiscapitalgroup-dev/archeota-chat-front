@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import { useUserCompanies } from "../../../../hooks/company/useUserCompanies";
-import { ClaimsActionsModel } from "../../models/ClaimsActionsModel";
-import ClaimsActionsGrid from "../ClaimsActionsGrid";
 import { CompanyModel } from "../../../users/models/CompanyModel";
+import { ClaimsActionsModel } from "../../models/ClaimsActionsModel";
 import { CompanyOptions } from "../atoms/models/CompanyOptions";
+import ClaimsActionsGrid from "../ClaimsActionsGrid";
+import { ClaimStatusEnum } from "../atoms/enums/ClaimStatusEnum";
 
 type Props = {
     claims: ClaimsActionsModel[];
     isLoadingClaims: boolean;
     companySelected: CompanyModel | null;
+    claimStatus: ClaimStatusEnum | null;
     setCompanySelected: (company: CompanyModel | null) => void;
     onReloadClaims: () => void;
     onClaim: (id: number) => void;
 }
 
-const ClaimActionAdmin = ({ claims, isLoadingClaims, companySelected, setCompanySelected, onReloadClaims, onClaim }: Props) => {
+const ClaimActionAdmin = ({ claims, isLoadingClaims, companySelected, claimStatus, setCompanySelected, onReloadClaims, onClaim }: Props) => {
     const { companies, loading: loadingCompanies } = useUserCompanies(true);
 
     useEffect(() => {
@@ -40,8 +42,10 @@ const ClaimActionAdmin = ({ claims, isLoadingClaims, companySelected, setCompany
                 onCompanySelect={onSelectCompany}
                 onReload={onReloadClaims}
                 canClaim={true}
+                claimStatus={claimStatus}
                 onClaim={onClaim}
             />
+            
         </>
     );
 }

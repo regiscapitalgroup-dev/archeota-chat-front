@@ -15,6 +15,8 @@ import ClaimsActionTable from './molecules/ClaimsActionTable';
 import CompanySelectorTool from './molecules/CompanySelectorTool';
 import { CompanyModel } from '../../users/models/CompanyModel';
 import { CompanyOptions } from './atoms/models/CompanyOptions';
+import ClaimStatus from './atoms/ClaimStatus';
+import { ClaimStatusEnum } from './atoms/enums/ClaimStatusEnum';
 
 const FilterProps: FilterProp[] = [
   {
@@ -57,14 +59,15 @@ type ClaimsActionsGridProps = {
   loadingCompanies: boolean;
   companySelected: CompanyModel | null;
   canClaim: boolean;
+  claimStatus: ClaimStatusEnum | null;
   onCompanySelect: (company: CompanyOptions | null) => void;
   onReload: () => void;
   onClaim: (id: number) => void;
 }
 
-const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, companies, loadingCompanies, companySelected, canClaim, onCompanySelect, onReload, onClaim}) => {
+const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, companies, loadingCompanies, companySelected, canClaim, claimStatus, onCompanySelect, onReload, onClaim}) => {
   const [sending, setSending] = useState(false);
-  const [filters, setFilters] = useState({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] } as Filter)
+  const [filters, setFilters] = useState({ companyName: '', lawsuitType: '', tyckerSymbol: '', claimStatus: [] } as Filter);
   const filteredData = useMemo(() => filterData(data, filters), [data, filters]);
   const history = useHistory();
 
@@ -134,6 +137,9 @@ const ClaimsActionsGrid: React.FC<ClaimsActionsGridProps> = ({data, loading, com
           onClaim={onClaim}
           onDetails={(id) => history.push(`/claims/actions/details/${id}`)}
         />
+        {claimStatus && (
+          <ClaimStatus type={claimStatus}/>
+        )}
       </div>
     </div>
   )

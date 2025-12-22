@@ -105,6 +105,7 @@ const ClaimTransactionsTable: React.FC<Props> = ({
   const columns: TableColumn<ClaimTransactionModel>[] = [
     {name: 'Account Name', selector: (row) => row.accountName, sortable: true},
     {name: 'Account Type', selector: (row) => row.accountType, sortable: true},
+    {name: 'Activity', selector: (row) => row.activity, sortable: true},
     {name: 'Description', selector: (row) => row.description, sortable: true},
     {name: 'Symbol', selector: (row) => row.symbol, sortable: true},
     {
@@ -117,6 +118,15 @@ const ClaimTransactionsTable: React.FC<Props> = ({
       },
       sortable: true,
     },
+    {
+      name: 'Quantity',
+      selector: (row) => row.quantity,
+      sortable: true
+    },
+    {
+      name: 'Cost Per Stock',
+      selector: (row) => row.costPerStock
+    }, 
     {
       name: 'Amount',
       selector: (row) => formatCurrencyUSD(Number(row.amount) ?? 0),

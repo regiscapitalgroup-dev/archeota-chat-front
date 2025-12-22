@@ -30,9 +30,10 @@ const ClaimActionClients = ({ claims, isLoadingClaims, canClaim, onReloadClaims,
                 loadingCompanies={false}
                 companySelected={null}
                 onCompanySelect={() => {}}
-                onReload={onReloadClaims}
                 canClaim={canClaim}
+                claimStatus={null}
                 onClaim={_handleOnClaim}
+                onReload={onReloadClaims}
             />
             <ClassLawsuitsGrid
                 data={classes}

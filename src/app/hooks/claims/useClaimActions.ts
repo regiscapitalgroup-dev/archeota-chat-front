@@ -15,7 +15,15 @@ export const useActionsClaim = (companyId?: number) => {
     }}, []);
 
     const loadActions = useCallback(async () => {
+        if(!isMounted.current)
+            return;
+        if(typeof companyId === "undefined") {
+            setActions([]);
+            return;
+        }
+
         try {
+            setActions([]);
             setLoading(true);
             const data = await getActionsClaims(companyId);
             if (isMounted.current) {
